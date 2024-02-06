@@ -25,18 +25,35 @@ public extension REST {
     public var onProgress: ((Double) -> Void)?
 
     fileprivate var onResumeCancelled: ((Data) -> URLSessionDownloadTask)?
+    fileprivate var _onComplete: ((Result<URL, Error>) -> Void)?
+    fileprivate var _onProgress: ((Double) -> Void)?
     fileprivate var _onCancel: ((Bool) -> Void)?
 
     private var downloadTask: URLSessionDownloadTask
     private var resumedData: Data?
 
-    public var state: State = .pending
+    public private(set) var state: State = .pending
 
     private let lock = NSLock()
 
     init(url: URL, downloadTask: URLSessionDownloadTask) {
       self.url = url
       self.downloadTask = downloadTask
+
+		self._onProgress = { [weak self] newProgress in
+			self?.state = .inProgress
+			self?.onProgress?(newProgress)
+		}
+
+		self._onComplete = { [weak self] result in
+			switch result {
+			case .success:
+				self?.state = .completed
+			case .failure:
+				self?.state = .failed
+			}
+			self?.onComplete?(result)
+		}
     }
 
     public func cancel() {
@@ -63,6 +80,7 @@ public extension REST {
 
       guard let resumedData, let onResumeCancelled else { return }
 
+		state = .pending
       downloadTask = onResumeCancelled(resumedData)
     }
   }
@@ -72,10 +90,24 @@ public extension REST {
     private let operationsQueue = OperationQueue()
 
     private static var identifier: String = "io.lucaa.Loadle.Background"
+	  private static var dir = "DOWNLOADS"
+
+	  public static func loadDownloadsURL() throws -> URL {
+		  let downloadsURL = try FileManager.default
+			  .url(for: .documentDirectory,
+				   in: .userDomainMask,
+				   appropriateFor: nil,
+				   create: false)
+			  .appending(component: Self.dir, directoryHint: .isDirectory)
+
+		  if !FileManager.default.fileExists(atPath: downloadsURL.standardized.path(percentEncoded: false)) {
+			  try FileManager.default.createDirectory(at: downloadsURL, withIntermediateDirectories: true, attributes: nil)
+		  }
+		  return downloadsURL
+	  }
 
     private lazy var urlSession: URLSession = {
       let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
-      config.isDiscretionary = true
       config.sessionSendsLaunchEvents = true
       return URLSession(configuration: config, delegate: self, delegateQueue: operationsQueue)
     }()
@@ -112,24 +144,21 @@ public extension REST {
     }
 
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-      do {
-        let documentsURL = try
-          FileManager.default.url(for: .documentDirectory,
-                                  in: .userDomainMask,
-                                  appropriateFor: nil,
-                                  create: false)
-        let savedURL = documentsURL.appendingPathComponent(location.lastPathComponent)
+		do {
+			let newFileName = downloadTask.response?.suggestedFilename ?? location.lastPathComponent
+		  let savedURL = try Self.loadDownloadsURL().appending(component: newFileName, directoryHint: .notDirectory)
         try FileManager.default.moveItem(at: location, to: savedURL)
         taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
-        log(.verbose, "Finished downloading! You can find your download in here: \(savedURL)")
+        log(.info, "Finished downloading! You can find your download in here: \(savedURL).")
       } catch {
+		  taskStore.finish(withError: error, identifier: downloadTask.taskIdentifier)
         log(.error, error)
       }
     }
 
     public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
       let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-      taskStore.update(progress: progress, identifier: downloadTask.taskIdentifier)
+		taskStore.update(progress: progress >= 0 ? progress : 0, identifier: downloadTask.taskIdentifier)
     }
 
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
@@ -182,7 +211,7 @@ public extension REST {
       defer { lock.unlock() }
 
       if downloadTasks[identifier] != nil {
-        downloadTasks[identifier]!.onProgress?(progress)
+        downloadTasks[identifier]!._onProgress?(progress)
       }
     }
 
@@ -192,7 +221,7 @@ public extension REST {
       defer { lock.unlock() }
 
       if downloadTasks[identifier] != nil {
-        downloadTasks[identifier]!.onComplete?(.success(location))
+        downloadTasks[identifier]!._onComplete?(.success(location))
         downloadTasks[identifier] = nil
       }
     }
@@ -203,7 +232,7 @@ public extension REST {
       defer { lock.unlock() }
 
       if downloadTasks[identifier] != nil {
-        downloadTasks[identifier]!.onComplete?(.failure(error))
+        downloadTasks[identifier]!._onComplete?(.failure(error))
         downloadTasks[identifier] = nil
       }
     }

@@ -28,23 +28,23 @@ final class DownloadManager: Observable {
   }
 
   func startDownload(using url: URL, preferences: UserPreferences) {
-    load(using: url, userPreferences: preferences)
+    load(using: url, preferences: preferences)
   }
 
-  func load(using url: URL, userPreferences: UserPreferences) {
+  private func load(using url: URL, preferences: UserPreferences) {
     let cobaltRequest = CobaltRequest(
       url: url,
-      vCodec: userPreferences.videoYoutubeCodec,
-      vQuality: userPreferences.videoDownloadQuality,
-      aFormat: userPreferences.audioFormat,
+      vCodec: preferences.videoYoutubeCodec,
+      vQuality: preferences.videoDownloadQuality,
+      aFormat: preferences.audioFormat,
       isAudioOnly: false,
-      isNoTTWatermark: userPreferences.videoTiktokWatermarkDisabled,
-      isTTFullAudio: userPreferences.audioTiktokFullAudio,
-      isAudioMuted: userPreferences.audioMute,
-      dubLang: userPreferences.audioYoutubeTrack == .original ? false : true,
+      isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
+      isTTFullAudio: preferences.audioTiktokFullAudio,
+      isAudioMuted: preferences.audioMute,
+      dubLang: preferences.audioYoutubeTrack == .original ? false : true,
       disableMetadata: false,
-      twitterGif: userPreferences.videoTwitterConvertGifsToGif,
-      vimeoDash: userPreferences.videoDownloadType == .progressive ? nil : true
+      twitterGif: preferences.videoTwitterConvertGifsToGif,
+      vimeoDash: preferences.videoDownloadType == .progressive ? nil : true
     )
     let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
     loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
@@ -52,15 +52,23 @@ final class DownloadManager: Observable {
       switch result {
       case let .success(response):
         guard let url = response.body.url else { return }
-        self.download(using: url)
+		  self.download(using: url, request: cobaltRequest, filenameStyle: preferences.filenameStyle)
       case let .failure(error):
         log(.error, error)
       }
     }
   }
 
-  func download(using url: URL) {
-    let downloadTask = downloader.startDownload(using: url)
-    downloads.append(downloadTask)
-  }
+	private func download(using url: URL, request: CobaltRequest, filenameStyle: FilenameStyle) {
+		let downloadTask = downloader.startDownload(using: url)
+		downloadTask.onComplete = { result in
+			switch result {
+			case .success(let location):
+				log(.info, location)
+			case .failure(let error):
+				log(.error, error)
+			}
+		}
+		downloads.append(downloadTask)
+	}
 }
