@@ -8,235 +8,235 @@
 import Foundation
 import Logger
 
-extension REST {
-	public class DownloadTask: Identifiable {
-		public enum State {
-			case pending
-			case inProgress
-			case completed
-			case failed
-			case canceled
-		}
+public extension REST {
+  class DownloadTask: Identifiable {
+    public enum State {
+      case pending
+      case inProgress
+      case completed
+      case failed
+      case canceled
+    }
 
-		public var id: Int { downloadTask.taskIdentifier }
-		
-		public var url: URL
-		public var onComplete: ((Result<URL, Error>) -> Void)?
-		public var onProgress: ((Double) -> Void)?
+    public var id: Int { downloadTask.taskIdentifier }
 
-		fileprivate var onResumeCancelled: ((Data) -> URLSessionDownloadTask)?
-		fileprivate var _onCancel: ((Bool) -> Void)?
+    public var url: URL
+    public var onComplete: ((Result<URL, Error>) -> Void)?
+    public var onProgress: ((Double) -> Void)?
 
-		private var downloadTask: URLSessionDownloadTask
-		private var resumedData: Data?
+    fileprivate var onResumeCancelled: ((Data) -> URLSessionDownloadTask)?
+    fileprivate var _onCancel: ((Bool) -> Void)?
 
-		public var state: State = .pending
+    private var downloadTask: URLSessionDownloadTask
+    private var resumedData: Data?
 
-		private let lock = NSLock()
+    public var state: State = .pending
 
-		init(url: URL, downloadTask: URLSessionDownloadTask) {
-			self.url = url
-			self.downloadTask = downloadTask
-		}
+    private let lock = NSLock()
 
-		public func cancel() {
-			lock.lock()
+    init(url: URL, downloadTask: URLSessionDownloadTask) {
+      self.url = url
+      self.downloadTask = downloadTask
+    }
 
-			defer { lock.unlock() }
+    public func cancel() {
+      lock.lock()
 
-			downloadTask.cancel { resumedData in
-				guard let resumedData = resumedData else {
-					self.state = .failed
-					self._onCancel?(false)
-					return
-				}
-				self.resumedData = resumedData
-				self.state = .canceled
-				self._onCancel?(true)
-			}
-		}
+      defer { lock.unlock() }
 
-		public func resumeCanceled() {
-			lock.lock()
+      downloadTask.cancel { resumedData in
+        guard let resumedData = resumedData else {
+          self.state = .failed
+          self._onCancel?(false)
+          return
+        }
+        self.resumedData = resumedData
+        self.state = .canceled
+        self._onCancel?(true)
+      }
+    }
 
-			defer { lock.unlock() }
+    public func resumeCanceled() {
+      lock.lock()
 
-			guard let resumedData, let onResumeCancelled else { return }
+      defer { lock.unlock() }
 
-			self.downloadTask = onResumeCancelled(resumedData)
-		}
-	}
+      guard let resumedData, let onResumeCancelled else { return }
 
-	public class Downloader: NSObject, URLSessionDelegate, URLSessionDownloadDelegate {
-		private let taskStore = DownloadTaskStore()
-		private let operationsQueue = OperationQueue()
+      downloadTask = onResumeCancelled(resumedData)
+    }
+  }
 
-		private static var identifier: String = "io.lucaa.Loadle.Background"
+  class Downloader: NSObject, URLSessionDelegate, URLSessionDownloadDelegate {
+    private let taskStore = DownloadTaskStore()
+    private let operationsQueue = OperationQueue()
 
-		private lazy var urlSession: URLSession = {
-			let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
-			config.isDiscretionary = true
-			config.sessionSendsLaunchEvents = true
-			return URLSession(configuration: config, delegate: self, delegateQueue: operationsQueue)
-		}()
+    private static var identifier: String = "io.lucaa.Loadle.Background"
 
-		public var allTasks: [DownloadTask] {
-			return taskStore.getAllTasks()
-		}
+    private lazy var urlSession: URLSession = {
+      let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
+      config.isDiscretionary = true
+      config.sessionSendsLaunchEvents = true
+      return URLSession(configuration: config, delegate: self, delegateQueue: operationsQueue)
+    }()
 
-		public func startDownload(using url: URL) -> DownloadTask {
-			let task = urlSession.downloadTask(with: url)
-			task.resume()
+    public var allTasks: [DownloadTask] {
+      return taskStore.getAllTasks()
+    }
 
-			let downloadTask = DownloadTask(url: url, downloadTask: task)
-			taskStore.addNewTask(task: downloadTask)
+    public func startDownload(using url: URL) -> DownloadTask {
+      let task = urlSession.downloadTask(with: url)
+      task.resume()
 
-			downloadTask._onCancel = { resumable in
-				if !resumable {
-					self.taskStore.removeTask(task: downloadTask)
-				}
-			}
+      let downloadTask = DownloadTask(url: url, downloadTask: task)
+      taskStore.addNewTask(task: downloadTask)
 
-			downloadTask.onResumeCancelled = { resumedData in
-				let task = self.urlSession.downloadTask(withResumeData: resumedData)
-				task.resume()
-				self.taskStore.updateTaskIdentifier(oldIdentifier: downloadTask.id, newIdentifier: task.taskIdentifier)
-				return task
-			}
+      downloadTask._onCancel = { resumable in
+        if !resumable {
+          self.taskStore.removeTask(task: downloadTask)
+        }
+      }
 
-			return downloadTask
-		}
+      downloadTask.onResumeCancelled = { resumedData in
+        let task = self.urlSession.downloadTask(withResumeData: resumedData)
+        task.resume()
+        self.taskStore.updateTaskIdentifier(oldIdentifier: downloadTask.id, newIdentifier: task.taskIdentifier)
+        return task
+      }
 
-		public func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
-			taskStore.addBackgroundDownloadHandler(handler: handler, identifier: identifier)
-		}
+      return downloadTask
+    }
 
-		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-			do {
-				let documentsURL = try
-				FileManager.default.url(for: .documentDirectory,
-										in: .userDomainMask,
-										appropriateFor: nil,
-										create: false)
-				let savedURL = documentsURL.appendingPathComponent(location.lastPathComponent)
-				try FileManager.default.moveItem(at: location, to: savedURL)
-				taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
-				log(.verbose, "Finished downloading! You can find your download in here: \(savedURL)")
-			} catch {
-				log(.error, error)
-			}
-		}
+    public func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
+      taskStore.addBackgroundDownloadHandler(handler: handler, identifier: identifier)
+    }
 
-		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-			let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-			taskStore.update(progress: progress, identifier: downloadTask.taskIdentifier)
-		}
+    public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+      do {
+        let documentsURL = try
+          FileManager.default.url(for: .documentDirectory,
+                                  in: .userDomainMask,
+                                  appropriateFor: nil,
+                                  create: false)
+        let savedURL = documentsURL.appendingPathComponent(location.lastPathComponent)
+        try FileManager.default.moveItem(at: location, to: savedURL)
+        taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
+        log(.verbose, "Finished downloading! You can find your download in here: \(savedURL)")
+      } catch {
+        log(.error, error)
+      }
+    }
 
-		public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-			if let identifier = session.configuration.identifier, !identifier.isEmpty {
-				taskStore.finishAllEvents(identifier: identifier)
-			}
-		}
+    public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+      let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
+      taskStore.update(progress: progress, identifier: downloadTask.taskIdentifier)
+    }
 
-		public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-			guard let error else { return }
-			taskStore.finish(withError: error, identifier: task.taskIdentifier)
-		}
-	}
+    public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
+      if let identifier = session.configuration.identifier, !identifier.isEmpty {
+        taskStore.finishAllEvents(identifier: identifier)
+      }
+    }
 
-	fileprivate class DownloadTaskStore {
-		private var downloadTasks: [Int: DownloadTask] = [:]
-		private var backgroundDownloadRegistry: [String: () -> Void] = [:]
+    public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+      guard let error else { return }
+      taskStore.finish(withError: error, identifier: task.taskIdentifier)
+    }
+  }
 
-		private var lock: NSLock = NSLock()
+  fileprivate class DownloadTaskStore {
+    private var downloadTasks: [Int: DownloadTask] = [:]
+    private var backgroundDownloadRegistry: [String: () -> Void] = [:]
 
-		fileprivate func addNewTask(task: DownloadTask) {
-			lock.lock()
+    private var lock: NSLock = .init()
 
-			defer { lock.unlock() }
+    fileprivate func addNewTask(task: DownloadTask) {
+      lock.lock()
 
-			downloadTasks[task.id] = task
-		}
+      defer { lock.unlock() }
 
-		fileprivate func removeTask(task: DownloadTask) {
-			lock.lock()
+      downloadTasks[task.id] = task
+    }
 
-			defer { lock.unlock() }
+    fileprivate func removeTask(task: DownloadTask) {
+      lock.lock()
 
-			if downloadTasks[task.id] != nil {
-				downloadTasks[task.id] = nil
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
-			lock.lock()
+      if downloadTasks[task.id] != nil {
+        downloadTasks[task.id] = nil
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
+      lock.lock()
 
-			backgroundDownloadRegistry[identifier] = handler
-		}
+      defer { lock.unlock() }
 
-		fileprivate func update(progress: Double, identifier: Int) {
-			lock.lock()
+      backgroundDownloadRegistry[identifier] = handler
+    }
 
-			defer { lock.unlock() }
+    fileprivate func update(progress: Double, identifier: Int) {
+      lock.lock()
 
-			if downloadTasks[identifier] != nil {
-				downloadTasks[identifier]!.onProgress?(progress)
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func finish(downloadingTo location: URL, identifier: Int) {
-			lock.lock()
+      if downloadTasks[identifier] != nil {
+        downloadTasks[identifier]!.onProgress?(progress)
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func finish(downloadingTo location: URL, identifier: Int) {
+      lock.lock()
 
-			if downloadTasks[identifier] != nil {
-				downloadTasks[identifier]!.onComplete?(.success(location))
-				downloadTasks[identifier] = nil
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func finish(withError error: Error, identifier: Int) {
-			lock.lock()
+      if downloadTasks[identifier] != nil {
+        downloadTasks[identifier]!.onComplete?(.success(location))
+        downloadTasks[identifier] = nil
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func finish(withError error: Error, identifier: Int) {
+      lock.lock()
 
-			if downloadTasks[identifier] != nil {
-				downloadTasks[identifier]!.onComplete?(.failure(error))
-				downloadTasks[identifier] = nil
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func finishAllEvents(identifier: String) {
-			lock.lock()
+      if downloadTasks[identifier] != nil {
+        downloadTasks[identifier]!.onComplete?(.failure(error))
+        downloadTasks[identifier] = nil
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func finishAllEvents(identifier: String) {
+      lock.lock()
 
-			if backgroundDownloadRegistry[identifier] != nil {
-				backgroundDownloadRegistry[identifier]?()
-				backgroundDownloadRegistry[identifier] = nil
-				downloadTasks.removeAll()
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func updateTaskIdentifier(oldIdentifier: Int, newIdentifier: Int) {
-			lock.lock()
+      if backgroundDownloadRegistry[identifier] != nil {
+        backgroundDownloadRegistry[identifier]?()
+        backgroundDownloadRegistry[identifier] = nil
+        downloadTasks.removeAll()
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func updateTaskIdentifier(oldIdentifier: Int, newIdentifier: Int) {
+      lock.lock()
 
-			if let task = downloadTasks[oldIdentifier] {
-				downloadTasks.removeValue(forKey: oldIdentifier)
-				downloadTasks[newIdentifier] = task
-			}
-		}
+      defer { lock.unlock() }
 
-		fileprivate func getAllTasks() -> [REST.DownloadTask] {
-			lock.lock()
+      if let task = downloadTasks[oldIdentifier] {
+        downloadTasks.removeValue(forKey: oldIdentifier)
+        downloadTasks[newIdentifier] = task
+      }
+    }
 
-			defer { lock.unlock() }
+    fileprivate func getAllTasks() -> [REST.DownloadTask] {
+      lock.lock()
 
-			return downloadTasks.values.map { $0 }
-		}
-	}
+      defer { lock.unlock() }
+
+      return downloadTasks.values.map { $0 }
+    }
+  }
 }
