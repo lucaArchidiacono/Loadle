@@ -10,19 +10,19 @@ import REST
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate, Observable {
-  private var downloader: REST.Downloader!
+    private var downloader: REST.Downloader!
 
-  @Published var downloadManager: DownloadManager!
+    @Published var downloadManager: DownloadManager!
 
-  func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-    downloader = REST.Downloader()
+    func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        downloader = REST.Downloader()
 
-    let loader = REST.Loader()
-    downloadManager = DownloadManager(downloader: downloader, loader: loader)
-    return true
-  }
+        let loader = REST.Loader()
+        downloadManager = DownloadManager(downloader: downloader, loader: loader)
+        return true
+    }
 
-  func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-    downloader.addBackgroundDownloadHandler(handler: completionHandler, identifier: identifier)
-  }
+    func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+        downloader.addBackgroundDownloadHandler(handler: completionHandler, identifier: identifier)
+    }
 }

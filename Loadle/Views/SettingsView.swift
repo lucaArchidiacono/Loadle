@@ -9,9 +9,9 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
-  @EnvironmentObject private var preferences: UserPreferences
+    @EnvironmentObject private var preferences: UserPreferences
 
-  var body: some View {
-    EmptyView()
-  }
+    var body: some View {
+        EmptyView()
+    }
 }

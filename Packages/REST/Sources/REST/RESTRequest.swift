@@ -8,42 +8,42 @@
 import Foundation
 
 public extension REST {
-  struct HTTPRequest: Identifiable {
-    public let id: UUID = .init()
+    struct HTTPRequest: Identifiable {
+        public let id: UUID = .init()
 
-    private var urlComponents = URLComponents()
-    private var options = [ObjectIdentifier: Any]()
+        private var urlComponents = URLComponents()
+        private var options = [ObjectIdentifier: Any]()
 
-    public var method: HTTPMethod = .get
-    public var headers: [AnyHashable: String] = [:]
-    public var body: HTTPBody = EmptyBody()
+        public var method: HTTPMethod = .get
+        public var headers: [AnyHashable: String] = [:]
+        public var body: HTTPBody = EmptyBody()
 
-    public var scheme: String { urlComponents.scheme ?? "https" }
+        public var scheme: String { urlComponents.scheme ?? "https" }
 
-    public var host: String? {
-      get { urlComponents.host }
-      set { urlComponents.host = newValue }
+        public var host: String? {
+            get { urlComponents.host }
+            set { urlComponents.host = newValue }
+        }
+
+        public var path: String {
+            get { urlComponents.path }
+            set { urlComponents.path = newValue }
+        }
+
+        var queryItems: [URLQueryItem]? {
+            get { urlComponents.queryItems }
+            set { urlComponents.queryItems = newValue }
+        }
+
+        var url: URL? { urlComponents.url }
+
+        public init(host: String, path: String, method: HTTPMethod, headers: [AnyHashable: String] = [:], body: HTTPBody = EmptyBody()) {
+            urlComponents.scheme = "https"
+            self.host = host
+            self.path = path
+            self.method = method
+            self.headers = headers
+            self.body = body
+        }
     }
-
-    public var path: String {
-      get { urlComponents.path }
-      set { urlComponents.path = newValue }
-    }
-
-    var queryItems: [URLQueryItem]? {
-      get { urlComponents.queryItems }
-      set { urlComponents.queryItems = newValue }
-    }
-
-    var url: URL? { urlComponents.url }
-
-    public init(host: String, path: String, method: HTTPMethod, headers: [AnyHashable: String] = [:], body: HTTPBody = EmptyBody()) {
-      urlComponents.scheme = "https"
-      self.host = host
-      self.path = path
-      self.method = method
-      self.headers = headers
-      self.body = body
-    }
-  }
 }

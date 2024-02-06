@@ -8,27 +8,27 @@
 import Foundation
 
 public extension FixedWidthInteger {
-  /// Saturating integer multiplication. Computes `self * rhs`, saturating at the numeric bounds
-  /// instead of overflowing.
-  func saturatingMultiplication(_ rhs: Self) -> Self {
-    let (partialValue, isOverflow) = multipliedReportingOverflow(by: rhs)
+    /// Saturating integer multiplication. Computes `self * rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    func saturatingMultiplication(_ rhs: Self) -> Self {
+        let (partialValue, isOverflow) = multipliedReportingOverflow(by: rhs)
 
-    if isOverflow {
-      return signum() == rhs.signum() ? .max : .min
-    } else {
-      return partialValue
+        if isOverflow {
+            return signum() == rhs.signum() ? .max : .min
+        } else {
+            return partialValue
+        }
     }
-  }
 
-  /// Saturating integer addition. Computes `self + rhs`, saturating at the numeric bounds
-  /// instead of overflowing.
-  func saturatingAddition(_ rhs: Self) -> Self {
-    let (partialValue, isOverflow) = addingReportingOverflow(rhs)
+    /// Saturating integer addition. Computes `self + rhs`, saturating at the numeric bounds
+    /// instead of overflowing.
+    func saturatingAddition(_ rhs: Self) -> Self {
+        let (partialValue, isOverflow) = addingReportingOverflow(rhs)
 
-    if isOverflow {
-      return partialValue.signum() >= 0 ? .min : .max
-    } else {
-      return partialValue
+        if isOverflow {
+            return partialValue.signum() >= 0 ? .min : .max
+        } else {
+            return partialValue
+        }
     }
-  }
 }

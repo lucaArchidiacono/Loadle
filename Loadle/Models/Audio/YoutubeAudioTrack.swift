@@ -9,8 +9,8 @@ import Foundation
 
 /// Defines which audio track will be sued. If dubbed track isn't available, original video language is used instead.
 enum YoutubeAudioTrack: String, Encodable {
-  /// Original video language is used.
-  case original
-  /// Default device (and cobalt) language is used
-  case auto
+    /// Original video language is used.
+    case original
+    /// Default device (and cobalt) language is used
+    case auto
 }

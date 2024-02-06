@@ -8,88 +8,88 @@
 import Foundation
 
 public protocol HTTPBody {
-  var isEmpty: Bool { get }
-  var additionalHeaders: [String: String] { get }
-  func encode() throws -> InputStream
+    var isEmpty: Bool { get }
+    var additionalHeaders: [String: String] { get }
+    func encode() throws -> InputStream
 }
 
 public extension HTTPBody {
-  var isEmpty: Bool { return false }
-  var additionalHeaders: [String: String] { return [:] }
+    var isEmpty: Bool { return false }
+    var additionalHeaders: [String: String] { return [:] }
 }
 
 public extension REST {
-  struct EmptyBody: HTTPBody {
-    public let isEmpty: Bool = true
+    struct EmptyBody: HTTPBody {
+        public let isEmpty: Bool = true
 
-    public init() {}
-    public func encode() throws -> InputStream { InputStream(data: Data()) }
-  }
-
-  struct DataBody: HTTPBody {
-    private let data: Data
-
-    public var isEmpty: Bool { data.isEmpty }
-    public var additionalHeaders: [String: String]
-
-    public init(_ data: Data, additionalHeaders: [String: String] = [:]) {
-      self.data = data
-      self.additionalHeaders = additionalHeaders
+        public init() {}
+        public func encode() throws -> InputStream { InputStream(data: Data()) }
     }
 
-    public func encode() throws -> InputStream { InputStream(data: data) }
-  }
+    struct DataBody: HTTPBody {
+        private let data: Data
 
-  struct JSONBody: HTTPBody {
-    public let isEmpty: Bool = false
-    public var additionalHeaders: [String: String] = [
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-    ]
+        public var isEmpty: Bool { data.isEmpty }
+        public var additionalHeaders: [String: String]
 
-    private let _encode: () throws -> Data
+        public init(_ data: Data, additionalHeaders: [String: String] = [:]) {
+            self.data = data
+            self.additionalHeaders = additionalHeaders
+        }
 
-    public init<T: Encodable>(_ value: T, encoder: JSONEncoder = JSONEncoder()) {
-      _encode = { try encoder.encode(value) }
+        public func encode() throws -> InputStream { InputStream(data: data) }
     }
 
-    public func encode() throws -> InputStream {
-      let data = try _encode()
-      return InputStream(data: data)
-    }
-  }
+    struct JSONBody: HTTPBody {
+        public let isEmpty: Bool = false
+        public var additionalHeaders: [String: String] = [
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        ]
 
-  struct FormBody: HTTPBody {
-    public var isEmpty: Bool { values.isEmpty }
-    public let additionalHeaders = [
-      "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
-    ]
+        private let _encode: () throws -> Data
 
-    private let values: [URLQueryItem]
+        public init<T: Encodable>(_ value: T, encoder: JSONEncoder = JSONEncoder()) {
+            _encode = { try encoder.encode(value) }
+        }
 
-    public init(_ values: [URLQueryItem]) {
-      self.values = values
-    }
-
-    public init(_ values: [String: String]) {
-      let queryItems = values.map { URLQueryItem(name: $0.key, value: $0.value) }
-      self.init(queryItems)
+        public func encode() throws -> InputStream {
+            let data = try _encode()
+            return InputStream(data: data)
+        }
     }
 
-    public func encode() throws -> InputStream {
-      let pieces = values.map(urlEncode)
-      let bodyString = pieces.joined(separator: "&")
-      return InputStream(data: Data(bodyString.utf8))
-    }
+    struct FormBody: HTTPBody {
+        public var isEmpty: Bool { values.isEmpty }
+        public let additionalHeaders = [
+            "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
+        ]
 
-    private func urlEncode(_ queryItem: URLQueryItem) -> String {
-      let name = urlEncode(queryItem.name)
-      let value = urlEncode(queryItem.value ?? "")
-      return "\(name)=\(value)"
-    }
+        private let values: [URLQueryItem]
 
-    private func urlEncode(_ string: String) -> String {
-      return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        public init(_ values: [URLQueryItem]) {
+            self.values = values
+        }
+
+        public init(_ values: [String: String]) {
+            let queryItems = values.map { URLQueryItem(name: $0.key, value: $0.value) }
+            self.init(queryItems)
+        }
+
+        public func encode() throws -> InputStream {
+            let pieces = values.map(urlEncode)
+            let bodyString = pieces.joined(separator: "&")
+            return InputStream(data: Data(bodyString.utf8))
+        }
+
+        private func urlEncode(_ queryItem: URLQueryItem) -> String {
+            let name = urlEncode(queryItem.name)
+            let value = urlEncode(queryItem.value ?? "")
+            return "\(name)=\(value)"
+        }
+
+        private func urlEncode(_ string: String) -> String {
+            return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        }
     }
-  }
 }
