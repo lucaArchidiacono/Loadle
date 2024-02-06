@@ -84,40 +84,10 @@ extension REST {
 			return taskStore.getAllTasks()
 		}
 
-		public func startDownload(using request: REST.HTTPRequest, onComplete: (Result<DownloadTask, Error>) -> Void) {
-			guard let url = request.url else {
-				// we couldn't construct a proper URL out of the request's URLComponents
-				onComplete(.failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)))
-				return
-			}
-
-			// construct the URLRequest
-			var urlRequest = URLRequest(url: url)
-			urlRequest.httpMethod = request.method.rawValue
-
-			// copy over any custom HTTP headers
-			for (header, value) in request.headers {
-				urlRequest.addValue(value, forHTTPHeaderField: "\(header)")
-			}
-
-			if request.body.isEmpty == false {
-				// if our body defines additional headers, add them
-				for (header, value) in request.body.additionalHeaders {
-					urlRequest.addValue(value, forHTTPHeaderField: header)
-				}
-
-				// attempt to retrieve the body data
-				do {
-					urlRequest.httpBodyStream = try request.body.encode()
-				} catch {
-					// something went wrong creating the body; stop and report back
-					onComplete(.failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)))
-					return
-				}
-			}
-
-			let task = urlSession.downloadTask(with: urlRequest)
+		public func startDownload(using url: URL) -> DownloadTask {
+			let task = urlSession.downloadTask(with: url)
 			task.resume()
+
 			let downloadTask = DownloadTask(url: url, downloadTask: task)
 			taskStore.addNewTask(task: downloadTask)
 
@@ -134,7 +104,7 @@ extension REST {
 				return task
 			}
 
-			onComplete(.success(downloadTask))
+			return downloadTask
 		}
 
 		public func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
@@ -151,6 +121,7 @@ extension REST {
 				let savedURL = documentsURL.appendingPathComponent(location.lastPathComponent)
 				try FileManager.default.moveItem(at: location, to: savedURL)
 				taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
+				log(.verbose, "Finished downloading! You can find your download in here: \(savedURL)")
 			} catch {
 				log(.error, error)
 			}

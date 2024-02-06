@@ -7,9 +7,12 @@
 
 import SwiftUI
 import SwiftData
+import REST
+import Logger
 
 struct ContentView: View {
 	@Environment(DownloadManager.self) private var downloadManager
+	@EnvironmentObject private var preferences: UserPreferences
 
 	@State private var url: String = ""
 	@State private var isSettingsVisible: Bool = false
@@ -23,7 +26,11 @@ struct ContentView: View {
 						.padding()
 
 					Button(action: {
-						startDownload()
+						if let url = URL(string: url) {
+							downloadManager.startDownload(using: url, preferences: preferences)
+						} else {
+							log(.error, "No real url")
+						}
 					}) {
 						Text("Download")
 							.padding(.horizontal)
@@ -46,18 +53,11 @@ struct ContentView: View {
 				isSettingsVisible.toggle()
 			}) {
 				Image(systemName: "gear")
-					.font(.title)
-			}
-			)
+			})
 			.navigationBarTitle("Download Manager")
 		}
 		.sheet(isPresented: $isSettingsVisible) {
 			SettingsView()
 		}
 	}
-}
-
-#Preview {
-    ContentView()
-//        .modelContainer(for: Item.self, inMemory: true)
 }

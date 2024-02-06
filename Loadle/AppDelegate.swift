@@ -16,7 +16,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, Observable {
 
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
 		downloader = REST.Downloader()
-		downloadManager = DownloadManager(downloader: downloader)
+
+		let loader = REST.Loader()
+		downloadManager = DownloadManager(downloader: downloader, loader: loader)
 		return true
 	}
 

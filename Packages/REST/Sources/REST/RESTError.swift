@@ -8,27 +8,7 @@
 import Foundation
 
 extension REST {
-	public typealias HTTPResult = Result<REST.HTTPResponse, HTTPError>
-}
-
-extension REST.HTTPResult {
-	public var request: REST.HTTPRequest {
-		switch self {
-		case .success(let response): return response.request
-		case .failure(let error): return error.request
-		}
-	}
-
-	public var response: REST.HTTPResponse? {
-		switch self {
-		case .success(let response): return response
-		case .failure(let error): return error.response
-		}
-	}
-}
-
-extension REST {
-	public struct HTTPError: Error {
+	public struct HTTPError<T>: Error {
 		/// The high-level classification of this error
 		public let code: Code
 
@@ -36,7 +16,7 @@ extension REST {
 		public let request: REST.HTTPRequest
 
 		/// Any HTTPResponse (partial or otherwise) that we might have
-		public let response: REST.HTTPResponse?
+		public let response: REST.HTTPResponse<T>?
 
 		/// If we have more information about the error that caused this, stash it here
 		public let underlyingError: Error?
@@ -49,6 +29,8 @@ extension REST {
 			case invalidResponse    // the system did not receive a valid HTTP response
 			case unknown            // we have no idea what the problem is
 			case resetInProgress		// there is already a reset process which is currently running
+			case noDataFound
+			case invalidDecode
 			case badHTTPStatusCode(code: HTTPStatusCode)
 		}
 	}

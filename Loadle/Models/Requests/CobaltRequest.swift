@@ -1,5 +1,5 @@
 //
-//  Cobalt.swift
+//  CobaltRequest.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 05.02.2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Cobalt: Encodable {
+struct CobaltRequest: Encodable {
 	public let url: URL
 	public let vCodec: YoutubeVideoCodec
 	public let vQuality: DownloadVideoQuality
@@ -20,4 +20,5 @@ struct Cobalt: Encodable {
 	public let dubLang: Bool
 	public let disableMetadata: Bool
 	public let twitterGif: Bool
+	public let vimeoDash: Bool?
 }

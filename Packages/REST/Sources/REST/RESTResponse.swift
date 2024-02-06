@@ -8,19 +8,15 @@
 import Foundation
 
 extension REST {
-	public struct HTTPResponse {
+	public struct HTTPResponse<T> {
 		public let request: HTTPRequest
 		private let response: HTTPURLResponse
-		public let body: Data?
+		public let body: T
 
-		init(request: HTTPRequest, response: HTTPURLResponse, body: Data?) {
+		init(request: HTTPRequest, response: HTTPURLResponse, body: T) {
 			self.request = request
 			self.response = response
 			self.body = body
-		}
-
-		public var status: HTTPStatus {
-			HTTPStatus(rawValue: response.statusCode)
 		}
 
 		public var message: String {

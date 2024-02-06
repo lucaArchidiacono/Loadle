@@ -16,7 +16,8 @@
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadTaskView.swift */; };
 		5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923592B7170310032B49C /* ProgressBar.swift */; };
-		5CB9235C2B717C5E0032B49C /* Cobalt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB9235B2B717C5E0032B49C /* Cobalt.swift */; };
+		5CB9235C2B717C5E0032B49C /* CobaltRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB9235B2B717C5E0032B49C /* CobaltRequest.swift */; };
+		5CB923602B7247180032B49C /* POSTCobaltResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB9235F2B7247180032B49C /* POSTCobaltResponse.swift */; };
 		5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DA92B6FD995005948C1 /* Fundamentals */; };
 		5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DAC2B6FDBD7005948C1 /* REST */; };
 		5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */; };
@@ -48,7 +49,8 @@
 		5CB923512B716B730032B49C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5CB923562B716DE00032B49C /* DownloadTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadTaskView.swift; sourceTree = "<group>"; };
 		5CB923592B7170310032B49C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
-		5CB9235B2B717C5E0032B49C /* Cobalt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cobalt.swift; sourceTree = "<group>"; };
+		5CB9235B2B717C5E0032B49C /* CobaltRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CobaltRequest.swift; sourceTree = "<group>"; };
+		5CB9235F2B7247180032B49C /* POSTCobaltResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POSTCobaltResponse.swift; sourceTree = "<group>"; };
 		5CC83DAB2B6FD9E3005948C1 /* REST */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = REST; sourceTree = "<group>"; };
 		5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5CC83DB02B703CAE005948C1 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
@@ -158,14 +160,31 @@
 			path = Components;
 			sourceTree = "<group>";
 		};
+		5CB9235D2B7246ED0032B49C /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				5CB9235B2B717C5E0032B49C /* CobaltRequest.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		5CB9235E2B7246F80032B49C /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				5CB9235F2B7247180032B49C /* POSTCobaltResponse.swift */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
 		5CC83DB42B70DB22005948C1 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				5CB9235E2B7246F80032B49C /* Responses */,
+				5CB9235D2B7246ED0032B49C /* Requests */,
 				5CC83DC62B70E81A005948C1 /* DesignSystem */,
 				5CC83DBA2B70DF72005948C1 /* Audio */,
 				5CC83DB92B70DF6A005948C1 /* Video */,
 				5CC83DC22B70E6F0005948C1 /* FilenameStyle.swift */,
-				5CB9235B2B717C5E0032B49C /* Cobalt.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -290,13 +309,14 @@
 				5CC83DBC2B70DF84005948C1 /* DownloadVideoType.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadTaskView.swift in Sources */,
 				5CC83DB82B70DE50005948C1 /* YoutubeVideoCodec.swift in Sources */,
+				5CB923602B7247180032B49C /* POSTCobaltResponse.swift in Sources */,
 				5CC83DBE2B70E094005948C1 /* AudioFormat.swift in Sources */,
 				5CB923522B716B730032B49C /* SettingsView.swift in Sources */,
 				5CC83DC52B70E730005948C1 /* Theme.swift in Sources */,
 				5CC83DB62B70DB2B005948C1 /* DownloadVideoQuality.swift in Sources */,
 				5CC83DB12B703CAE005948C1 /* DownloadManager.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
-				5CB9235C2B717C5E0032B49C /* Cobalt.swift in Sources */,
+				5CB9235C2B717C5E0032B49C /* CobaltRequest.swift in Sources */,
 				5CC83DC82B70E824005948C1 /* ColorSet.swift in Sources */,
 				5CC83DB32B70DA74005948C1 /* Preferences.swift in Sources */,
 				5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */,

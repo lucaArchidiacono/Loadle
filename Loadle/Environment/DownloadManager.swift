@@ -9,16 +9,18 @@ import Foundation
 import REST
 import Logger
 
+@MainActor
 final class DownloadManager: Observable {
 	@Published var downloads: [REST.DownloadTask] = []
 
 	private static var host = "co.wuk.sh"
 
 	private let downloader: REST.Downloader
-	private let loader: REST.Loader = REST.Loader()
+	private let loader: REST.Loader
 
-	init(downloader: REST.Downloader) {
+	init(downloader: REST.Downloader, loader: REST.Loader) {
 		self.downloader = downloader
+		self.loader = loader
 
 		downloader.allTasks.forEach { downloadTask in
 			downloads.append(downloadTask)
@@ -26,29 +28,30 @@ final class DownloadManager: Observable {
 	}
 
 	func startDownload(using url: URL, preferences: UserPreferences) {
-//		let jsonBody: REST.JSONBody = REST.JSONBody(<#T##value: Encodable##Encodable#>)
-		let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.EmptyBody())
-		loader.load(using: request) { [weak self] result in
-			guard let self else { return }
-			// TODO: Luca Archidiacono - Build new get request to download the files.
-			switch result {
-			case .success(let response):
-				print(response)
-			case .failure(let error):
-				log(.error, error)
-			}
-		}
+		load(using: url, userPreferences: preferences)
 	}
 
-
-	func load(using url: URL) {
-		let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.EmptyBody())
-		loader.load(using: request) { [weak self] result in
+	func load(using url: URL, userPreferences: UserPreferences) {
+		let cobaltRequest = CobaltRequest(
+			url: url,
+			vCodec: userPreferences.videoYoutubeCodec,
+			vQuality: userPreferences.videoDownloadQuality,
+			aFormat: userPreferences.audioFormat,
+			isAudioOnly: false,
+			isNoTTWatermark: userPreferences.videoTiktokWatermarkDisabled,
+			isTTFullAudio: userPreferences.audioTiktokFullAudio,
+			isAudioMuted: userPreferences.audioMute,
+			dubLang: userPreferences.audioYoutubeTrack == .original ? false : true,
+			disableMetadata: false,
+			twitterGif: userPreferences.videoTwitterConvertGifsToGif,
+			vimeoDash: userPreferences.videoDownloadType == .progressive ? nil : true)
+		let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
+		loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
 			guard let self else { return }
-			// TODO: Luca Archidiacono - Build new get request to download the files.
 			switch result {
 			case .success(let response):
-				download(using: <#T##URL#>)
+				guard let url = response.body.url else { return }
+				self.download(using: url)
 			case .failure(let error):
 				log(.error, error)
 			}
@@ -56,14 +59,7 @@ final class DownloadManager: Observable {
 	}
 
 	func download(using url: URL) {
-		let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.EmptyBody())
-		downloader.startDownload(using: request) { result in
-			switch result {
-			case .success(let downloadTask):
-				self.downloads.append(downloadTask)
-			case .failure(let error):
-				log(.error, error)
-			}
-		}
+		let downloadTask = downloader.startDownload(using: url)
+		downloads.append(downloadTask)
 	}
 }

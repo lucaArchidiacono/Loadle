@@ -11,58 +11,100 @@ extension REST {
 	final public class Loader: NSObject {
 		private let 	session = URLSession.shared
 
-		public func load(using request: REST.HTTPRequest, onComplete: @escaping (Result<REST.HTTPResponse, Error>) -> Void) {
-			guard let url = request.url else {
-				// we couldn't construct a proper URL out of the request's URLComponents
-				onComplete(.failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)))
-				return
+		public func load(using request: REST.HTTPRequest, onComplete: @escaping (Result<REST.HTTPResponse<Data>, REST.HTTPError<Data>>) -> Void) {
+			let result: Result<URLRequest, REST.HTTPError<Data>> = REST.transform(request)
+			switch result {
+			case .success(let urlRequest):
+				let dataTask = session.dataTask(with: urlRequest) { (data, response, error) in
+					if let error = error {
+						onComplete(.failure(REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)))
+						return
+					}
+					guard let urlResponse = response as? HTTPURLResponse else {
+						onComplete(.failure(REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)))
+						return
+					}
+
+					let status = REST.HTTPStatus(rawValue: urlResponse.statusCode)
+
+					if let data = data {
+						let response = REST.HTTPResponse(request: request, response: urlResponse, body: data)
+
+						if status.isSuccess {
+							onComplete(.success(response))
+							return
+						} else {
+							let code = HTTPStatusCode(fromRawValue: status.rawValue)
+							onComplete(.failure(REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: error)))
+							return
+						}
+					} else {
+						if status.isSuccess {
+							onComplete(.failure(REST.HTTPError(code: .noDataFound, request: request, response: nil, underlyingError: error)))
+							return
+						} else {
+							let code = HTTPStatusCode(fromRawValue: status.rawValue)
+							onComplete(.failure(REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: nil, underlyingError: error)))
+							return
+						}
+					}
+				}
+
+				dataTask.resume()
+			case .failure(let error):
+				onComplete(.failure(error))
 			}
+		}
 
-			// construct the URLRequest
-			var urlRequest = URLRequest(url: url)
-			urlRequest.httpMethod = request.method.rawValue
+		public func load<T: Decodable>(using request: REST.HTTPRequest, onComplete: @escaping (Result<REST.HTTPResponse<T>, REST.HTTPError<T>>) -> Void) {
+			let result: Result<URLRequest, REST.HTTPError<T>> = REST.transform(request)
+			switch result {
+			case .success(let urlRequest):
+				let dataTask = session.dataTask(with: urlRequest) { (data, response, error) in
+					if let error = error {
+						onComplete(.failure(REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)))
+						return
+					}
+					guard let urlResponse = response as? HTTPURLResponse else {
+						onComplete(.failure(REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)))
+						return
+					}
 
-			// copy over any custom HTTP headers
-			for (header, value) in request.headers {
-				urlRequest.addValue(value, forHTTPHeaderField: "\(header)")
-			}
+					let status = REST.HTTPStatus(rawValue: urlResponse.statusCode)
 
-			if request.body.isEmpty == false {
-				// if our body defines additional headers, add them
-				for (header, value) in request.body.additionalHeaders {
-					urlRequest.addValue(value, forHTTPHeaderField: header)
+					if let data = data {
+						do {
+							let decoded = try JSONDecoder().decode(T.self, from: data)
+
+							let response = REST.HTTPResponse(request: request, response: urlResponse, body: decoded)
+
+							if status.isSuccess {
+								onComplete(.success(response))
+								return
+							} else {
+								let code = HTTPStatusCode(fromRawValue: status.rawValue)
+								onComplete(.failure(REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: error)))
+								return
+							}
+						} catch {
+							onComplete(.failure(REST.HTTPError(code: .invalidDecode, request: request, response: nil, underlyingError: error)))
+							return
+						}
+					} else {
+						if status.isSuccess {
+							onComplete(.failure(REST.HTTPError(code: .noDataFound, request: request, response: nil, underlyingError: error)))
+							return
+						} else {
+							let code = HTTPStatusCode(fromRawValue: status.rawValue)
+							onComplete(.failure(REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: nil, underlyingError: error)))
+							return
+						}
+					}
 				}
 
-				// attempt to retrieve the body data
-				do {
-					urlRequest.httpBodyStream = try request.body.encode()
-				} catch {
-					// something went wrong creating the body; stop and report back
-					onComplete(.failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)))
-					return
-				}
-			}
-
-			let dataTask = session.dataTask(with: urlRequest) { (data, response, error) in
-				guard let error = error else {
-					onComplete(.failure(REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)))
-					return
-				}
-				guard let urlResponse = response as? HTTPURLResponse else {
-					onComplete(.failure(REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)))
-					return
-				}
-
-				let response = REST.HTTPResponse(request: request, response: urlResponse, body: data)
-
-				if response.status.isSuccess {
-					onComplete(.success(response))
-					return
-				} else {
-					let code = HTTPStatusCode(fromRawValue: response.status.rawValue)
-					onComplete(.failure(REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: nil)))
-					return
-				}
+				dataTask.resume()
+			case .failure(let error):
+				onComplete(.failure(error))
 			}
 		}
 	}

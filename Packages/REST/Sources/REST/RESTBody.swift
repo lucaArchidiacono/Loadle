@@ -43,7 +43,8 @@ extension REST {
 	public struct JSONBody: HTTPBody {
 		public let isEmpty: Bool = false
 		public var additionalHeaders: [String : String] = [
-			"Content-Type": "application/json; charset=utf-8"
+			"Accept": "application/json",
+			"Content-Type": "application/json"
 		]
 
 		private let _encode: () throws -> Data
