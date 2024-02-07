@@ -12,11 +12,13 @@ struct SettingsView: View {
 	private enum Segment: String, CaseIterable {
 		case video
 		case audio
+//		case other
 
 		var rawValue: String {
 			switch self {
 			case .video: return L10n.video
 			case .audio: return L10n.audio
+//			case .other: return L10n.other
 			}
 		}
 	}
@@ -24,10 +26,11 @@ struct SettingsView: View {
     @EnvironmentObject private var preferences: UserPreferences
     @EnvironmentObject private var theme: Theme
 
+	@State private var router: Router = Router()
 	@State private var selected: Segment = .video
 
-    var body: some View {
-		NavigationView {
+	var body: some View {
+		NavigationStack(path: $router.path) {
 			List {
 				Section {
 					Picker("", selection: $selected) {
@@ -45,12 +48,17 @@ struct SettingsView: View {
 					videoSegment
 				case .audio:
 					audioSegment
+//				case .other:
+//					otherSegment
 				}
 			}
+			.withPath()
 			.background(theme.secondaryBackgroundColor)
 			.scrollContentBackground(.hidden)
 			.navigationTitle(L10n.settings)
 		}
+		.environmentObject(theme)
+		.environmentObject(preferences)
 		.applyTheme(theme)
     }
 
@@ -153,6 +161,21 @@ struct SettingsView: View {
 			Text(L10n.tiktok)
 		} footer: {
 			Text(L10n.settingsAudioTiktokDescriptionFullAudio)
+		}
+	}
+
+	@ViewBuilder
+	var otherSegment: some View {
+		Section {
+			NavigationLink.empty {
+				HStack {
+					Text(L10n.theme)
+					Spacer()
+					Text(theme.selectedSet.rawValue)
+				}
+			} onTap: {
+				router.path.append(.themeSelector)
+			}
 		}
 	}
 }

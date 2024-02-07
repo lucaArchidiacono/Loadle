@@ -61,17 +61,17 @@ struct DownloadTaskView: View {
 	var progressDescription: some View {
 		switch state {
 		case .pending:
-			Text("Waiting...")
+			Text(L10n.waitingDescription)
 		case .inProgress(let written, let max):
 			let completed: String = String(format: "%.1f", written)
 			let outOf: String = max == .infinity || max <= 0 ? "n.a." : String(format: "%.1f", max)
-			Text("Completed: \(completed), out of: \(outOf)")
+			Text(L10n.inProgressDescription(completed, outOf))
 		case .completed:
-			Text("Completed!")
+			Text(L10n.completedDescription)
 		case .failed:
-			Text("Failed!")
+			Text(L10n.failedDescription)
 		case .canceled:
-			Text("Canceled!")
+			Text(L10n.canceledDescription)
 		}
 	}
 

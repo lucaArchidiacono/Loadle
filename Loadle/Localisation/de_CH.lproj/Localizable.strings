@@ -14,6 +14,7 @@
 
 "audio" = "Audio";
 "video" = "Video";
+"other" = "Other";
 
 "best" = "Best";
 "max" = "Max";
@@ -23,6 +24,18 @@
 
 "progressive" = "Progressive";
 "dash" = "Dash";
+
+"theme" = "Theme";
+
+// Theme Settings View
+"settings_theme" = "Theme Selector";
+
+// Download Progress State
+"waiting_description" = "Waiting...";
+"in_progress_description" = "Written: %@, out of: %@";
+"completed_description" = "Completed!";
+"failed_description" = "Failed!";
+"canceled_description" = "Canceled!";
 
 // Download View
 "paste_link" = "Paste link";

@@ -21,14 +21,26 @@ internal enum L10n {
   internal static let auto = L10n.tr("Localizable", "auto", fallback: "Auto")
   /// Best
   internal static let best = L10n.tr("Localizable", "best", fallback: "Best")
+  /// Canceled!
+  internal static let canceledDescription = L10n.tr("Localizable", "canceled_description", fallback: "Canceled!")
+  /// Completed!
+  internal static let completedDescription = L10n.tr("Localizable", "completed_description", fallback: "Completed!")
   /// Dash
   internal static let dash = L10n.tr("Localizable", "dash", fallback: "Dash")
   /// Download
   internal static let downloadButtonTitle = L10n.tr("Localizable", "download_button_title", fallback: "Download")
+  /// Failed!
+  internal static let failedDescription = L10n.tr("Localizable", "failed_description", fallback: "Failed!")
+  /// Written: %@, out of: %@
+  internal static func inProgressDescription(_ p1: Any, _ p2: Any) -> String {
+    return L10n.tr("Localizable", "in_progress_description", String(describing: p1), String(describing: p2), fallback: "Written: %@, out of: %@")
+  }
   /// Max
   internal static let max = L10n.tr("Localizable", "max", fallback: "Max")
   /// Original
   internal static let original = L10n.tr("Localizable", "original", fallback: "Original")
+  /// Other
+  internal static let other = L10n.tr("Localizable", "other", fallback: "Other")
   /// Paste link
   internal static let pasteLink = L10n.tr("Localizable", "paste_link", fallback: "Paste link")
   /// Progressive
@@ -54,6 +66,8 @@ internal enum L10n {
   internal static let settingsAudioYoutubeDescriptionAudioTrack = L10n.tr("Localizable", "settings_audio_youtube_description_audio_track", fallback: "Original: Original video language is used.\nAuto: Default app language is used.\n\nDefines which audio track will be used. If dubbed track isn't available, original video language is used instead.")
   /// Audio Track
   internal static let settingsAudioYoutubeTitleAudioTrack = L10n.tr("Localizable", "settings_audio_youtube_title_audio_track", fallback: "Audio Track")
+  /// Theme Selector
+  internal static let settingsThemeTitle = L10n.tr("Localizable", "settings_theme_title", fallback: "Theme Selector")
   /// If selected quality isn't available, closest one is used instead.
   internal static let settingsVideoQualityDescription = L10n.tr("Localizable", "settings_video_quality_description", fallback: "If selected quality isn't available, closest one is used instead.")
   /// Quality
@@ -79,6 +93,8 @@ internal enum L10n {
   internal static let settingsVideoYoutubeDescriptionCodec = L10n.tr("Localizable", "settings_video_youtube_description_codec", fallback: "H264: Generally better player support, but quality tops out at 1080p.\nAV1: Poor player support, but supports 8k & HDR.\nVP9: Usually highest bitrate, preserves most detail. Supports 4k & HDR.\n\npick H264 if you want best editor/player/social media compatibility.")
   /// Codec
   internal static let settingsVideoYoutubeTitleCodec = L10n.tr("Localizable", "settings_video_youtube_title_codec", fallback: "Codec")
+  /// Theme
+  internal static let theme = L10n.tr("Localizable", "theme", fallback: "Theme")
   /// TikTok
   internal static let tiktok = L10n.tr("Localizable", "tiktok", fallback: "TikTok")
   /// X/Twitter
@@ -87,6 +103,8 @@ internal enum L10n {
   internal static let video = L10n.tr("Localizable", "video", fallback: "Video")
   /// Vimeo
   internal static let vimeo = L10n.tr("Localizable", "vimeo", fallback: "Vimeo")
+  /// Waiting...
+  internal static let waitingDescription = L10n.tr("Localizable", "waiting_description", fallback: "Waiting...")
   /// Youtube
   internal static let youtube = L10n.tr("Localizable", "youtube", fallback: "Youtube")
 }

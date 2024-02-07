@@ -15,11 +15,11 @@ struct ContentView: View {
 	@EnvironmentObject private var preferences: UserPreferences
 	@EnvironmentObject private var theme: Theme
 
+	@State private var router: Router = Router()
 	@State private var url: String = ""
-	@State private var isSettingsVisible: Bool = false
 
 	var body: some View {
-		NavigationView {
+		NavigationStack(path: $router.path) {
 			ZStack {
 				VStack {
 					Spacer()
@@ -61,7 +61,7 @@ struct ContentView: View {
 			.toolbar {
 				ToolbarItem(placement: .topBarTrailing) {
 					Button {
-						isSettingsVisible.toggle()
+						router.presented = .settings
 					} label: {
 						Image(systemName: "gear")
 					}
@@ -70,10 +70,9 @@ struct ContentView: View {
 			.navigationBarTitle(L10n.appTitle)
 			.background(theme.primaryBackgroundColor)
 		}
-		.sheet(isPresented: $isSettingsVisible) {
-			SettingsView()
-		}
 		.applyTheme(theme)
+		.withSheetDestinations(destination: $router.presented)
+		.withCoverDestinations(destination: $router.covered)
     }
 }
 
