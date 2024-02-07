@@ -1,0 +1,61 @@
+/*
+ Localizable.strings
+ Loadle
+
+ Created by Luca Archidiacono on 06.02.2024.
+
+ */
+
+"app_title" = "Loadle";
+"youtube" = "Youtube";
+"tiktok" = "TikTok";
+"vimeo" = "Vimeo";
+"twitter" = "X/Twitter";
+
+"audio" = "Audio";
+"video" = "Video";
+
+"best" = "Best";
+"max" = "Max";
+
+"original" = "Original";
+"auto" = "Auto";
+
+"progressive" = "Progressive";
+"dash" = "Dash";
+
+// Download View
+"paste_link" = "Paste link";
+"download_button_title" = "Download";
+
+// Settings View
+"settings" = "Settings";
+
+/// Settings Video
+"settings_video_quality_title" = "Quality";
+"settings_video_quality_description" = "If selected quality isn't available, closest one is used instead.";
+
+"settings_video_tiktok_title_disable_watermark" = "Disable watermark";
+
+"settings_video_twitter_title_convert_gifs_to_gif" = "Convert gifs to gif";
+"settings_video_twitter_description_convert_gifs_to_gif" = "Converting looping videos to .gif reduces quality and majorly increases file size. If you want best efficiency, keep this setting off.";
+
+"settings_video_youtube_title_codec" = "Codec";
+"settings_video_youtube_description_codec" = "H264: Generally better player support, but quality tops out at 1080p.\nAV1: Poor player support, but supports 8k & HDR.\nVP9: Usually highest bitrate, preserves most detail. Supports 4k & HDR.\n\npick H264 if you want best editor/player/social media compatibility.";
+
+"settings_video_vimeo_title_download_type" = "Download Type";
+"settings_video_vimeo_description_download_type" = "Progressive: Direct file link to Vimeo's cdn. max quality is 1080p.\nDash: Video and audio are merged by cobalt into one file. max quality is 4k.\n\npick \"Progressive\" if you want best editor/player/social media compatibility. If \"Progressive\" download isn't available, \"Dash\" is used instead.";
+
+
+/// Settings Audio
+"settings_audio_format_header" = "Format";
+"settings_audio_format_description" = "When \"Best\" format is selected, you get audio the way it is on service's side. It's not re-encoded. Everything else will be re-encoded.";
+
+"settings_audio_mute_title" = "Mute audio";
+"settings_audio_mute_description" = "Removes audio from video downloads when possible.";
+
+"settings_audio_youtube_title_audio_track" = "Audio Track";
+"settings_audio_youtube_description_audio_track" = "Original: Original video language is used.\nAuto: Default app language is used.\n\nDefines which audio track will be used. If dubbed track isn't available, original video language is used instead.";
+
+"settings_audio_tiktok_title_full_audio" = "Full audio";
+"settings_audio_tiktok_description_full_audio" = "Downloads original sound used in the video without any additional changes by the post's author.";

@@ -10,9 +10,7 @@ import Foundation
 import SwiftUI
 
 public let availableColorsSets: [ColorSetCouple] =
-    [.init(light: IceCubeLight(), dark: IceCubeDark()),
-     .init(light: IceCubeNeonLight(), dark: IceCubeNeonDark()),
-     .init(light: DesertLight(), dark: DesertDark()),
+    [.init(light: DesertLight(), dark: DesertDark()),
      .init(light: NemesisLight(), dark: NemesisDark()),
      .init(light: MediumLight(), dark: MediumDark()),
      .init(light: ConstellationLight(), dark: ConstellationDark()),
@@ -32,10 +30,6 @@ public enum ColorScheme: String {
 }
 
 public enum ColorSetName: String {
-    case iceCubeDark = "Ice Cube - Dark"
-    case iceCubeLight = "Ice Cube - Light"
-    case iceCubeNeonDark = "Ice Cube Neon - Dark"
-    case iceCubeNeonLight = "Ice Cube Neon - Light"
     case desertDark = "Desert - Dark"
     case desertLight = "Desert - Light"
     case nemesisDark = "Nemesis - Dark"
@@ -55,50 +49,6 @@ public struct ColorSetCouple: Identifiable {
 
     public let light: ColorSet
     public let dark: ColorSet
-}
-
-public struct IceCubeDark: ColorSet {
-    public var name: ColorSetName = .iceCubeDark
-    public var scheme: ColorScheme = .dark
-    public var tintColor: Color = .init(red: 187 / 255, green: 59 / 255, blue: 226 / 255)
-    public var primaryBackgroundColor: Color = .init(red: 16 / 255, green: 21 / 255, blue: 35 / 255)
-    public var secondaryBackgroundColor: Color = .init(red: 30 / 255, green: 35 / 255, blue: 62 / 255)
-    public var labelColor: Color = .white
-
-    public init() {}
-}
-
-public struct IceCubeLight: ColorSet {
-    public var name: ColorSetName = .iceCubeLight
-    public var scheme: ColorScheme = .light
-    public var tintColor: Color = .init(red: 187 / 255, green: 59 / 255, blue: 226 / 255)
-    public var primaryBackgroundColor: Color = .white
-    public var secondaryBackgroundColor: Color = .init(hex: 0xF0F1F2)
-    public var labelColor: Color = .black
-
-    public init() {}
-}
-
-public struct IceCubeNeonDark: ColorSet {
-    public var name: ColorSetName = .iceCubeNeonDark
-    public var scheme: ColorScheme = .dark
-    public var tintColor: Color = .init(red: 213 / 255, green: 46 / 255, blue: 245 / 255)
-    public var primaryBackgroundColor: Color = .black
-    public var secondaryBackgroundColor: Color = .init(red: 19 / 255, green: 0 / 255, blue: 32 / 255)
-    public var labelColor: Color = .white
-
-    public init() {}
-}
-
-public struct IceCubeNeonLight: ColorSet {
-    public var name: ColorSetName = .iceCubeNeonLight
-    public var scheme: ColorScheme = .light
-    public var tintColor: Color = .init(red: 213 / 255, green: 46 / 255, blue: 245 / 255)
-    public var primaryBackgroundColor: Color = .white
-    public var secondaryBackgroundColor: Color = .init(hex: 0xF0F1F2)
-    public var labelColor: Color = .black
-
-    public init() {}
 }
 
 public struct DesertDark: ColorSet {
@@ -160,8 +110,8 @@ public struct MediumLight: ColorSet {
     public var name: ColorSetName = .mediumLight
     public var scheme: ColorScheme = .light
     public var tintColor: Color = .init(hex: 0x1A8917)
-    public var primaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
-    public var secondaryBackgroundColor: Color = .init(hex: 0xFAFAFA)
+    public var primaryBackgroundColor: Color = .init(hex: 0xFFFAFA)
+    public var secondaryBackgroundColor: Color = .init(hex: 0xF4F0EC)
     public var labelColor: Color = .black
 
     public init() {}

@@ -10,8 +10,9 @@ import Logger
 import REST
 
 @MainActor
-final class DownloadManager: Observable {
-    @Published var downloads: [REST.DownloadTask] = []
+@Observable
+final class DownloadManager {
+    var downloads: [REST.DownloadTask] = []
 
     private static var host = "co.wuk.sh"
 
@@ -44,7 +45,7 @@ final class DownloadManager: Observable {
             dubLang: preferences.audioYoutubeTrack == .original ? false : true,
             disableMetadata: false,
             twitterGif: preferences.videoTwitterConvertGifsToGif,
-            vimeoDash: preferences.videoDownloadType == .progressive ? nil : true
+            vimeoDash: preferences.videoVimeoDownloadType == .progressive ? nil : true
         )
         let request = REST.HTTPRequest(host: Self.host, path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
         loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
@@ -64,7 +65,9 @@ final class DownloadManager: Observable {
         downloadTask.onComplete = { result in
             switch result {
             case let .success(location):
-                log(.info, location)
+				if let index = self.downloads.firstIndex(where: { $0.id == downloadTask.id }) {
+					self.downloads.remove(at: index)
+				}
             case let .failure(error):
                 log(.error, error)
             }

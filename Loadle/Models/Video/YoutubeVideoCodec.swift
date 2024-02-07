@@ -8,7 +8,7 @@
 import Foundation
 
 /// Pick `h246` if you want best editor/player/social media compatibility.
-enum YoutubeVideoCodec: String, Encodable {
+enum YoutubeVideoCodec: String, Encodable, CaseIterable {
     /// MP4. Generally better player support, but quality tops out at 1080p.
     case h264
     /// MP4. Poor player support, but supports 8k & HDR.

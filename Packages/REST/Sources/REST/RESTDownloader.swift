@@ -12,7 +12,7 @@ public extension REST {
     class DownloadTask: Identifiable {
         public enum State {
             case pending
-            case inProgress
+			case inProgress(written: Double, max: Double)
             case completed
             case failed
             case canceled
@@ -22,11 +22,10 @@ public extension REST {
 
         public var url: URL
         public var onComplete: ((Result<URL, Error>) -> Void)?
-        public var onProgress: ((Double) -> Void)?
 
         fileprivate var onResumeCancelled: ((Data) -> URLSessionDownloadTask)?
         fileprivate var _onComplete: ((Result<URL, Error>) -> Void)?
-        fileprivate var _onProgress: ((Double) -> Void)?
+		fileprivate var _onProgress: ((Double, Double) -> Void)?
         fileprivate var _onCancel: ((Bool) -> Void)?
 
         private var downloadTask: URLSessionDownloadTask
@@ -40,9 +39,8 @@ public extension REST {
             self.url = url
             self.downloadTask = downloadTask
 
-            _onProgress = { [weak self] newProgress in
-                self?.state = .inProgress
-                self?.onProgress?(newProgress)
+            _onProgress = { [weak self] (written, max) in
+				self?.state = .inProgress(written: written, max: max)
             }
 
             _onComplete = { [weak self] result in
@@ -148,17 +146,18 @@ public extension REST {
                 let newFileName = downloadTask.response?.suggestedFilename ?? location.lastPathComponent
                 let savedURL = try Self.loadDownloadsURL().appending(component: newFileName, directoryHint: .notDirectory)
                 try FileManager.default.moveItem(at: location, to: savedURL)
-                taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
                 log(.info, "Finished downloading! You can find your download in here: \(savedURL).")
+                taskStore.finish(downloadingTo: savedURL, identifier: downloadTask.taskIdentifier)
             } catch {
-                taskStore.finish(withError: error, identifier: downloadTask.taskIdentifier)
                 log(.error, error)
+                taskStore.finish(withError: error, identifier: downloadTask.taskIdentifier)
             }
         }
 
         public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-            let progress = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-            taskStore.update(progress: progress >= 0 ? progress : 0, identifier: downloadTask.taskIdentifier)
+			let currentProgress = Double(totalBytesWritten)
+			let maxProgress = Double(totalBytesExpectedToWrite) >= 0 ? Double(totalBytesExpectedToWrite) : .infinity
+			taskStore.update(currentProgress: currentProgress, maxProgress: maxProgress, identifier: downloadTask.taskIdentifier)
         }
 
         public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
@@ -205,13 +204,13 @@ public extension REST {
             backgroundDownloadRegistry[identifier] = handler
         }
 
-        fileprivate func update(progress: Double, identifier: Int) {
+		fileprivate func update(currentProgress: Double, maxProgress: Double, identifier: Int) {
             lock.lock()
 
             defer { lock.unlock() }
 
             if downloadTasks[identifier] != nil {
-                downloadTasks[identifier]!._onProgress?(progress)
+                downloadTasks[identifier]!._onProgress?(currentProgress, maxProgress)
             }
         }
 

@@ -10,42 +10,106 @@ import REST
 import SwiftUI
 
 struct DownloadTaskView: View {
-    let task: REST.DownloadTask
+	@EnvironmentObject private var theme: Theme
 
-    @State private var progress: Double = 0.0
+	let url: URL
+	let state: REST.DownloadTask.State
+	let onCancel: () -> Void
+	let onResumseCanceled: () -> Void
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(task.url.lastPathComponent)
-                    .font(.headline)
+			VStack(alignment: .leading) {
+				Text(url.absoluteString)
+					.font(.headline)
 
-                ProgressBar(progress: progress)
-                    .frame(height: 10)
-
-                HStack {
-                    Button("Cancel") {
-                        task.cancel()
-                    }
-                    .foregroundColor(.red)
-
-                    Spacer()
-
-                    Button("Retry") {
-                        //						task.retry()
-                    }
-                    .foregroundColor(.blue)
-                    .disabled(task.state != .failed)
-                }
-            }
-        }
-        .padding()
-        .onAppear {
-            task.onProgress = { newProgress in
-                DispatchQueue.main.async {
-                    self.progress = newProgress
-                }
-            }
-        }
+				HStack {
+					progressBar
+					progressButton
+				}
+				progressDescription
+			}
+		.applyTheme(theme)
     }
+
+	@ViewBuilder
+	var progressBar: some View {
+		switch state {
+		case .inProgress:
+			Button {
+				onCancel()
+			} label: {
+				Image(systemName: "xmark.circle")
+			}
+			.frame(width: 20, height: 20)
+		case .canceled:
+			Button {
+				onResumseCanceled()
+			} label: {
+				Image(systemName: "arrow.counterclockwise")
+			}
+			.frame(width: 20, height: 20)
+		case .failed, .pending, .completed:
+			Button(action: {}, label: {
+				Text("")
+			})
+			.buttonStyle(PlainButtonStyle())
+			.frame(width: 20, height: 20)
+		}
+	}
+
+	@ViewBuilder
+	var progressDescription: some View {
+		switch state {
+		case .pending:
+			Text("Waiting...")
+		case .inProgress(let written, let max):
+			let completed: String = String(format: "%.1f", written)
+			let outOf: String = max == .infinity || max <= 0 ? "n.a." : String(format: "%.1f", max)
+			Text("Completed: \(completed), out of: \(outOf)")
+		case .completed:
+			Text("Completed!")
+		case .failed:
+			Text("Failed!")
+		case .canceled:
+			Text("Canceled!")
+		}
+	}
+
+	@ViewBuilder
+	var progressButton: some View {
+		switch state {
+		case .inProgress:
+			Button {
+				onCancel()
+			} label: {
+				Image(systemName: "xmark.circle")
+			}
+			.frame(width: 20, height: 20)
+		case .canceled:
+			Button {
+				onResumseCanceled()
+			} label: {
+				Image(systemName: "arrow.counterclockwise")
+			}
+			.frame(width: 20, height: 20)
+		case .failed, .pending, .completed:
+			Button(action: {}, label: {
+				Text("")
+			})
+			.buttonStyle(PlainButtonStyle())
+			.frame(width: 20, height: 20)
+		}
+	}
+}
+
+#Preview(nil, traits: .sizeThatFitsLayout) {
+	DownloadTaskView(url: URL(string: "https://loadle.ch")!,
+					 state: .pending,
+//					 state: .inProgress(written: 0.0, max: -1.0),
+//					 state: .inProgress(written: 0.0, max: .infinity),
+//					 state: .failed,
+//					 state: .completed,
+					 onCancel: {},
+					 onResumseCanceled: {})
+	.environmentObject(Theme.shared)
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 /// When `best` format is selected, you get audio the way it is on the service's side. It's not re-encoded. Everything else will be re-encoded.
-enum AudioFormat: String, Encodable {
+enum AudioFormat: String, Encodable, CaseIterable {
     case best
     case mp3
     case ogg

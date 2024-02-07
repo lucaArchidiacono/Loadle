@@ -23,7 +23,7 @@ final class UserPreferences: ObservableObject {
     /// Video Download Settings
     @AppStorage("video_download_quality") public var videoDownloadQuality: DownloadVideoQuality = ._1080
     @AppStorage("video_youtube_codec") public var videoYoutubeCodec: YoutubeVideoCodec = .h264
-    @AppStorage("video_download_type") public var videoDownloadType: DownloadVideoType = .progressive
+    @AppStorage("video_vimeo_download_type") public var videoVimeoDownloadType: ViemoDownloadVideoType = .progressive
     @AppStorage("video_tiktok_watermark_disabled") public var videoTiktokWatermarkDisabled: Bool = false
     @AppStorage("video_twitter_convert_gifs_to_gif") public var videoTwitterConvertGifsToGif: Bool = false
 

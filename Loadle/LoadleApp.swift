@@ -19,7 +19,6 @@ struct LoadleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .applyTheme(theme)
                 .environment(appDelegate.downloadManager)
                 .environmentObject(theme)
                 .environmentObject(preferences)

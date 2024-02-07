@@ -7,9 +7,18 @@
 
 import Foundation
 import SwiftUI
+import Shimmer
 
 struct ProgressBar: View {
-    var progress: Double
+	@EnvironmentObject private var theme: Theme
+	
+	let writtenProgress: Double
+	let maxProgress: Double
+
+	private var currentProgress: Double {
+		if maxProgress == .infinity { return maxProgress }
+		else { return writtenProgress / maxProgress }
+	}
 
     var body: some View {
         GeometryReader { geometry in
@@ -20,14 +29,18 @@ struct ProgressBar: View {
                     .foregroundColor(Color(UIColor.systemTeal))
 
                 Rectangle()
-                    .frame(width: min(CGFloat(self.progress) * geometry.size.width, geometry.size.width), height: geometry.size.height)
-                    .foregroundColor(Color(UIColor.systemBlue))
+                    .frame(width: min(CGFloat(currentProgress) * geometry.size.width, geometry.size.width), height: geometry.size.height)
+					.foregroundStyle(theme.tintColor)
+					.shimmering(gradient: Gradient(colors: [.black, .black.opacity(0.5), .black]), bandSize: 10)
+
             }
             .cornerRadius(5.0)
         }
+		.frame(height: 20)
     }
 }
 
-#Preview {
-    ProgressBar(progress: 2.0)
+#Preview(nil, traits: .sizeThatFitsLayout) {
+	ProgressBar(writtenProgress: 1.0, maxProgress: 4.0)
+		.environmentObject(Theme.shared)
 }
