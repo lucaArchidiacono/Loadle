@@ -15,7 +15,9 @@ struct DownloadTaskView: View {
 	let url: URL
 	let state: REST.DownloadTask.State
 	let onCancel: () -> Void
-	let onResumseCanceled: () -> Void
+	let onResumeCanceled: () -> Void
+
+	private let frameHeight: CGFloat = 20
 
     var body: some View {
 			VStack(alignment: .leading) {
@@ -34,26 +36,16 @@ struct DownloadTaskView: View {
 	@ViewBuilder
 	var progressBar: some View {
 		switch state {
-		case .inProgress:
-			Button {
-				onCancel()
-			} label: {
-				Image(systemName: "xmark.circle")
-			}
-			.frame(width: 20, height: 20)
-		case .canceled:
-			Button {
-				onResumseCanceled()
-			} label: {
-				Image(systemName: "arrow.counterclockwise")
-			}
-			.frame(width: 20, height: 20)
-		case .failed, .pending, .completed:
-			Button(action: {}, label: {
-				Text("")
-			})
-			.buttonStyle(PlainButtonStyle())
-			.frame(width: 20, height: 20)
+		case .paused(let written, let max),
+			 .inProgress(let written, let max):
+			ProgressBar(writtenProgress: written, maxProgress: max)
+				.frame(height: 20)
+		case .completed:
+			ProgressBar(writtenProgress: 0.0, maxProgress: .infinity)
+				.frame(height: 20)
+		case .failed, .pending, .canceled:
+			ProgressBar(writtenProgress: 0.0, maxProgress: -1.0)
+				.frame(height: 20)
 		}
 	}
 
@@ -62,9 +54,10 @@ struct DownloadTaskView: View {
 		switch state {
 		case .pending:
 			Text(L10n.waitingDescription)
-		case .inProgress(let written, let max):
-			let completed: String = String(format: "%.1f", written)
-			let outOf: String = max == .infinity || max <= 0 ? "n.a." : String(format: "%.1f", max)
+		case .paused(let written, let max),
+			 .inProgress(let written, let max):
+			let completed: String = String(format: "%.1f MB", written)
+			let outOf: String = max == .infinity || max <= 0 ? "n.a." : String(format: "%.1f MB", max)
 			Text(L10n.inProgressDescription(completed, outOf))
 		case .completed:
 			Text(L10n.completedDescription)
@@ -84,32 +77,34 @@ struct DownloadTaskView: View {
 			} label: {
 				Image(systemName: "xmark.circle")
 			}
-			.frame(width: 20, height: 20)
-		case .canceled:
+			.frame(width: frameHeight, height: frameHeight)
+		case .canceled, .paused:
 			Button {
-				onResumseCanceled()
+				onResumeCanceled()
 			} label: {
 				Image(systemName: "arrow.counterclockwise")
 			}
-			.frame(width: 20, height: 20)
+			.frame(width: frameHeight, height: frameHeight)
 		case .failed, .pending, .completed:
 			Button(action: {}, label: {
 				Text("")
 			})
 			.buttonStyle(PlainButtonStyle())
-			.frame(width: 20, height: 20)
+			.frame(width: frameHeight, height: frameHeight)
 		}
 	}
 }
 
 #Preview(nil, traits: .sizeThatFitsLayout) {
 	DownloadTaskView(url: URL(string: "https://loadle.ch")!,
-					 state: .pending,
+//					 state: .pending,
 //					 state: .inProgress(written: 0.0, max: -1.0),
-//					 state: .inProgress(written: 0.0, max: .infinity),
+//					 state: .inProgress(written: 1.0, max: .infinity),
+//					 state: .canceled,
 //					 state: .failed,
 //					 state: .completed,
+					 state: .paused(written: 1.0, max: 5.0),
 					 onCancel: {},
-					 onResumseCanceled: {})
+					 onResumeCanceled: {})
 	.environmentObject(Theme.shared)
 }

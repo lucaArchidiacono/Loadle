@@ -28,11 +28,11 @@
 "theme" = "Theme";
 
 // Theme Settings View
-"settings_theme" = "Theme Selector";
+"settings_theme_title" = "Theme Selector";
 
 // Download Progress State
 "waiting_description" = "Waiting...";
-"in_progress_description" = "Written: %@, out of: %@";
+"in_progress_description" = "%@ / %@";
 "completed_description" = "Completed!";
 "failed_description" = "Failed!";
 "canceled_description" = "Canceled!";

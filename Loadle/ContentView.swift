@@ -46,15 +46,23 @@ struct ContentView: View {
 					.padding()
 
 					List(downloadManager.downloads, id: \.id) { task in
+						@State var state: REST.DownloadTask.State = .pending
 						DownloadTaskView(
 							url: task.url,
-							state: task.state,
+							state: state,
 							onCancel: {
 								task.cancel()
 							},
-							onResumseCanceled: {
+							onResumeCanceled: {
 								task.resumeCanceled()
 							})
+						.onAppear {
+							task.onStateChange = { newState in
+								DispatchQueue.main.async {
+									state = newState
+								}
+							}
+						}
 					}
 				}
 			}
@@ -78,7 +86,7 @@ struct ContentView: View {
 
 #Preview {
 	ContentView()
-		.environment(DownloadManager(downloader: REST.Downloader(), loader: REST.Loader()))
+		.environment(DownloadManager.shared)
 		.environmentObject(Theme.shared)
 		.environmentObject(UserPreferences.shared)
 }

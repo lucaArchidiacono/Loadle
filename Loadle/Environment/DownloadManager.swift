@@ -8,6 +8,7 @@
 import Foundation
 import Logger
 import REST
+import SwiftUI
 
 @MainActor
 @Observable
@@ -16,16 +17,16 @@ final class DownloadManager {
 
     private static var host = "co.wuk.sh"
 
-    private let downloader: REST.Downloader
-    private let loader: REST.Loader
+	private let downloader: REST.Downloader
+	private let loader: REST.Loader
 
-    init(downloader: REST.Downloader, loader: REST.Loader) {
-        self.downloader = downloader
-        self.loader = loader
+	public static var shared = DownloadManager()
 
-        downloader.allTasks.forEach { downloadTask in
-            downloads.append(downloadTask)
-        }
+    private init() {
+		self.downloader = REST.Downloader()
+		self.loader = REST.Loader()
+
+		downloader.allTasks.forEach { downloads.append($0) }
     }
 
     func startDownload(using url: URL, preferences: UserPreferences) {
@@ -66,7 +67,9 @@ final class DownloadManager {
             switch result {
             case let .success(location):
 				if let index = self.downloads.firstIndex(where: { $0.id == downloadTask.id }) {
-					self.downloads.remove(at: index)
+					DispatchQueue.main.async {
+						self.downloads.remove(at: index)
+					}
 				}
             case let .failure(error):
                 log(.error, error)
@@ -74,4 +77,8 @@ final class DownloadManager {
         }
         downloads.append(downloadTask)
     }
+
+	public func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
+		downloader.addBackgroundDownloadHandler(handler: handler, identifier: identifier)
+	}
 }

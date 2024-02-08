@@ -32,7 +32,7 @@
 
 // Download Progress State
 "waiting_description" = "Waiting...";
-"in_progress_description" = "Written: %@, out of: %@";
+"in_progress_description" = "%@ / %@";
 "completed_description" = "Completed!";
 "failed_description" = "Failed!";
 "canceled_description" = "Canceled!";

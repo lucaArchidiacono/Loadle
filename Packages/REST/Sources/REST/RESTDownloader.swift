@@ -15,6 +15,7 @@ public extension REST {
 			case inProgress(written: Double, max: Double)
             case completed
             case failed
+			case paused(written: Double, max: Double)
             case canceled
         }
 
@@ -22,6 +23,11 @@ public extension REST {
 
         public var url: URL
         public var onComplete: ((Result<URL, Error>) -> Void)?
+		public var onStateChange: ((State) -> Void)? {
+			didSet {
+				onStateChange?(state)
+			}
+		}
 
         fileprivate var onResumeCancelled: ((Data) -> URLSessionDownloadTask)?
         fileprivate var _onComplete: ((Result<URL, Error>) -> Void)?
@@ -31,7 +37,11 @@ public extension REST {
         private var downloadTask: URLSessionDownloadTask
         private var resumedData: Data?
 
-        public private(set) var state: State = .pending
+		private(set) var state: State = .pending {
+			didSet {
+				onStateChange?(.pending)
+			}
+		}
 
         private let lock = NSLock()
 
@@ -61,12 +71,17 @@ public extension REST {
 
             downloadTask.cancel { resumedData in
                 guard let resumedData = resumedData else {
-                    self.state = .failed
+                    self.state = .canceled
                     self._onCancel?(false)
                     return
                 }
                 self.resumedData = resumedData
-                self.state = .canceled
+				if case .inProgress(let written, let max) = self.state {
+					self.state = .paused(written: written, max: max)
+				} else {
+					self.state = .paused(written: Double(resumedData.count * 1_000_000), max: .infinity)
+				}
+
                 self._onCancel?(true)
             }
         }
@@ -155,8 +170,8 @@ public extension REST {
         }
 
         public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-			let currentProgress = Double(totalBytesWritten)
-			let maxProgress = Double(totalBytesExpectedToWrite) >= 0 ? Double(totalBytesExpectedToWrite) : .infinity
+			let currentProgress = Double(totalBytesWritten / 1_000_000)
+			let maxProgress = Double(totalBytesExpectedToWrite / 1_000_000) >= 0 ? Double(totalBytesExpectedToWrite) : .infinity
 			taskStore.update(currentProgress: currentProgress, maxProgress: maxProgress, identifier: downloadTask.taskIdentifier)
         }
 

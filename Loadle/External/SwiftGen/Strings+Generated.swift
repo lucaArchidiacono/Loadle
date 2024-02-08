@@ -31,9 +31,9 @@ internal enum L10n {
   internal static let downloadButtonTitle = L10n.tr("Localizable", "download_button_title", fallback: "Download")
   /// Failed!
   internal static let failedDescription = L10n.tr("Localizable", "failed_description", fallback: "Failed!")
-  /// Written: %@, out of: %@
+  /// %@ / %@
   internal static func inProgressDescription(_ p1: Any, _ p2: Any) -> String {
-    return L10n.tr("Localizable", "in_progress_description", String(describing: p1), String(describing: p2), fallback: "Written: %@, out of: %@")
+    return L10n.tr("Localizable", "in_progress_description", String(describing: p1), String(describing: p2), fallback: "%@ / %@")
   }
   /// Max
   internal static let max = L10n.tr("Localizable", "max", fallback: "Max")
