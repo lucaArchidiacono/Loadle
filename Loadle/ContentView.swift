@@ -48,7 +48,7 @@ struct ContentView: View {
 					.padding(.horizontal)
 
 					List(downloadManager.loadingEvents, id: \.id) { event in
-						DownloadTaskView(
+						let view = DownloadTaskSectionView(
 							title: event.title,
 							state: event.state,
 							onPause: {
@@ -57,7 +57,16 @@ struct ContentView: View {
 							onResume: {
 								downloadManager.resumeDownload(for: event)
 							})
+						if case .success = event.state {
+							view
+								.contextMenu(ContextMenu(menuItems: {
+									ShareLink(item: event.url)
+								}))
+						} else {
+							view
+						}
 					}
+					.padding(EdgeInsets(top: 10, leading: -10, bottom: 0, trailing: -10))
 					.scrollContentBackground(.hidden)
 				}
 			}

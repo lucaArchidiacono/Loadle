@@ -12,6 +12,8 @@
 "vimeo" = "Vimeo";
 "twitter" = "X/Twitter";
 
+"done" = "Done";
+
 "audio" = "Audio";
 "video" = "Video";
 "other" = "Other";

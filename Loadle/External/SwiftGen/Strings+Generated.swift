@@ -11,9 +11,9 @@ import Foundation
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
   /// Localizable.strings
-  ///   Loadle
+  ///  Loadle
   /// 
-  ///   Created by Luca Archidiacono on 06.02.2024.
+  ///  Created by Luca Archidiacono on 06.02.2024.
   internal static let appTitle = L10n.tr("Localizable", "app_title", fallback: "Loadle")
   /// Audio
   internal static let audio = L10n.tr("Localizable", "audio", fallback: "Audio")
@@ -27,6 +27,8 @@ internal enum L10n {
   internal static let completedDescription = L10n.tr("Localizable", "completed_description", fallback: "Completed!")
   /// Dash
   internal static let dash = L10n.tr("Localizable", "dash", fallback: "Dash")
+  /// Done
+  internal static let done = L10n.tr("Localizable", "done", fallback: "Done")
   /// Download
   internal static let downloadButtonTitle = L10n.tr("Localizable", "download_button_title", fallback: "Download")
   /// Failed!

@@ -9,22 +9,25 @@ import Foundation
 
 struct LoadingEvent: Identifiable {
 	let id: UUID
-	let url: URL
+	private(set) var url: URL
 	var title: String {
-		if case .success(let url) = state {
-			return String(url.lastPathComponent.prefix(20)) + "..."
-		} else {
-			return String(url.absoluteString.prefix(20)) + "..."
+		if url.isFileURL {
+			return url.lastPathComponent
 		}
+		return url.lastPathComponent
 	}
-	private(set) var state: Download.State = .pending
+	private(set) var state: Download.State
 
-	init(url: URL) {
+	init(url: URL, state: Download.State = .pending) {
 		self.id = UUID()
 		self.url = url
+		self.state = state
 	}
 
 	mutating func update(state: Download.State) {
+		if case .success(let url) = state {
+			self.url = url
+		}
 		self.state = state
 	}
 }

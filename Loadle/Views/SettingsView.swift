@@ -9,6 +9,8 @@ import Foundation
 import SwiftUI
 
 struct SettingsView: View {
+	@Environment(\.dismiss) private var dismiss
+
 	private enum Segment: String, CaseIterable {
 		case video
 		case audio
@@ -50,6 +52,13 @@ struct SettingsView: View {
 					audioSegment
 //				case .other:
 //					otherSegment
+				}
+			}
+			.toolbar {
+				ToolbarItem(placement: .topBarTrailing) {
+					Button(L10n.done) {
+						dismiss()
+					}
 				}
 			}
 			.withPath()

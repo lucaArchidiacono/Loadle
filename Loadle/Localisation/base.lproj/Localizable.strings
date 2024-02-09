@@ -1,16 +1,18 @@
-/* 
-  Localizable.strings
-  Loadle
+/*
+ Localizable.strings
+ Loadle
 
-  Created by Luca Archidiacono on 06.02.2024.
-  
-*/
+ Created by Luca Archidiacono on 06.02.2024.
+
+ */
 
 "app_title" = "Loadle";
 "youtube" = "Youtube";
 "tiktok" = "TikTok";
 "vimeo" = "Vimeo";
 "twitter" = "X/Twitter";
+
+"done" = "Done";
 
 "audio" = "Audio";
 "video" = "Video";

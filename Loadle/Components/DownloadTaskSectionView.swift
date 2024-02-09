@@ -1,5 +1,5 @@
 //
-//  DownloadTaskView.swift
+//  DownloadTaskSectionView.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 05.02.2024.
@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct DownloadTaskView: View {
+struct DownloadTaskSectionView: View {
 	@EnvironmentObject private var theme: Theme
 
 	let title: String
@@ -17,18 +17,20 @@ struct DownloadTaskView: View {
 	let onPause: () -> Void
 	let onResume: () -> Void
 
-	private let frameHeight: CGFloat = 20
+	private let height: CGFloat = 20
 
     var body: some View {
-		VStack(alignment: .leading) {
-			Text(title)
-				.font(.headline)
+		Section {
+			VStack(alignment: .leading) {
+				Text(title)
+					.font(.headline)
 
-			HStack {
-				progressBar
-				progressButton
+				HStack {
+					progressBar
+					progressButton
+				}
+				progressDescription
 			}
-			progressDescription
 		}
 		.applyTheme(theme)
     }
@@ -38,16 +40,16 @@ struct DownloadTaskView: View {
 		switch state {
 		case .progress(let currentBytes, let totalBytes):
 			ProgressBar(currentBytes: currentBytes, totalBytes: totalBytes)
-				.frame(height: 20)
+				.frame(height: height)
 		case .success:
-			ProgressBar(currentBytes: 0.0, totalBytes: .infinity)
-				.frame(height: 20)
+			ProgressBar(currentBytes: 0.0, totalBytes: 0.0)
+				.frame(height: height)
 		case .pending:
 			ProgressBar(currentBytes: 0.0, totalBytes: 1.0)
-				.frame(height: 20)
+				.frame(height: height)
 		case .paused, .failed:
 			ProgressBar(currentBytes: 0.0, totalBytes: -1.0)
-				.frame(height: 20)
+				.frame(height: height)
 		}
 	}
 
@@ -78,34 +80,34 @@ struct DownloadTaskView: View {
 			} label: {
 				Image(systemName: "xmark.circle")
 			}
-			.frame(width: frameHeight, height: frameHeight)
+			.frame(width: height, height: height)
 		case .paused:
 			Button {
 				onResume()
 			} label: {
 				Image(systemName: "arrow.counterclockwise")
 			}
-			.frame(width: frameHeight, height: frameHeight)
+			.frame(width: height, height: height)
 		case .failed, .pending, .success:
 			Button(action: {}, label: {
 				Text("")
 			})
 			.buttonStyle(PlainButtonStyle())
-			.frame(width: frameHeight, height: frameHeight)
+			.frame(width: height, height: height)
 		}
 	}
 }
 
 #Preview(nil, traits: .sizeThatFitsLayout) {
-	DownloadTaskView(title: "HelloWorld.mp3",
-					 state: .pending,
-					 //					 state: .inProgress(written: 0.0, max: -1.0),
-					 //					 state: .inProgress(written: 1.0, max: .infinity),
-					 //					 state: .canceled,
-					 //					 state: .failed,
-					 //					 state: .completed,
-					 //					 state: .paused(written: 1.0, max: 5.0),
-					 onPause: {},
-					 onResume: {})
+	List {
+		DownloadTaskSectionView(title: "HelloWorld.mp3",
+						 //					 state: .pending,
+						 state: .progress(currentBytes: 1.0, totalBytes: -1.0),
+						 //					 state: .paused,
+						 //					 state: .failed(error: NSError()),
+						 //					 state: .success(url: URL(string: "https://youtube.com")!),
+						 onPause: {},
+						 onResume: {})
+	}
 	.environmentObject(Theme.shared)
 }

@@ -17,10 +17,9 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 	private static var dir = "DOWNLOADS"
 
 	public var urlRegistry: [URL: URL] = [:]
-	public var loadingEvents: [LoadingEvent] = []
+	public var loadingEvents: [LoadingEvent]
 	public var previews: [LoadingEvent] = [
 		LoadingEvent(url: URL(string: "http://google.ch")!),
-		LoadingEvent(url: URL(string: "http://apple.ch")!)
 	]
 	private var downloads: [URL: Download] = [:]
 
@@ -54,6 +53,21 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 
     private override init() {
 		self.loader = REST.Loader()
+
+		do {
+			let downloadURL = try Self.loadDownloadsURL()
+			let contents = try FileManager.default
+				.contentsOfDirectory(at: downloadURL, includingPropertiesForKeys: [.addedToDirectoryDateKey, .isHiddenKey], options: .skipsHiddenFiles)
+			self.loadingEvents = contents
+				.compactMap { url in
+					var event = LoadingEvent(url: url)
+					event.update(state: .success(url: url))
+					return event
+				}
+		} catch {
+			log(.error, error)
+			self.loadingEvents = []
+		}
     }
 
     func startDownload(using url: URL, preferences: UserPreferences) {

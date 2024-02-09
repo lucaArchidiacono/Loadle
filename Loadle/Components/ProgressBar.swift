@@ -28,7 +28,11 @@ struct ProgressBar: View {
 					.foregroundColor(theme.tintColor)
 
 				var width: CGFloat {
-					return max(min(CGFloat(currentProgress) * geometry.size.width, geometry.size.width), 0)
+					if currentProgress < 0 {
+						// When totalBytes is unkown we get a negative number. Which means currenProgress is then negative. Which results into an unkown currentProgress size. Hence we indicate the full bar.
+						return geometry.size.width
+					}
+					return min(CGFloat(currentProgress) * geometry.size.width, geometry.size.width)
 				}
                 Rectangle()
 					.frame(width: width, height: geometry.size.height)
@@ -42,7 +46,7 @@ struct ProgressBar: View {
 }
 
 #Preview(nil, traits: .sizeThatFitsLayout) {
-	ProgressBar(currentBytes: 1.0, totalBytes: -1.0)
+	ProgressBar(currentBytes: 1.0, totalBytes: 2.0)
 		.frame(width: 200, height: 20)
 		.environmentObject(Theme.shared)
 }
