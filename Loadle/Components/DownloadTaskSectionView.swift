@@ -12,6 +12,7 @@ struct DownloadTaskSectionView: View {
 	@EnvironmentObject private var theme: Theme
 
 	let title: String
+	let image: Image
 	let state: Download.State
 
 	let onPause: () -> Void
@@ -22,9 +23,14 @@ struct DownloadTaskSectionView: View {
     var body: some View {
 		Section {
 			VStack(alignment: .leading) {
-				Text(title)
-					.font(.headline)
-
+				HStack {
+					image
+						.resizable()
+						.aspectRatio(contentMode: .fit)
+						.frame(width: 40, height: 40)
+					Text(title)
+						.font(.headline)
+				}
 				HStack {
 					progressBar
 					progressButton
@@ -33,7 +39,7 @@ struct DownloadTaskSectionView: View {
 			}
 		}
 		.applyTheme(theme)
-    }
+	}
 
 	@ViewBuilder
 	var progressBar: some View {
@@ -101,6 +107,7 @@ struct DownloadTaskSectionView: View {
 #Preview(nil, traits: .sizeThatFitsLayout) {
 	List {
 		DownloadTaskSectionView(title: "HelloWorld.mp3",
+								image: Asset.movieIcon.swiftUIImage,
 						 //					 state: .pending,
 						 state: .progress(currentBytes: 1.0, totalBytes: -1.0),
 						 //					 state: .paused,

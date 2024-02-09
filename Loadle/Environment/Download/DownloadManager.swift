@@ -70,17 +70,21 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 		}
     }
 
-    func startDownload(using url: URL, preferences: UserPreferences) {
-        load(using: url, preferences: preferences)
+	func startDownload(using url: String, preferences: UserPreferences, audioOnly: Bool) {
+		guard let url = URL(string: url) else {
+			log(.error, "No valid URL!")
+			return
+		}
+		load(using: url, preferences: preferences, audioOnly: audioOnly)
     }
 
-    private func load(using url: URL, preferences: UserPreferences) {
+	private func load(using url: URL, preferences: UserPreferences, audioOnly: Bool) {
         let cobaltRequest = CobaltRequest(
             url: url,
             vCodec: preferences.videoYoutubeCodec,
             vQuality: preferences.videoDownloadQuality,
             aFormat: preferences.audioFormat,
-            isAudioOnly: false,
+            isAudioOnly: audioOnly,
             isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
             isTTFullAudio: preferences.audioTiktokFullAudio,
             isAudioMuted: preferences.audioMute,

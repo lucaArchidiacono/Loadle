@@ -15,6 +15,7 @@ struct ContentView: View {
 
 	@State private var router: Router = Router()
 	@State private var url: String = ""
+	@State private var audioOnly: Bool = false
 
 	init() {
 		UITextField.appearance().clearButtonMode = .whileEditing
@@ -37,11 +38,7 @@ struct ContentView: View {
 					.foregroundColor(theme.tintColor)
 
 					Button {
-						if let url = URL(string: url) {
-							downloadManager.startDownload(using: url, preferences: preferences)
-						} else {
-							log(.error, "No real url")
-						}
+						downloadManager.startDownload(using: url, preferences: preferences, audioOnly: audioOnly)
 					} label: {
 						Text(L10n.downloadButtonTitle)
 							.frame(maxWidth: .infinity)
@@ -50,10 +47,18 @@ struct ContentView: View {
 					}
 					.buttonStyle(.borderedProminent)
 					.padding(.horizontal)
+					.padding(.bottom, 10)
+
+					Toggle(isOn: $audioOnly) {
+						Text(L10n.downloadAudioOnly)
+					}
+					.toggleStyle(iOSCheckboxToggleStyle())
+					.padding(.bottom, 10)
 
 					List(downloadManager.loadingEvents, id: \.id) { event in
 						let view = DownloadTaskSectionView(
 							title: event.title,
+							image: event.image,
 							state: event.state,
 							onPause: {
 								downloadManager.pauseDownload(for: event)

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C4815422B765ED000381627 /* URL+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815412B765ED000381627 /* URL+.swift */; };
+		5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */; };
 		5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */; };
 		5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9552B5E63D300ABB76C /* ContentView.swift */; };
 		5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9572B5E63D300ABB76C /* Item.swift */; };
@@ -45,6 +47,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5C4815412B765ED000381627 /* URL+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+.swift"; sourceTree = "<group>"; };
+		5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSCheckBoxToggleStyle.swift; sourceTree = "<group>"; };
 		5C5BB9502B5E63D300ABB76C /* Loadle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Loadle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadleApp.swift; sourceTree = "<group>"; };
 		5C5BB9552B5E63D300ABB76C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -102,6 +106,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C4815432B7665BB00381627 /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
 		5C5BB9472B5E63D300ABB76C = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +135,7 @@
 		5C5BB9522B5E63D300ABB76C /* Loadle */ = {
 			isa = PBXGroup;
 			children = (
+				5C4815432B7665BB00381627 /* Styles */,
 				5C5C7D312B741A3100C34933 /* Utils */,
 				5C5C7D2A2B73EA6600C34933 /* Routing */,
 				5CB9237E2B73AE2B0032B49C /* Modifiers */,
@@ -182,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				5C5C7D322B741A3F00C34933 /* NavigationLink+.swift */,
+				5C4815412B765ED000381627 /* URL+.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -415,6 +429,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5C4815422B765ED000381627 /* URL+.swift in Sources */,
 				5CC83DC32B70E6F0005948C1 /* FilenameStyle.swift in Sources */,
 				5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */,
 				5CC83DCA2B70E87B005948C1 /* Colors.swift in Sources */,
@@ -432,6 +447,7 @@
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */,
 				5CB9235C2B717C5E0032B49C /* CobaltRequest.swift in Sources */,
+				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
 				5CC83DC82B70E824005948C1 /* ColorSet.swift in Sources */,
 				5CC83DB32B70DA74005948C1 /* Preferences.swift in Sources */,

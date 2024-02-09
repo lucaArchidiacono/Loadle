@@ -31,6 +31,8 @@
 
 "theme" = "Theme";
 
+"download_audio_only" = "Download audio only";
+
 // Theme Settings View
 "settings_theme_title" = "Theme Selector";
 

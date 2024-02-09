@@ -33,6 +33,8 @@ internal enum L10n {
   internal static let delete = L10n.tr("Localizable", "delete", fallback: "Delete")
   /// Done
   internal static let done = L10n.tr("Localizable", "done", fallback: "Done")
+  /// Download audio only
+  internal static let downloadAudioOnly = L10n.tr("Localizable", "download_audio_only", fallback: "Download audio only")
   /// Download
   internal static let downloadButtonTitle = L10n.tr("Localizable", "download_button_title", fallback: "Download")
   /// Failed!
