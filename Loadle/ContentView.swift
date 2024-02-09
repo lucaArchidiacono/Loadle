@@ -16,6 +16,10 @@ struct ContentView: View {
 	@State private var router: Router = Router()
 	@State private var url: String = ""
 
+	init() {
+		UITextField.appearance().clearButtonMode = .whileEditing
+	}
+
 	var body: some View {
 		NavigationStack(path: $router.path) {
 			ZStack {
@@ -57,16 +61,20 @@ struct ContentView: View {
 							onResume: {
 								downloadManager.resumeDownload(for: event)
 							})
-						if case .success = event.state {
+							.swipeActions(edge: .trailing) {
+								Button(role: .destructive, 
+									   action: { downloadManager.delete(for: event) } ,
+									   label: { Image(systemName: "trash") } )
+							}
+						if let fileURL = event.fileURL {
 							view
-								.contextMenu(ContextMenu(menuItems: {
-									ShareLink(item: event.url)
-								}))
+								.contextMenu {
+									ShareLink(item: fileURL)
+								}
 						} else {
 							view
 						}
 					}
-					.padding(EdgeInsets(top: 10, leading: -10, bottom: 0, trailing: -10))
 					.scrollContentBackground(.hidden)
 				}
 			}

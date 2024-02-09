@@ -6,15 +6,18 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct LoadingEvent: Identifiable {
 	let id: UUID
 	private(set) var url: URL
+	private(set) var fileURL: URL?
+	private(set) var image: Image
 	var title: String {
-		if url.isFileURL {
-			return url.lastPathComponent
+		if let fileURL = fileURL {
+			return fileURL.lastPathComponent
 		}
-		return url.lastPathComponent
+		return url.absoluteString
 	}
 	private(set) var state: Download.State
 
@@ -22,11 +25,13 @@ struct LoadingEvent: Identifiable {
 		self.id = UUID()
 		self.url = url
 		self.state = state
+
+		
 	}
 
 	mutating func update(state: Download.State) {
 		if case .success(let url) = state {
-			self.url = url
+			self.fileURL = url
 		}
 		self.state = state
 	}

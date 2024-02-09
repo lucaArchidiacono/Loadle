@@ -108,7 +108,7 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 			self?.process(newState, for: event)
 		}
 		
-		urlRegistry[originalURL] = redirectedURL
+		urlRegistry[event.url] = redirectedURL
 		downloads[redirectedURL] = download
 		loadingEvents.append(event)
 
@@ -128,6 +128,23 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 		}
 	}
 
+	public func delete(for event: LoadingEvent) {
+		guard let eventIndex = loadingEvents.firstIndex(where: { $0.id == event.id }) else { return }
+		let event = loadingEvents[eventIndex]
+
+		if let fileURL = event.fileURL {
+			do {
+				try FileManager.default.removeItem(at: fileURL)
+			} catch {
+				log(.error, error)
+			}
+		}
+		loadingEvents.remove(at: eventIndex)
+		if let redirectURL = urlRegistry[event.url] {
+			downloads.removeValue(forKey: redirectURL)
+		}
+	}
+
 	public func pauseDownload(for event: LoadingEvent) {
 		guard let redirectURL = urlRegistry[event.url] else { return }
 		downloads[redirectURL]?.pause()
@@ -141,11 +158,6 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 	public func addBackgroundDownloadHandler(handler: @escaping () -> Void, identifier: String) {
 		backgroundDownloadRegistry[identifier] = handler
 	}
-
-//	func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
-//		guard let identifier = session.configuration.identifier else { return }
-//		backgroundDownloadRegistry[identifier]?()
-//	}
 }
 
 extension DownloadManager: URLSessionDownloadDelegate {

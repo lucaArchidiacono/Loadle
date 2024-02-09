@@ -21,12 +21,16 @@ internal enum L10n {
   internal static let auto = L10n.tr("Localizable", "auto", fallback: "Auto")
   /// Best
   internal static let best = L10n.tr("Localizable", "best", fallback: "Best")
+  /// Cancel
+  internal static let cancel = L10n.tr("Localizable", "cancel", fallback: "Cancel")
   /// Canceled!
   internal static let canceledDescription = L10n.tr("Localizable", "canceled_description", fallback: "Canceled!")
   /// Completed!
   internal static let completedDescription = L10n.tr("Localizable", "completed_description", fallback: "Completed!")
   /// Dash
   internal static let dash = L10n.tr("Localizable", "dash", fallback: "Dash")
+  /// Delete
+  internal static let delete = L10n.tr("Localizable", "delete", fallback: "Delete")
   /// Done
   internal static let done = L10n.tr("Localizable", "done", fallback: "Done")
   /// Download

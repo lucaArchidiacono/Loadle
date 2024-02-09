@@ -13,6 +13,8 @@
 "twitter" = "X/Twitter";
 
 "done" = "Done";
+"cancel" = "Cancel";
+"delete" = "Delete";
 
 "audio" = "Audio";
 "video" = "Video";
