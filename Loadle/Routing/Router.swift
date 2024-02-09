@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import MessageUI
 
 enum PathDestination: Hashable {
 	case themeSelector
@@ -15,12 +16,23 @@ enum PathDestination: Hashable {
 
 enum SheetDestination: Hashable, Identifiable {
 	case settings
+	case mail(emailData: EmailData, onComplete: (Result<MFMailComposeResult, Error>) -> Void)
 
 	var id: String {
 		switch self {
 		case .settings:
 			return "settings"
+		case .mail:
+			return "mail"
 		}
+	}
+
+	static func == (lhs: SheetDestination, rhs: SheetDestination) -> Bool {
+		return lhs.id == rhs.id
+	}
+
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
 	}
 }
 

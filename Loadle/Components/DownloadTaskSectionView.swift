@@ -48,7 +48,7 @@ struct DownloadTaskSectionView: View {
 			ProgressBar(currentBytes: currentBytes, totalBytes: totalBytes)
 				.frame(height: height)
 		case .success:
-			ProgressBar(currentBytes: 0.0, totalBytes: 0.0)
+			ProgressBar(currentBytes: 1.0, totalBytes: 1.0)
 				.frame(height: height)
 		case .pending:
 			ProgressBar(currentBytes: 0.0, totalBytes: 1.0)

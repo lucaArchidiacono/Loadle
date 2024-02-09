@@ -28,11 +28,14 @@ struct ProgressBar: View {
 					.foregroundColor(theme.tintColor)
 
 				var width: CGFloat {
+					var value: CGFloat
 					if currentProgress < 0 {
 						// When totalBytes is unkown we get a negative number. Which means currenProgress is then negative. Which results into an unkown currentProgress size. Hence we indicate the full bar.
-						return geometry.size.width
+						value = geometry.size.width
+					} else {
+						value = min(CGFloat(currentProgress) * geometry.size.width, geometry.size.width)
 					}
-					return min(CGFloat(currentProgress) * geometry.size.width, geometry.size.width)
+					return value
 				}
                 Rectangle()
 					.frame(width: width, height: geometry.size.height)

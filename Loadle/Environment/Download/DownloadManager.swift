@@ -10,17 +10,32 @@ import Logger
 import REST
 import SwiftUI
 
+enum DownloadManagerError: Error, CustomStringConvertible {
+	case noValidURL(string: String)
+	case noRedirectURL(inside: REST.HTTPResponse<POSTCobaltResponse>)
+
+	var description: String {
+		let description = "\(type(of: self))."
+		switch self {
+		case .noValidURL(let string):
+			return description + "noValidURL: " + "Was not able to build a valid URL given: \(string)"
+		case .noRedirectURL(let response):
+			return description + "noRedirectURL: " + "There is no redirect URL inside: \(response)"
+		}
+	}
+}
+
 @MainActor
 @Observable
 final class DownloadManager: NSObject, URLSessionDelegate {
 	private static var identifier: String = "io.lucaa.Loadle.DownloadManager"
 	private static var dir = "DOWNLOADS"
 
-	public var urlRegistry: [URL: URL] = [:]
 	public var loadingEvents: [LoadingEvent]
 	public var previews: [LoadingEvent] = [
 		LoadingEvent(url: URL(string: "http://google.ch")!),
 	]
+	private var urlRegistry: [URL: URL] = [:]
 	private var downloads: [URL: Download] = [:]
 
 	private var backgroundDownloadRegistry: [String: () -> Void] = [:]
@@ -70,15 +85,16 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 		}
     }
 
-	func startDownload(using url: String, preferences: UserPreferences, audioOnly: Bool) {
+	func startDownload(using url: String, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
 		guard let url = URL(string: url) else {
-			log(.error, "No valid URL!")
+			log(.error, DownloadManagerError.noValidURL(string: url))
+			onComplete(.failure(DownloadManagerError.noValidURL(string: url)))
 			return
 		}
-		load(using: url, preferences: preferences, audioOnly: audioOnly)
+		load(using: url, preferences: preferences, audioOnly: audioOnly, onComplete: onComplete)
     }
 
-	private func load(using url: URL, preferences: UserPreferences, audioOnly: Bool) {
+	private func load(using url: URL, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
         let cobaltRequest = CobaltRequest(
             url: url,
             vCodec: preferences.videoYoutubeCodec,
@@ -97,10 +113,15 @@ final class DownloadManager: NSObject, URLSessionDelegate {
 		loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
 			switch result {
 			case .success(let response):
-				guard let newURL = response.body.url else { return }
+				guard let newURL = response.body.url else {
+					onComplete(.failure(DownloadManagerError.noRedirectURL(inside: response)))
+					return
+				}
 				self?.download(originalURL: url, redirectedURL: newURL)
+				onComplete(.success(()))
 			case .failure(let error):
 				log(.error, error)
+				onComplete(.failure(error))
 			}
 		}
     }

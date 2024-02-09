@@ -25,6 +25,8 @@ extension View {
 		switch destination {
 		case .settings:
 			SettingsView()
+		case let .mail(emailData, result):
+			MailComposerView(emailData: emailData, result: result)
 		}
 	}
 
