@@ -17,7 +17,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 
-    func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-		downloadManager.addBackgroundDownloadHandler(handler: completionHandler, identifier: identifier)
-    }
+//    func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
+//		downloadManager.addBackgroundDownloadHandler(handler: completionHandler, identifier: identifier)
+//    }
 }

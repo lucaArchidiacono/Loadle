@@ -6,8 +6,6 @@
 //
 
 import Logger
-import REST
-import SwiftData
 import SwiftUI
 
 struct ContentView: View {
@@ -28,7 +26,11 @@ struct ContentView: View {
 						TextField(L10n.pasteLink, text: $url)
 					}
 					.padding()
-
+					.background(theme.secondaryBackgroundColor)
+					.cornerRadius(8)
+					.padding(.horizontal)
+					.padding(.vertical, 10)
+					.foregroundColor(theme.tintColor)
 
 					Button {
 						if let url = URL(string: url) {
@@ -38,32 +40,25 @@ struct ContentView: View {
 						}
 					} label: {
 						Text(L10n.downloadButtonTitle)
+							.frame(maxWidth: .infinity)
 							.padding(.horizontal)
 							.padding(.vertical, 10)
-							.cornerRadius(8)
 					}
-					.shadow(radius: 30)
-					.padding()
+					.buttonStyle(.borderedProminent)
+					.padding(.horizontal)
 
-					List(downloadManager.downloads, id: \.id) { task in
-						@State var state: REST.DownloadTask.State = .pending
+					List(downloadManager.loadingEvents, id: \.id) { event in
 						DownloadTaskView(
-							url: task.url,
-							state: state,
-							onCancel: {
-								task.cancel()
+							title: event.title,
+							state: event.state,
+							onPause: {
+								downloadManager.pauseDownload(for: event)
 							},
-							onResumeCanceled: {
-								task.resumeCanceled()
+							onResume: {
+								downloadManager.resumeDownload(for: event)
 							})
-						.onAppear {
-							task.onStateChange = { newState in
-								DispatchQueue.main.async {
-									state = newState
-								}
-							}
-						}
 					}
+					.scrollContentBackground(.hidden)
 				}
 			}
 			.toolbar {

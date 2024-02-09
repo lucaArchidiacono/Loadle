@@ -18,10 +18,10 @@ fileprivate enum ThemeKey: String {
 public final class Theme: ObservableObject {
 	@AppStorage("is_previously_set") public var isThemePreviouslySet: Bool = false
 	@AppStorage(ThemeKey.selectedScheme.rawValue) public var selectedScheme: ColorScheme = .dark
-	@AppStorage(ThemeKey.tint.rawValue) public var tintColor: Color = .black
-	@AppStorage(ThemeKey.primaryBackground.rawValue) public var primaryBackgroundColor: Color = .white
-	@AppStorage(ThemeKey.secondaryBackground.rawValue) public var secondaryBackgroundColor: Color = .gray
-	@AppStorage(ThemeKey.label.rawValue) public var labelColor: Color = .black
+	@AppStorage(ThemeKey.tint.rawValue) public var tintColor: Color = .init(hex: 0x1A8917)
+	@AppStorage(ThemeKey.primaryBackground.rawValue) public var primaryBackgroundColor: Color = .init(hex: 0x121212)
+	@AppStorage(ThemeKey.secondaryBackground.rawValue) public var secondaryBackgroundColor: Color = .init(hex: 0x191919)
+	@AppStorage(ThemeKey.label.rawValue) public var labelColor: Color = .white
 	@AppStorage(ThemeKey.selectedSet.rawValue) var storedSet: ColorSetName = .mediumDark
 	@AppStorage(ThemeKey.followSystemColorSchme.rawValue) public var followSystemColorScheme: Bool = true
 

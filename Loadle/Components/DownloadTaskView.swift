@@ -6,45 +6,47 @@
 //
 
 import Foundation
-import REST
 import SwiftUI
 
 struct DownloadTaskView: View {
 	@EnvironmentObject private var theme: Theme
 
-	let url: URL
-	let state: REST.DownloadTask.State
-	let onCancel: () -> Void
-	let onResumeCanceled: () -> Void
+	let title: String
+	let state: Download.State
+
+	let onPause: () -> Void
+	let onResume: () -> Void
 
 	private let frameHeight: CGFloat = 20
 
     var body: some View {
-			VStack(alignment: .leading) {
-				Text(url.absoluteString)
-					.font(.headline)
+		VStack(alignment: .leading) {
+			Text(title)
+				.font(.headline)
 
-				HStack {
-					progressBar
-					progressButton
-				}
-				progressDescription
+			HStack {
+				progressBar
+				progressButton
 			}
+			progressDescription
+		}
 		.applyTheme(theme)
     }
 
 	@ViewBuilder
 	var progressBar: some View {
 		switch state {
-		case .paused(let written, let max),
-			 .inProgress(let written, let max):
-			ProgressBar(writtenProgress: written, maxProgress: max)
+		case .progress(let currentBytes, let totalBytes):
+			ProgressBar(currentBytes: currentBytes, totalBytes: totalBytes)
 				.frame(height: 20)
-		case .completed:
-			ProgressBar(writtenProgress: 0.0, maxProgress: .infinity)
+		case .success:
+			ProgressBar(currentBytes: 0.0, totalBytes: .infinity)
 				.frame(height: 20)
-		case .failed, .pending, .canceled:
-			ProgressBar(writtenProgress: 0.0, maxProgress: -1.0)
+		case .pending:
+			ProgressBar(currentBytes: 0.0, totalBytes: 1.0)
+				.frame(height: 20)
+		case .paused, .failed:
+			ProgressBar(currentBytes: 0.0, totalBytes: -1.0)
 				.frame(height: 20)
 		}
 	}
@@ -52,40 +54,39 @@ struct DownloadTaskView: View {
 	@ViewBuilder
 	var progressDescription: some View {
 		switch state {
+		case .progress(let currentBytes, let totalBytes):
+			let completed: String = String(format: "%.1f MB", currentBytes)
+			let outOf: String = totalBytes == .infinity || totalBytes <= 0 ? "n.a." : String(format: "%.1f MB", totalBytes)
+			Text(L10n.inProgressDescription(completed, outOf))
+		case .success:
+			Text(L10n.completedDescription)
+		case .paused:
+			Text(L10n.canceledDescription)
+		case .failed(let error):
+			Text(L10n.failedDescription)
 		case .pending:
 			Text(L10n.waitingDescription)
-		case .paused(let written, let max),
-			 .inProgress(let written, let max):
-			let completed: String = String(format: "%.1f MB", written)
-			let outOf: String = max == .infinity || max <= 0 ? "n.a." : String(format: "%.1f MB", max)
-			Text(L10n.inProgressDescription(completed, outOf))
-		case .completed:
-			Text(L10n.completedDescription)
-		case .failed:
-			Text(L10n.failedDescription)
-		case .canceled:
-			Text(L10n.canceledDescription)
 		}
 	}
 
 	@ViewBuilder
 	var progressButton: some View {
 		switch state {
-		case .inProgress:
+		case .progress:
 			Button {
-				onCancel()
+				onPause()
 			} label: {
 				Image(systemName: "xmark.circle")
 			}
 			.frame(width: frameHeight, height: frameHeight)
-		case .canceled, .paused:
+		case .paused:
 			Button {
-				onResumeCanceled()
+				onResume()
 			} label: {
 				Image(systemName: "arrow.counterclockwise")
 			}
 			.frame(width: frameHeight, height: frameHeight)
-		case .failed, .pending, .completed:
+		case .failed, .pending, .success:
 			Button(action: {}, label: {
 				Text("")
 			})
@@ -96,15 +97,15 @@ struct DownloadTaskView: View {
 }
 
 #Preview(nil, traits: .sizeThatFitsLayout) {
-	DownloadTaskView(url: URL(string: "https://loadle.ch")!,
-//					 state: .pending,
-//					 state: .inProgress(written: 0.0, max: -1.0),
-//					 state: .inProgress(written: 1.0, max: .infinity),
-//					 state: .canceled,
-//					 state: .failed,
-//					 state: .completed,
-					 state: .paused(written: 1.0, max: 5.0),
-					 onCancel: {},
-					 onResumeCanceled: {})
+	DownloadTaskView(title: "HelloWorld.mp3",
+					 state: .pending,
+					 //					 state: .inProgress(written: 0.0, max: -1.0),
+					 //					 state: .inProgress(written: 1.0, max: .infinity),
+					 //					 state: .canceled,
+					 //					 state: .failed,
+					 //					 state: .completed,
+					 //					 state: .paused(written: 1.0, max: 5.0),
+					 onPause: {},
+					 onResume: {})
 	.environmentObject(Theme.shared)
 }

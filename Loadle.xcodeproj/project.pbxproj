@@ -17,6 +17,7 @@
 		5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */; };
 		5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */; };
 		5C5C7D332B741A3F00C34933 /* NavigationLink+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D322B741A3F00C34933 /* NavigationLink+.swift */; };
+		5C5C7D352B7528B300C34933 /* LoadingEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D342B7528B300C34933 /* LoadingEvent.swift */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadTaskView.swift */; };
 		5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923592B7170310032B49C /* ProgressBar.swift */; };
@@ -57,6 +58,7 @@
 		5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouting.swift; sourceTree = "<group>"; };
 		5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorView.swift; sourceTree = "<group>"; };
 		5C5C7D322B741A3F00C34933 /* NavigationLink+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationLink+.swift"; sourceTree = "<group>"; };
+		5C5C7D342B7528B300C34933 /* LoadingEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingEvent.swift; sourceTree = "<group>"; };
 		5C7ADFB52B613A7C00B810C7 /* Fundamentals */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Fundamentals; sourceTree = "<group>"; };
 		5CB923512B716B730032B49C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5CB923562B716DE00032B49C /* DownloadTaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadTaskView.swift; sourceTree = "<group>"; };
@@ -184,6 +186,14 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		5C5C7D362B752A9100C34933 /* Download */ = {
+			isa = PBXGroup;
+			children = (
+				5CC83DB02B703CAE005948C1 /* DownloadManager.swift */,
+			);
+			path = Download;
+			sourceTree = "<group>";
+		};
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -252,6 +262,7 @@
 				5CC83DBA2B70DF72005948C1 /* Audio */,
 				5CC83DB92B70DF6A005948C1 /* Video */,
 				5CC83DC22B70E6F0005948C1 /* FilenameStyle.swift */,
+				5C5C7D342B7528B300C34933 /* LoadingEvent.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -278,7 +289,7 @@
 		5CC83DC12B70E2DB005948C1 /* Environment */ = {
 			isa = PBXGroup;
 			children = (
-				5CC83DB02B703CAE005948C1 /* DownloadManager.swift */,
+				5C5C7D362B752A9100C34933 /* Download */,
 				5CC83DB22B70DA74005948C1 /* Preferences.swift */,
 				5CC83DC42B70E730005948C1 /* Theme.swift */,
 			);
@@ -430,6 +441,7 @@
 				5C5C7D332B741A3F00C34933 /* NavigationLink+.swift in Sources */,
 				5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */,
 				5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */,
+				5C5C7D352B7528B300C34933 /* LoadingEvent.swift in Sources */,
 				5CC83DC02B70E284005948C1 /* YoutubeAudioTrack.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
