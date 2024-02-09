@@ -153,7 +153,6 @@ extension DownloadManager: URLSessionDownloadDelegate {
 			downloads[url]?.onStateChange(.success(url: downloadURL))
 			downloads[url] = nil
 		} catch {
-			log(.error, error)
 			downloads[url]?.onStateChange(.failed(error: error))
 		}
 	}

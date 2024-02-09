@@ -55,14 +55,14 @@ struct DownloadTaskView: View {
 	var progressDescription: some View {
 		switch state {
 		case .progress(let currentBytes, let totalBytes):
-			let completed: String = String(format: "%.1f MB", currentBytes)
-			let outOf: String = totalBytes == .infinity || totalBytes <= 0 ? "n.a." : String(format: "%.1f MB", totalBytes)
+			let completed: String = String(format: "%.1f MB", currentBytes / 1_000_000)
+			let outOf: String = totalBytes == .infinity || totalBytes <= 0 ? "n.a." : String(format: "%.1f MB", totalBytes / 1_000_000)
 			Text(L10n.inProgressDescription(completed, outOf))
 		case .success:
 			Text(L10n.completedDescription)
 		case .paused:
 			Text(L10n.canceledDescription)
-		case .failed(let error):
+		case .failed:
 			Text(L10n.failedDescription)
 		case .pending:
 			Text(L10n.waitingDescription)
