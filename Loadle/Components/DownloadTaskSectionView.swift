@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import REST
 import SwiftUI
 
 struct DownloadTaskSectionView: View {
@@ -13,7 +14,7 @@ struct DownloadTaskSectionView: View {
 
 	let title: String
 	let image: Image
-	let state: Download.State
+	let state: REST.Download.State
 
 	let onPause: () -> Void
 	let onResume: () -> Void

@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
+import REST
 
 struct LoadingEvent: Identifiable {
 	let id: UUID
@@ -30,15 +31,15 @@ struct LoadingEvent: Identifiable {
 		}
 		return url.absoluteString
 	}
-	private(set) var state: Download.State
+	private(set) var state: REST.Download.State
 
-	init(url: URL, state: Download.State = .pending) {
+	init(url: URL, state: REST.Download.State = .pending) {
 		self.id = UUID()
 		self.url = url
 		self.state = state
 	}
 
-	mutating func update(state: Download.State) {
+	mutating func update(state: REST.Download.State) {
 		if case .success(let url) = state {
 			self.fileURL = url
 		}

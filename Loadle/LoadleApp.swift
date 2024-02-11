@@ -16,10 +16,12 @@ struct LoadleApp: App {
     @State var theme = Theme.shared
     @State var preferences = UserPreferences.shared
 
+	@State var selectedTab: Tab = .home
+	@State var router: Router = Router()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(appDelegate.downloadManager)
+            ContentView(selectedTab: $selectedTab, router: $router)
                 .environmentObject(theme)
                 .environmentObject(preferences)
         }

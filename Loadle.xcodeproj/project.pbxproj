@@ -13,6 +13,10 @@
 		5C48154B2B766DD300381627 /* EmailData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154A2B766DD300381627 /* EmailData.swift */; };
 		5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154C2B766DF900381627 /* MailComposerView.swift */; };
 		5C48154F2B7686A800381627 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154E2B7686A800381627 /* ErrorView.swift */; };
+		5C4815522B78D09700381627 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815512B78D09700381627 /* HomeView.swift */; };
+		5C4815542B78D09E00381627 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815532B78D09E00381627 /* HomeViewModel.swift */; };
+		5C4815572B78D86600381627 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815562B78D86600381627 /* Tabs.swift */; };
+		5C4815592B78D8A200381627 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815582B78D8A200381627 /* HomeTab.swift */; };
 		5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */; };
 		5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9552B5E63D300ABB76C /* ContentView.swift */; };
 		5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9572B5E63D300ABB76C /* Item.swift */; };
@@ -36,7 +40,6 @@
 		5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DA92B6FD995005948C1 /* Fundamentals */; };
 		5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DAC2B6FDBD7005948C1 /* REST */; };
 		5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */; };
-		5CC83DB12B703CAE005948C1 /* DownloadManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DB02B703CAE005948C1 /* DownloadManager.swift */; };
 		5CC83DB32B70DA74005948C1 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DB22B70DA74005948C1 /* Preferences.swift */; };
 		5CC83DB62B70DB2B005948C1 /* DownloadVideoQuality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DB52B70DB2B005948C1 /* DownloadVideoQuality.swift */; };
 		5CC83DB82B70DE50005948C1 /* YoutubeVideoCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DB72B70DE50005948C1 /* YoutubeVideoCodec.swift */; };
@@ -57,6 +60,10 @@
 		5C48154A2B766DD300381627 /* EmailData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailData.swift; sourceTree = "<group>"; };
 		5C48154C2B766DF900381627 /* MailComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposerView.swift; sourceTree = "<group>"; };
 		5C48154E2B7686A800381627 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		5C4815512B78D09700381627 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		5C4815532B78D09E00381627 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		5C4815562B78D86600381627 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
+		5C4815582B78D8A200381627 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
 		5C5BB9502B5E63D300ABB76C /* Loadle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Loadle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadleApp.swift; sourceTree = "<group>"; };
 		5C5BB9552B5E63D300ABB76C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -85,7 +92,6 @@
 		5CB9237B2B72DA230032B49C /* XCAssets+Generated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "XCAssets+Generated.swift"; sourceTree = "<group>"; };
 		5CC83DAB2B6FD9E3005948C1 /* REST */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = REST; sourceTree = "<group>"; };
 		5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5CC83DB02B703CAE005948C1 /* DownloadManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadManager.swift; sourceTree = "<group>"; };
 		5CC83DB22B70DA74005948C1 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		5CC83DB52B70DB2B005948C1 /* DownloadVideoQuality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadVideoQuality.swift; sourceTree = "<group>"; };
 		5CC83DB72B70DE50005948C1 /* YoutubeVideoCodec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeVideoCodec.swift; sourceTree = "<group>"; };
@@ -120,6 +126,24 @@
 				5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */,
 			);
 			path = Styles;
+			sourceTree = "<group>";
+		};
+		5C4815502B78D08C00381627 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				5C4815512B78D09700381627 /* HomeView.swift */,
+				5C4815532B78D09E00381627 /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		5C4815552B78D85400381627 /* Tabs */ = {
+			isa = PBXGroup;
+			children = (
+				5C4815562B78D86600381627 /* Tabs.swift */,
+				5C4815582B78D8A200381627 /* HomeTab.swift */,
+			);
+			path = Tabs;
 			sourceTree = "<group>";
 		};
 		5C5BB9472B5E63D300ABB76C = {
@@ -193,6 +217,7 @@
 		5C5C7D2A2B73EA6600C34933 /* Routing */ = {
 			isa = PBXGroup;
 			children = (
+				5C4815552B78D85400381627 /* Tabs */,
 				5C5C7D2B2B73EA9100C34933 /* Router.swift */,
 				5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */,
 			);
@@ -208,17 +233,10 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		5C5C7D362B752A9100C34933 /* Download */ = {
-			isa = PBXGroup;
-			children = (
-				5CC83DB02B703CAE005948C1 /* DownloadManager.swift */,
-			);
-			path = Download;
-			sourceTree = "<group>";
-		};
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5C4815502B78D08C00381627 /* Home */,
 				5CB923512B716B730032B49C /* SettingsView.swift */,
 				5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */,
 				5C48154C2B766DF900381627 /* MailComposerView.swift */,
@@ -315,7 +333,6 @@
 		5CC83DC12B70E2DB005948C1 /* Environment */ = {
 			isa = PBXGroup;
 			children = (
-				5C5C7D362B752A9100C34933 /* Download */,
 				5CC83DB22B70DA74005948C1 /* Preferences.swift */,
 				5CC83DC42B70E730005948C1 /* Theme.swift */,
 			);
@@ -449,6 +466,8 @@
 				5CC83DBC2B70DF84005948C1 /* ViemoDownloadVideoType.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadTaskSectionView.swift in Sources */,
 				5CC83DB82B70DE50005948C1 /* YoutubeVideoCodec.swift in Sources */,
+				5C4815522B78D09700381627 /* HomeView.swift in Sources */,
+				5C4815592B78D8A200381627 /* HomeTab.swift in Sources */,
 				5CB923602B7247180032B49C /* POSTCobaltResponse.swift in Sources */,
 				5CC83DBE2B70E094005948C1 /* AudioFormat.swift in Sources */,
 				5CB923522B716B730032B49C /* SettingsView.swift in Sources */,
@@ -457,12 +476,13 @@
 				5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */,
 				5CB9237D2B72DA230032B49C /* XCAssets+Generated.swift in Sources */,
 				5CC83DB62B70DB2B005948C1 /* DownloadVideoQuality.swift in Sources */,
-				5CC83DB12B703CAE005948C1 /* DownloadManager.swift in Sources */,
 				5C48154B2B766DD300381627 /* EmailData.swift in Sources */,
+				5C4815542B78D09E00381627 /* HomeViewModel.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */,
 				5CB9235C2B717C5E0032B49C /* CobaltRequest.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
+				5C4815572B78D86600381627 /* Tabs.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
 				5CC83DC82B70E824005948C1 /* ColorSet.swift in Sources */,
