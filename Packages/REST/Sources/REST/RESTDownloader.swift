@@ -13,7 +13,15 @@ extension REST {
 		private static var dir = "DOWNLOADS"
 		
 		private var downloads: [URL: Download] = [:]
-		private var backgroundCompletionHandler: (() -> Void)?
+		private var backgroundCompletionHandlers: [() -> Void] = []
+
+		public var debuggingBackroundTasks: Bool {
+			#if DEBUG
+			return true
+			#else
+			return false
+			#endif
+		}
 
 		private lazy var downloadSession: URLSession = {
 			let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
@@ -23,6 +31,14 @@ extension REST {
 		}()
 
 		public static var shared = REST.Downloader()
+
+		private override init() {
+			super.init()
+
+			if debuggingBackroundTasks {
+				URLSession.shared.invalidateAndCancel()
+			}
+		}
 
 		public static func loadDownloadsURL() throws -> URL {
 			let downloadsURL = try FileManager.default
@@ -59,7 +75,7 @@ extension REST {
 		}
 
 		public func addBackgroundCompletionHandler(handler: @escaping () -> Void) {
-			backgroundCompletionHandler = handler
+			backgroundCompletionHandlers.append(handler)
 		}
 
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
@@ -92,8 +108,8 @@ extension REST {
 
 		public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
 			DispatchQueue.main.async {
-				self.backgroundCompletionHandler?()
-				self.backgroundCompletionHandler = nil
+				self.backgroundCompletionHandlers.forEach { $0() }
+				self.backgroundCompletionHandlers = []
 			}
 		}
 	}

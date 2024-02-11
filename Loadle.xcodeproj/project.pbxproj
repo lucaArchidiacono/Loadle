@@ -17,6 +17,7 @@
 		5C4815542B78D09E00381627 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815532B78D09E00381627 /* HomeViewModel.swift */; };
 		5C4815572B78D86600381627 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815562B78D86600381627 /* Tabs.swift */; };
 		5C4815592B78D8A200381627 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815582B78D8A200381627 /* HomeTab.swift */; };
+		5C48155B2B78EF1800381627 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48155A2B78EF1800381627 /* NotificationService.swift */; };
 		5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */; };
 		5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9552B5E63D300ABB76C /* ContentView.swift */; };
 		5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9572B5E63D300ABB76C /* Item.swift */; };
@@ -64,6 +65,7 @@
 		5C4815532B78D09E00381627 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		5C4815562B78D86600381627 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
 		5C4815582B78D8A200381627 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
+		5C48155A2B78EF1800381627 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5C5BB9502B5E63D300ABB76C /* Loadle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Loadle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadleApp.swift; sourceTree = "<group>"; };
 		5C5BB9552B5E63D300ABB76C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 			children = (
 				5CC83DB22B70DA74005948C1 /* Preferences.swift */,
 				5CC83DC42B70E730005948C1 /* Theme.swift */,
+				5C48155A2B78EF1800381627 /* NotificationService.swift */,
 			);
 			path = Environment;
 			sourceTree = "<group>";
@@ -484,6 +487,7 @@
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
 				5C4815572B78D86600381627 /* Tabs.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
+				5C48155B2B78EF1800381627 /* NotificationService.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
 				5CC83DC82B70E824005948C1 /* ColorSet.swift in Sources */,
 				5CC83DB32B70DA74005948C1 /* Preferences.swift in Sources */,

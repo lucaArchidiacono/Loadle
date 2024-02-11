@@ -14,7 +14,18 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 
+	func applicationDidEnterBackground(_ application: UIApplication) {
+		#if DEBUG
+		if REST.Downloader.shared.debuggingBackroundTasks {
+				exit(0)
+		}
+		#endif
+	}
+
     func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
 		REST.Downloader.shared.addBackgroundCompletionHandler(handler: completionHandler)
+		REST.Downloader.shared.addBackgroundCompletionHandler {
+			NotificationService.shared.dispatchNotification(identifier: identifier, title: "All set and done!", body: "Congrats your downloads are all done!")
+		}
     }
 }
