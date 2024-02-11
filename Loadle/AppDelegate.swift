@@ -25,7 +25,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
 		REST.Downloader.shared.addBackgroundCompletionHandler(handler: completionHandler)
 		REST.Downloader.shared.addBackgroundCompletionHandler {
-			NotificationService.shared.dispatchNotification(identifier: identifier, title: "All set and done!", body: "Congrats your downloads are all done!")
+			NotificationService.shared.dispatchNotification(
+				identifier: identifier,
+				title: L10n.notificationDownloadTitle,
+				body: L10n.notificationDownloadBody)
 		}
     }
 }

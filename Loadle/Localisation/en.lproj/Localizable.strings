@@ -38,6 +38,11 @@
 
 "download_audio_only" = "Audio only";
 
+// Notifications
+/// Notifications Download
+"notification_download_title" = "🚀 Everything is ready!";
+"notification_download_body" = "Congrats all your requested downloads are done and ready to go.";
+
 // Error Details
 
 /// Error Details Email

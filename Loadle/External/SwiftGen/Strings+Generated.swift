@@ -49,6 +49,10 @@ internal enum L10n {
   internal static let invalidUrlWrongDescription = L10n.tr("Localizable", "invalid_url_wrong_description", fallback: "It seems like your URL is not valid. Please check for invalid characters.")
   /// Max
   internal static let max = L10n.tr("Localizable", "max", fallback: "Max")
+  /// Congrats all your requested downloads are done and ready to go.
+  internal static let notificationDownloadBody = L10n.tr("Localizable", "notification_download_body", fallback: "Congrats all your requested downloads are done and ready to go.")
+  /// 🚀 Everything is ready!
+  internal static let notificationDownloadTitle = L10n.tr("Localizable", "notification_download_title", fallback: "🚀 Everything is ready!")
   /// Ok
   internal static let ok = L10n.tr("Localizable", "ok", fallback: "Ok")
   /// Original
