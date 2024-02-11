@@ -19,6 +19,11 @@
 "audio" = "Audio";
 "video" = "Video";
 "other" = "Other";
+"ok" = "Ok";
+
+"send_email" = "Send Email";
+"send_email_subject" = "Loadle Bug: %@";
+"send_email_description" = "I'd like to take the chance and thank you for using my app!\nWith this email you are trying to file a bug. Please state your issue below this line:\n\n\nYour Error:\n%@";
 
 "best" = "Best";
 "max" = "Max";
@@ -32,6 +37,20 @@
 "theme" = "Theme";
 
 "download_audio_only" = "Download audio only";
+
+// Error Details
+
+/// Error Details Email
+"send_email_failed_title" = "Dang! Was not able to send an email.";
+"send_email_failed_description" = "It seems like something went wrong and you were not able to send the bug report via email!";
+
+/// Error Details Something went wrong
+"something_went_wrong_title" = "Uh-oh";
+"something_went_wrong_description" = "Something went wrong. Retry again and if the error still persists, you can either contact me or file a bug report.";
+
+/// Error Details Invalid URL
+"invalid_url_title" = "Invalid URL";
+"invalid_url_wrong_description" = "It seems like your URL is not valid. Please check for invalid characters.";
 
 // Theme Settings View
 "settings_theme_title" = "Theme Selector";

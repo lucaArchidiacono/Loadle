@@ -23,7 +23,7 @@ struct ErrorView: View {
 							Button(
 								role: .cancel,
 								action: {
-									action()
+									action?()
 									showAlert = false
 									self.errorDetails = nil
 								},
@@ -32,7 +32,7 @@ struct ErrorView: View {
 						case let .secondary(title, action):
 							Button(
 								action: {
-									action()
+									action?()
 									showAlert = false
 									self.errorDetails = nil
 								},
@@ -42,7 +42,7 @@ struct ErrorView: View {
 							Button(
 								role: .destructive,
 								action: {
-									action()
+									action?()
 									showAlert = false
 									self.errorDetails = nil
 								},

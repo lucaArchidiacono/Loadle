@@ -9,9 +9,9 @@ import Foundation
 
 struct ErrorDetails {
 	enum Action: Hashable, Identifiable {
-		case secondary(title: String, _ action: () -> Void)
-		case primary(title: String, _ action: () -> Void)
-		case destructive(title: String, _ action: () -> Void)
+		case secondary(title: String, _ action: (() -> Void)? = nil)
+		case primary(title: String, _ action: (() -> Void)? = nil)
+		case destructive(title: String, _ action: (() -> Void)? = nil)
 
 		var id: String {
 			switch self {

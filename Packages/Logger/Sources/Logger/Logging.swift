@@ -38,7 +38,7 @@ public enum LogLevel: Int {
     }
 }
 
-struct Logging {
+public struct Logging {
     private var currentQueueName: String = {
         let name = __dispatch_queue_get_label(nil)
         return String(cString: name, encoding: .utf8) ?? "n.a."
@@ -50,7 +50,7 @@ struct Logging {
     }
 
     private let outputStream: OutputStream
-    static let shared: Logging = .init()
+    public static let shared: Logging = .init()
 
     private init() {
         outputStream = LogOutputStream()

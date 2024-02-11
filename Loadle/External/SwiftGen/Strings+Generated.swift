@@ -43,8 +43,14 @@ internal enum L10n {
   internal static func inProgressDescription(_ p1: Any, _ p2: Any) -> String {
     return L10n.tr("Localizable", "in_progress_description", String(describing: p1), String(describing: p2), fallback: "%@ / %@")
   }
+  /// Invalid URL
+  internal static let invalidUrlTitle = L10n.tr("Localizable", "invalid_url_title", fallback: "Invalid URL")
+  /// It seems like your URL is not valid. Please check for invalid characters.
+  internal static let invalidUrlWrongDescription = L10n.tr("Localizable", "invalid_url_wrong_description", fallback: "It seems like your URL is not valid. Please check for invalid characters.")
   /// Max
   internal static let max = L10n.tr("Localizable", "max", fallback: "Max")
+  /// Ok
+  internal static let ok = L10n.tr("Localizable", "ok", fallback: "Ok")
   /// Original
   internal static let original = L10n.tr("Localizable", "original", fallback: "Original")
   /// Other
@@ -53,6 +59,25 @@ internal enum L10n {
   internal static let pasteLink = L10n.tr("Localizable", "paste_link", fallback: "Paste link")
   /// Progressive
   internal static let progressive = L10n.tr("Localizable", "progressive", fallback: "Progressive")
+  /// Send Email
+  internal static let sendEmail = L10n.tr("Localizable", "send_email", fallback: "Send Email")
+  /// I'd like to take the chance and thank you for using my app!
+  /// With this email you are trying to file a bug. Please state your issue below this line:
+  /// 
+  /// 
+  /// Your Error:
+  /// %@
+  internal static func sendEmailDescription(_ p1: Any) -> String {
+    return L10n.tr("Localizable", "send_email_description", String(describing: p1), fallback: "I'd like to take the chance and thank you for using my app!\nWith this email you are trying to file a bug. Please state your issue below this line:\n\n\nYour Error:\n%@")
+  }
+  /// It seems like something went wrong and you were not able to send the bug report via email!
+  internal static let sendEmailFailedDescription = L10n.tr("Localizable", "send_email_failed_description", fallback: "It seems like something went wrong and you were not able to send the bug report via email!")
+  /// Dang! Was not able to send an email.
+  internal static let sendEmailFailedTitle = L10n.tr("Localizable", "send_email_failed_title", fallback: "Dang! Was not able to send an email.")
+  /// Loadle Bug: %@
+  internal static func sendEmailSubject(_ p1: Any) -> String {
+    return L10n.tr("Localizable", "send_email_subject", String(describing: p1), fallback: "Loadle Bug: %@")
+  }
   /// Settings
   internal static let settings = L10n.tr("Localizable", "settings", fallback: "Settings")
   /// When "Best" format is selected, you get audio the way it is on service's side. It's not re-encoded. Everything else will be re-encoded.
@@ -101,6 +126,10 @@ internal enum L10n {
   internal static let settingsVideoYoutubeDescriptionCodec = L10n.tr("Localizable", "settings_video_youtube_description_codec", fallback: "H264: Generally better player support, but quality tops out at 1080p.\nAV1: Poor player support, but supports 8k & HDR.\nVP9: Usually highest bitrate, preserves most detail. Supports 4k & HDR.\n\npick H264 if you want best editor/player/social media compatibility.")
   /// Codec
   internal static let settingsVideoYoutubeTitleCodec = L10n.tr("Localizable", "settings_video_youtube_title_codec", fallback: "Codec")
+  /// Something went wrong. Retry again and if the error still persists, you can either contact me or file a bug report.
+  internal static let somethingWentWrongDescription = L10n.tr("Localizable", "something_went_wrong_description", fallback: "Something went wrong. Retry again and if the error still persists, you can either contact me or file a bug report.")
+  /// Uh-oh
+  internal static let somethingWentWrongTitle = L10n.tr("Localizable", "something_went_wrong_title", fallback: "Uh-oh")
   /// Theme
   internal static let theme = L10n.tr("Localizable", "theme", fallback: "Theme")
   /// TikTok

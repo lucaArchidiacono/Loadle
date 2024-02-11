@@ -125,49 +125,53 @@ struct ContentView: View {
 			switch error {
 			case .noValidURL:
 				errorDetails = ErrorDetails(
-					title: "Hmm...",
-					description: "It seems like your URL is not valid. Please check for invalid characters.",
-					actions: [
-						.primary(title: "Ok") {
-							errorDetails = nil
-						}
-					])
+					title: L10n.invalidUrlTitle,
+					description: L10n.invalidUrlWrongDescription,
+					actions: [.primary(title: L10n.ok)])
 			case .noRedirectURL:
-				errorDetails = buildGenericErrorDetails()
+				errorDetails = buildGenericErrorDetails(using: error)
 			}
 		} else {
-			errorDetails = buildGenericErrorDetails()
+			errorDetails = buildGenericErrorDetails(using: error)
 		}
 	}
 
-	private func buildGenericErrorDetails() -> ErrorDetails {
+	private func buildGenericErrorDetails(using error: Error) -> ErrorDetails {
 		var actions: [ErrorDetails.Action] = []
 		if MailComposerView.canSendEmail() {
-			actions.append(.primary(title: "Send Email") {
-				router.presented = .mail(
-					emailData: .init(subject: "",
-									 body: .raw(body: "I'd like to take the chance and thank you for using my app!\nWith this email you are trying to file a bug. Please state your issue below this line:\n"),
-									 attachments: []),
-					onComplete: { result in
-						switch result {
-						case .success(let mailResult):
-							log(.info, mailResult)
-						case .failure(let error):
-							log(.error, error)
-							errorDetails = nil
-							errorDetails = ErrorDetails(
-								title: "Dang! Was not able to send an email.",
-								description: "It seems like something went wrong and you were not able to send the bug report via email!",
-								actions: [.primary(title: "Ok", { errorDetails = nil })])
+			actions.append(.primary(title: L10n.sendEmail) {
+				Logging.shared.getLogFiles { urls in
+					let attachements: [EmailData.AttachmentData] = urls
+						.compactMap { url in
+							guard let data = try? Data(contentsOf: url) else { return nil }
+							return EmailData.AttachmentData(data: data, mimeType: url.mimeType(), fileName: url.lastPathComponent)
 						}
-					})
+					router.presented = .mail(
+						emailData: .init(subject: L10n.sendEmailSubject(UUID()),
+										 body: .raw(body: L10n.sendEmailDescription(error)),
+										 attachments: attachements),
+						onComplete: { result in
+							switch result {
+							case .success(let mailResult):
+								log(.info, mailResult)
+							case .failure(let error):
+								log(.error, error)
+								errorDetails = nil
+								errorDetails = ErrorDetails(
+									title: L10n.sendEmailFailedTitle,
+									description: L10n.sendEmailFailedDescription,
+									actions: [.primary(title: L10n.ok)])
+							}
+						})
+				}
 			})
+			actions.append(.secondary(title: L10n.cancel))
 		} else {
-			actions.append(.primary(title: "Ok", { errorDetails = nil }))
+			actions.append(.primary(title: L10n.ok))
 		}
 		return ErrorDetails(
-			title: "Uh-oh",
-			description: "Something went wrong. Retry again and if the error still persists, you can either contact me or file a bug report.",
+			title: L10n.somethingWentWrongTitle,
+			description: L10n.somethingWentWrongDescription,
 			actions: actions)
 	}
 }
