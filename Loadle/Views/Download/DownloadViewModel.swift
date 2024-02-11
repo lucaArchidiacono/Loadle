@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  DownloadViewModel.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 11.02.2024.
@@ -9,7 +9,7 @@ import Foundation
 import Logger
 import REST
 
-enum HomeViewModelError: Error, CustomStringConvertible {
+enum DownloadViewModelError: Error, CustomStringConvertible {
 	case noValidURL(string: String)
 	case noRedirectURL(inside: REST.HTTPResponse<POSTCobaltResponse>)
 
@@ -26,7 +26,7 @@ enum HomeViewModelError: Error, CustomStringConvertible {
 
 @MainActor
 @Observable
-final class HomeViewModel {
+final class DownloadViewModel {
 	public var loadingEvents: [LoadingEvent]
 	public var isLoading: Bool = false
 	public var audioOnly: Bool = false
@@ -57,8 +57,8 @@ final class HomeViewModel {
 		isLoading = true
 		guard let url = URL(string: url) else {
 			isLoading = false
-			log(.error, HomeViewModelError.noValidURL(string: url))
-			onComplete(.failure(HomeViewModelError.noValidURL(string: url)))
+			log(.error, DownloadViewModelError.noValidURL(string: url))
+			onComplete(.failure(DownloadViewModelError.noValidURL(string: url)))
 			return
 		}
 		load(using: url, preferences: preferences, audioOnly: audioOnly, onComplete: onComplete)
@@ -86,7 +86,7 @@ final class HomeViewModel {
 			switch result {
 			case .success(let response):
 				guard let newURL = response.body.url else {
-					onComplete(.failure(HomeViewModelError.noRedirectURL(inside: response)))
+					onComplete(.failure(DownloadViewModelError.noRedirectURL(inside: response)))
 					return
 				}
 				self?.download(originalURL: url, redirectedURL: newURL)

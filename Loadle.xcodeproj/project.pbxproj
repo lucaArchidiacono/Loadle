@@ -13,10 +13,9 @@
 		5C48154B2B766DD300381627 /* EmailData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154A2B766DD300381627 /* EmailData.swift */; };
 		5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154C2B766DF900381627 /* MailComposerView.swift */; };
 		5C48154F2B7686A800381627 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154E2B7686A800381627 /* ErrorView.swift */; };
-		5C4815522B78D09700381627 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815512B78D09700381627 /* HomeView.swift */; };
-		5C4815542B78D09E00381627 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815532B78D09E00381627 /* HomeViewModel.swift */; };
-		5C4815572B78D86600381627 /* Tabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815562B78D86600381627 /* Tabs.swift */; };
-		5C4815592B78D8A200381627 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815582B78D8A200381627 /* HomeTab.swift */; };
+		5C4815522B78D09700381627 /* DownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815512B78D09700381627 /* DownloadView.swift */; };
+		5C4815542B78D09E00381627 /* DownloadViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815532B78D09E00381627 /* DownloadViewModel.swift */; };
+		5C4815592B78D8A200381627 /* DownloadDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815582B78D8A200381627 /* DownloadDestination.swift */; };
 		5C48155B2B78EF1800381627 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48155A2B78EF1800381627 /* NotificationService.swift */; };
 		5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */; };
 		5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5BB9552B5E63D300ABB76C /* ContentView.swift */; };
@@ -52,6 +51,13 @@
 		5CC83DC82B70E824005948C1 /* ColorSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DC72B70E824005948C1 /* ColorSet.swift */; };
 		5CC83DCA2B70E87B005948C1 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DC92B70E87B005948C1 /* Colors.swift */; };
 		5CC83DCC2B70EB59005948C1 /* ThemeApplier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DCB2B70EB59005948C1 /* ThemeApplier.swift */; };
+		5CF59DC82B790CB00051E49D /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DC72B790CB00051E49D /* Service.swift */; };
+		5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCA2B790D660051E49D /* SettingsDestination.swift */; };
+		5CF59DCD2B7910440051E49D /* OnboardingDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */; };
+		5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */; };
+		5CF59DD32B7925040051E49D /* ServiceDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD22B7925040051E49D /* ServiceDestination.swift */; };
+		5CF59DD62B7925550051E49D /* ServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD52B7925550051E49D /* ServiceView.swift */; };
+		5CF59DD92B7956990051E49D /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD82B7956990051E49D /* Destination.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,10 +67,9 @@
 		5C48154A2B766DD300381627 /* EmailData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailData.swift; sourceTree = "<group>"; };
 		5C48154C2B766DF900381627 /* MailComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposerView.swift; sourceTree = "<group>"; };
 		5C48154E2B7686A800381627 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		5C4815512B78D09700381627 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		5C4815532B78D09E00381627 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		5C4815562B78D86600381627 /* Tabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tabs.swift; sourceTree = "<group>"; };
-		5C4815582B78D8A200381627 /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
+		5C4815512B78D09700381627 /* DownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadView.swift; sourceTree = "<group>"; };
+		5C4815532B78D09E00381627 /* DownloadViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadViewModel.swift; sourceTree = "<group>"; };
+		5C4815582B78D8A200381627 /* DownloadDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadDestination.swift; sourceTree = "<group>"; };
 		5C48155A2B78EF1800381627 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		5C5BB9502B5E63D300ABB76C /* Loadle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Loadle.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadleApp.swift; sourceTree = "<group>"; };
@@ -105,6 +110,13 @@
 		5CC83DC72B70E824005948C1 /* ColorSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorSet.swift; sourceTree = "<group>"; };
 		5CC83DC92B70E87B005948C1 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		5CC83DCB2B70EB59005948C1 /* ThemeApplier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeApplier.swift; sourceTree = "<group>"; };
+		5CF59DC72B790CB00051E49D /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
+		5CF59DCA2B790D660051E49D /* SettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDestination.swift; sourceTree = "<group>"; };
+		5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDestination.swift; sourceTree = "<group>"; };
+		5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbar.swift; sourceTree = "<group>"; };
+		5CF59DD22B7925040051E49D /* ServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceDestination.swift; sourceTree = "<group>"; };
+		5CF59DD52B7925550051E49D /* ServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceView.swift; sourceTree = "<group>"; };
+		5CF59DD82B7956990051E49D /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,22 +142,13 @@
 			path = Styles;
 			sourceTree = "<group>";
 		};
-		5C4815502B78D08C00381627 /* Home */ = {
+		5C4815502B78D08C00381627 /* Download */ = {
 			isa = PBXGroup;
 			children = (
-				5C4815512B78D09700381627 /* HomeView.swift */,
-				5C4815532B78D09E00381627 /* HomeViewModel.swift */,
+				5C4815512B78D09700381627 /* DownloadView.swift */,
+				5C4815532B78D09E00381627 /* DownloadViewModel.swift */,
 			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		5C4815552B78D85400381627 /* Tabs */ = {
-			isa = PBXGroup;
-			children = (
-				5C4815562B78D86600381627 /* Tabs.swift */,
-				5C4815582B78D8A200381627 /* HomeTab.swift */,
-			);
-			path = Tabs;
+			path = Download;
 			sourceTree = "<group>";
 		};
 		5C5BB9472B5E63D300ABB76C = {
@@ -219,7 +222,7 @@
 		5C5C7D2A2B73EA6600C34933 /* Routing */ = {
 			isa = PBXGroup;
 			children = (
-				5C4815552B78D85400381627 /* Tabs */,
+				5CF59DC92B790D1B0051E49D /* Destinations */,
 				5C5C7D2B2B73EA9100C34933 /* Router.swift */,
 				5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */,
 			);
@@ -238,8 +241,10 @@
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				5C4815502B78D08C00381627 /* Home */,
-				5CB923512B716B730032B49C /* SettingsView.swift */,
+				5CF59DD42B7925470051E49D /* Service */,
+				5CF59DCF2B7910BE0051E49D /* Settings */,
+				5CF59DCE2B7910B80051E49D /* Onboarding */,
+				5C4815502B78D08C00381627 /* Download */,
 				5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */,
 				5C48154C2B766DF900381627 /* MailComposerView.swift */,
 			);
@@ -252,6 +257,7 @@
 				5CB923592B7170310032B49C /* ProgressBar.swift */,
 				5CB923562B716DE00032B49C /* DownloadTaskSectionView.swift */,
 				5C48154E2B7686A800381627 /* ErrorView.swift */,
+				5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -309,6 +315,7 @@
 				5C5C7D342B7528B300C34933 /* LoadingEvent.swift */,
 				5C4815462B76699300381627 /* ErrorDetails.swift */,
 				5C48154A2B766DD300381627 /* EmailData.swift */,
+				5CF59DC72B790CB00051E49D /* Service.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -349,6 +356,41 @@
 				5CC83DC92B70E87B005948C1 /* Colors.swift */,
 			);
 			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		5CF59DC92B790D1B0051E49D /* Destinations */ = {
+			isa = PBXGroup;
+			children = (
+				5C4815582B78D8A200381627 /* DownloadDestination.swift */,
+				5CF59DCA2B790D660051E49D /* SettingsDestination.swift */,
+				5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */,
+				5CF59DD22B7925040051E49D /* ServiceDestination.swift */,
+				5CF59DD82B7956990051E49D /* Destination.swift */,
+			);
+			path = Destinations;
+			sourceTree = "<group>";
+		};
+		5CF59DCE2B7910B80051E49D /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		5CF59DCF2B7910BE0051E49D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				5CB923512B716B730032B49C /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		5CF59DD42B7925470051E49D /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				5CF59DD52B7925550051E49D /* ServiceView.swift */,
+			);
+			path = Service;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -469,23 +511,27 @@
 				5CC83DBC2B70DF84005948C1 /* ViemoDownloadVideoType.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadTaskSectionView.swift in Sources */,
 				5CC83DB82B70DE50005948C1 /* YoutubeVideoCodec.swift in Sources */,
-				5C4815522B78D09700381627 /* HomeView.swift in Sources */,
-				5C4815592B78D8A200381627 /* HomeTab.swift in Sources */,
+				5C4815522B78D09700381627 /* DownloadView.swift in Sources */,
+				5C4815592B78D8A200381627 /* DownloadDestination.swift in Sources */,
+				5CF59DD92B7956990051E49D /* Destination.swift in Sources */,
 				5CB923602B7247180032B49C /* POSTCobaltResponse.swift in Sources */,
 				5CC83DBE2B70E094005948C1 /* AudioFormat.swift in Sources */,
 				5CB923522B716B730032B49C /* SettingsView.swift in Sources */,
 				5CC83DC52B70E730005948C1 /* Theme.swift in Sources */,
+				5CF59DC82B790CB00051E49D /* Service.swift in Sources */,
 				5CB9237C2B72DA230032B49C /* Strings+Generated.swift in Sources */,
 				5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */,
 				5CB9237D2B72DA230032B49C /* XCAssets+Generated.swift in Sources */,
 				5CC83DB62B70DB2B005948C1 /* DownloadVideoQuality.swift in Sources */,
+				5CF59DCD2B7910440051E49D /* OnboardingDestination.swift in Sources */,
 				5C48154B2B766DD300381627 /* EmailData.swift in Sources */,
-				5C4815542B78D09E00381627 /* HomeViewModel.swift in Sources */,
+				5CF59DD62B7925550051E49D /* ServiceView.swift in Sources */,
+				5C4815542B78D09E00381627 /* DownloadViewModel.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */,
+				5CF59DD32B7925040051E49D /* ServiceDestination.swift in Sources */,
 				5CB9235C2B717C5E0032B49C /* CobaltRequest.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
-				5C4815572B78D86600381627 /* Tabs.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
 				5C48155B2B78EF1800381627 /* NotificationService.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
@@ -494,6 +540,8 @@
 				5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */,
 				5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */,
 				5CC83DCC2B70EB59005948C1 /* ThemeApplier.swift in Sources */,
+				5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */,
+				5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */,
 				5C5C7D332B741A3F00C34933 /* NavigationLink+.swift in Sources */,
 				5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */,
 				5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */,

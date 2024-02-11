@@ -21,6 +21,8 @@ internal enum L10n {
   internal static let auto = L10n.tr("Localizable", "auto", fallback: "Auto")
   /// Best
   internal static let best = L10n.tr("Localizable", "best", fallback: "Best")
+  /// Bilibili
+  internal static let bilibili = L10n.tr("Localizable", "bilibili", fallback: "Bilibili")
   /// Cancel
   internal static let cancel = L10n.tr("Localizable", "cancel", fallback: "Cancel")
   /// Canceled!
@@ -43,6 +45,8 @@ internal enum L10n {
   internal static func inProgressDescription(_ p1: Any, _ p2: Any) -> String {
     return L10n.tr("Localizable", "in_progress_description", String(describing: p1), String(describing: p2), fallback: "%@ / %@")
   }
+  /// Instagram
+  internal static let instagram = L10n.tr("Localizable", "instagram", fallback: "Instagram")
   /// Invalid URL
   internal static let invalidUrlTitle = L10n.tr("Localizable", "invalid_url_title", fallback: "Invalid URL")
   /// It seems like your URL is not valid. Please check for invalid characters.
@@ -55,14 +59,22 @@ internal enum L10n {
   internal static let notificationDownloadTitle = L10n.tr("Localizable", "notification_download_title", fallback: "🚀 Everything is ready!")
   /// Ok
   internal static let ok = L10n.tr("Localizable", "ok", fallback: "Ok")
+  /// OK.ru
+  internal static let okVideo = L10n.tr("Localizable", "ok_video", fallback: "OK.ru")
   /// Original
   internal static let original = L10n.tr("Localizable", "original", fallback: "Original")
   /// Other
   internal static let other = L10n.tr("Localizable", "other", fallback: "Other")
   /// Paste link
   internal static let pasteLink = L10n.tr("Localizable", "paste_link", fallback: "Paste link")
+  /// Pinterest
+  internal static let pinterest = L10n.tr("Localizable", "pinterest", fallback: "Pinterest")
   /// Progressive
   internal static let progressive = L10n.tr("Localizable", "progressive", fallback: "Progressive")
+  /// Reddit
+  internal static let reddit = L10n.tr("Localizable", "reddit", fallback: "Reddit")
+  /// Rutube
+  internal static let rutube = L10n.tr("Localizable", "rutube", fallback: "Rutube")
   /// Send Email
   internal static let sendEmail = L10n.tr("Localizable", "send_email", fallback: "Send Email")
   /// I'd like to take the chance and thank you for using my app!
@@ -82,6 +94,8 @@ internal enum L10n {
   internal static func sendEmailSubject(_ p1: Any) -> String {
     return L10n.tr("Localizable", "send_email_subject", String(describing: p1), fallback: "Loadle Bug: %@")
   }
+  /// Services
+  internal static let servicesTitle = L10n.tr("Localizable", "services_title", fallback: "Services")
   /// Settings
   internal static let settings = L10n.tr("Localizable", "settings", fallback: "Settings")
   /// When "Best" format is selected, you get audio the way it is on service's side. It's not re-encoded. Everything else will be re-encoded.
@@ -134,16 +148,28 @@ internal enum L10n {
   internal static let somethingWentWrongDescription = L10n.tr("Localizable", "something_went_wrong_description", fallback: "Something went wrong. Retry again and if the error still persists, you can either contact me or file a bug report.")
   /// Uh-oh
   internal static let somethingWentWrongTitle = L10n.tr("Localizable", "something_went_wrong_title", fallback: "Uh-oh")
+  /// Soundcloud
+  internal static let soundcloud = L10n.tr("Localizable", "soundcloud", fallback: "Soundcloud")
+  /// Streamable
+  internal static let streamable = L10n.tr("Localizable", "streamable", fallback: "Streamable")
   /// Theme
   internal static let theme = L10n.tr("Localizable", "theme", fallback: "Theme")
   /// TikTok
   internal static let tiktok = L10n.tr("Localizable", "tiktok", fallback: "TikTok")
+  /// Tumblr
+  internal static let tumblr = L10n.tr("Localizable", "tumblr", fallback: "Tumblr")
+  /// Twitch
+  internal static let twitch = L10n.tr("Localizable", "twitch", fallback: "Twitch")
   /// X/Twitter
   internal static let twitter = L10n.tr("Localizable", "twitter", fallback: "X/Twitter")
   /// Video
   internal static let video = L10n.tr("Localizable", "video", fallback: "Video")
   /// Vimeo
   internal static let vimeo = L10n.tr("Localizable", "vimeo", fallback: "Vimeo")
+  /// Vine
+  internal static let vine = L10n.tr("Localizable", "vine", fallback: "Vine")
+  /// VK
+  internal static let vkVideo = L10n.tr("Localizable", "vk_video", fallback: "VK")
   /// Waiting...
   internal static let waitingDescription = L10n.tr("Localizable", "waiting_description", fallback: "Waiting...")
   /// Youtube

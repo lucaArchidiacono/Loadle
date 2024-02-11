@@ -27,48 +27,42 @@ struct SettingsView: View {
 
     @EnvironmentObject private var preferences: UserPreferences
     @EnvironmentObject private var theme: Theme
+	@Environment(Router.self) private var router: Router
 
-	@State private var router: Router = Router()
 	@State private var selected: Segment = .video
 
 	var body: some View {
-		NavigationStack(path: $router.path) {
-			List {
-				Section {
-					Picker("", selection: $selected) {
-						ForEach(Segment.allCases, id: \.self) { segment in
-							Text(segment.rawValue)
-						}
+		List {
+			Section {
+				Picker("", selection: $selected) {
+					ForEach(Segment.allCases, id: \.self) { segment in
+						Text(segment.rawValue)
 					}
-					.pickerStyle(.segmented)
-					.listRowBackground(Color.clear)
-					.listRowInsets(EdgeInsets())
 				}
+				.pickerStyle(.segmented)
+				.listRowBackground(Color.clear)
+				.listRowInsets(EdgeInsets())
+			}
 
-				switch selected {
-				case .video:
-					videoSegment
-				case .audio:
-					audioSegment
-//				case .other:
-//					otherSegment
-				}
+			switch selected {
+			case .video:
+				videoSegment
+			case .audio:
+				audioSegment
+				//				case .other:
+				//					otherSegment
 			}
-			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
-					Button(L10n.done) {
-						dismiss()
-					}
-				}
-			}
-			.withPath()
-			.background(theme.secondaryBackgroundColor)
-			.scrollContentBackground(.hidden)
-			.navigationTitle(L10n.settings)
 		}
-		.environmentObject(theme)
-		.environmentObject(preferences)
-		.applyTheme(theme)
+		.toolbar {
+			ToolbarItem(placement: .topBarTrailing) {
+				Button(L10n.done) {
+					dismiss()
+				}
+			}
+		}
+		.background(theme.secondaryBackgroundColor)
+		.scrollContentBackground(.hidden)
+		.navigationTitle(L10n.settings)
     }
 
 	@ViewBuilder

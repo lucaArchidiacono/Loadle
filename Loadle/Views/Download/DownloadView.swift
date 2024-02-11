@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  DownloadView.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 11.02.2024.
@@ -9,107 +9,112 @@ import Foundation
 import Logger
 import SwiftUI
 
-struct HomeView: View {
+struct DownloadView: View {
 	@EnvironmentObject private var preferences: UserPreferences
 	@EnvironmentObject private var theme: Theme
 
-	@State private var router: Router = Router()
+	@Environment(Router.self) private var router: Router
+
 	@State private var url: String = ""
 	@State private var errorDetails: ErrorDetails? = nil
 
-	@State private var viewModel = HomeViewModel()
+	@State private var viewModel = DownloadViewModel()
 
 	init() {
 		UITextField.appearance().clearButtonMode = .whileEditing
 	}
 
 	var body: some View {
-		NavigationStack(path: $router.path) {
-			ZStack {
-				downloadView
-				errorView
-			}
-			.toolbar {
-				ToolbarItem(placement: .topBarTrailing) {
-					Button {
-						router.presented = .settings
-					} label: {
-						Image(systemName: "gear")
-					}
-				}
-			}
-			.navigationBarTitle(L10n.appTitle)
-			.background(theme.primaryBackgroundColor)
+		ZStack {
+			downloadView
+			errorView
 		}
-		.applyTheme(theme)
-		.withSheetDestinations(destination: $router.presented)
-		.withCoverDestinations(destination: $router.covered)
+		.toolbar {
+			SettingsToolbar {
+				router.presented = .settings
+			}
+		}
+		.navigationBarTitle(L10n.appTitle)
+		.background(theme.primaryBackgroundColor)
 	}
 
 	@ViewBuilder
 	var downloadView: some View {
-		VStack {
-			Spacer()
-			HStack {
-				Image(systemName: "link")
-				TextField(L10n.pasteLink, text: $url)
-			}
-			.padding()
-			.background(theme.secondaryBackgroundColor)
-			.cornerRadius(8)
-			.padding(.horizontal)
-			.padding(.vertical, 10)
-			.foregroundColor(theme.tintColor)
-
-			Button {
-				viewModel.startDownload(using: url, preferences: preferences) { result in
-					if case .failure(let error) = result {
-						buildErrorDetails(error)
-					}
+		ScrollView {
+			VStack {
+				Spacer()
+				HStack {
+					Image(systemName: "link")
+					TextField(L10n.pasteLink, text: $url)
 				}
-			} label: {
-				Text(L10n.downloadButtonTitle)
-					.frame(maxWidth: .infinity)
-					.padding(.horizontal)
-					.padding(.vertical, 10)
-			}
-			.buttonStyle(.borderedProminent)
-			.padding(.horizontal)
-			.padding(.bottom, 10)
+				.padding()
+				.background(theme.secondaryBackgroundColor)
+				.cornerRadius(8)
+				.padding(.horizontal)
+				.padding(.vertical, 10)
+				.foregroundColor(theme.tintColor)
 
-			Toggle(isOn: $viewModel.audioOnly) {
-				Text(L10n.downloadAudioOnly)
-			}
-			.toggleStyle(iOSCheckboxToggleStyle())
-			.padding(.bottom, 10)
-
-			List(viewModel.loadingEvents, id: \.id) { event in
-				let view = DownloadTaskSectionView(
-					title: event.title,
-					image: event.image,
-					state: event.state,
-					onPause: {
-						viewModel.pauseDownload(event: event)
-					},
-					onResume: {
-						viewModel.resumeDownload(event: event)
-					})
-					.swipeActions(edge: .trailing) {
-						Button(role: .destructive,
-							   action: { viewModel.delete(event: event) } ,
-							   label: { Image(systemName: "trash") } )
-					}
-				if let fileURL = event.fileURL {
-					view
-						.contextMenu {
-							ShareLink(item: fileURL)
+				Button {
+					viewModel.startDownload(using: url, preferences: preferences) { result in
+						if case .failure(let error) = result {
+							buildErrorDetails(error)
 						}
-				} else {
-					view
+					}
+				} label: {
+					Text(L10n.downloadButtonTitle)
+						.frame(maxWidth: .infinity)
+						.padding(.horizontal)
+						.padding(.vertical, 10)
 				}
+				.buttonStyle(.borderedProminent)
+				.padding(.horizontal)
+				.padding(.bottom, 10)
+
+				Toggle(isOn: $viewModel.audioOnly) {
+					Text(L10n.downloadAudioOnly)
+				}
+				.toggleStyle(iOSCheckboxToggleStyle())
+				.padding(.bottom, 10)
+
+				ForEach(viewModel.loadingEvents, id: \.id) { event in
+					let view = DownloadTaskSectionView(
+						title: event.title,
+						image: event.image,
+						state: event.state,
+						onPause: {
+							viewModel.pauseDownload(event: event)
+						},
+						onResume: {
+							viewModel.resumeDownload(event: event)
+						})
+						.swipeActions(edge: .trailing) {
+							Button(role: .destructive,
+								   action: { viewModel.delete(event: event) } ,
+								   label: { Image(systemName: "trash") } )
+						}
+					if let fileURL = event.fileURL {
+						view
+							.padding()
+							.frame(maxWidth: .infinity)
+							.background(Color(.systemBackground))
+							.cornerRadius(12)
+							.padding()
+							.contextMenu {
+								ShareLink(item: fileURL)
+							}
+					} else {
+						view
+							.padding()
+							.frame(maxWidth: .infinity)
+							.background(Color(.systemBackground))
+							.cornerRadius(12)
+							.padding()
+					}
+				}
+//				.scrollContentBackground(.hidden)
 			}
-			.scrollContentBackground(.hidden)
 		}
+		.scrollDismissesKeyboard(.immediately)
 	}
 
 	@ViewBuilder
@@ -118,7 +123,7 @@ struct HomeView: View {
 	}
 
 	private func buildErrorDetails(_ error: Error) {
-		if let error = error as? HomeViewModelError {
+		if let error = error as? DownloadViewModelError {
 			switch error {
 			case .noValidURL:
 				errorDetails = ErrorDetails(
@@ -174,9 +179,7 @@ struct HomeView: View {
 }
 
 #Preview {
-	@State var selectedTab: Tab = .home
-	@State var router: Router = Router()
-	return ContentView(selectedTab: $selectedTab, router: $router)
+	DownloadView()
 		.environmentObject(Theme.shared)
 		.environmentObject(UserPreferences.shared)
 }

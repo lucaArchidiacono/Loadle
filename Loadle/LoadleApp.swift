@@ -17,12 +17,11 @@ struct LoadleApp: App {
     @State var preferences = UserPreferences.shared
 	@State var notificationService = NotificationService.shared
 
-	@State var selectedTab: Tab = .home
 	@State var router: Router = Router()
 
     var body: some Scene {
         WindowGroup {
-			ContentView(selectedTab: $selectedTab, router: $router)
+			ContentView(router: $router)
 				.environment(notificationService)
                 .environmentObject(theme)
                 .environmentObject(preferences)

@@ -15,68 +15,72 @@ struct ContentView: View {
 	@EnvironmentObject private var theme: Theme
 	@EnvironmentObject private var preferences: UserPreferences
 
-	@Binding var selectedTab: Tab
+	@State private var selectedDestination: Destination?
+
 	@Binding var router: Router
 
-	@State var iosTabs = iOSTabs.shared
-	@State var sidebarTabs = SidebarTabs.shared
-
 	var body: some View {
-		if UIDevice.current.userInterfaceIdiom == .pad || UIDevice.current.userInterfaceIdiom == .mac {
-			sidebarView
-		} else {
-			tabBarView
-		}
-	}
-
-	var availableTabs: [Tab] {
-		if UIDevice.current.userInterfaceIdiom == .phone || horizontalSizeClass == .compact {
-			return iosTabs.tabs
-		} else {
-			return sidebarTabs.tabs.map { $0 }
-		}
+		sidebarView
 	}
 
 	@ViewBuilder
 	var sidebarView: some View {
 		NavigationSplitView {
-			List(selection: .init(get: {
-				Optional(selectedTab)
-			}, set: { newTab in
-				if let newTab {
-					selectedTab = newTab
-				}
-			})) {
-				ForEach(availableTabs) { tab in
-					tab.label
-				}
+			List(selection: $selectedDestination) {
+				downloads
+				servicesSection
 			}
+			.listStyle(.insetGrouped)
 		} detail: {
-			selectedTab.makeContentView()
+			if let selectedDestination {
+				switch selectedDestination {
+				case .downloads:
+					DownloadDestination()
+						.id(Destination.downloads)
+				case .service(let service):
+					ServiceDestination(service: service)
+						.id(Destination.service(service: service))
+				}
+			} else {
+				EmptyView()
+			}
+		}
+		.navigationTitle(L10n.appTitle)
+	}
+
+	@ViewBuilder
+	var downloads: some View {
+		Section(L10n.downloadButtonTitle) {
+			NavigationLink.empty {
+				Label {
+					Text("All")
+				} icon: {
+					Image(systemName: "icloud.and.arrow.down")
+				}
+			} onTap: {
+				selectedDestination = .downloads
+			}
+			.tag(Destination.downloads)
 		}
 	}
 
 	@ViewBuilder
-	var tabBarView: some View {
-		TabView(selection: .init(get: {
-			selectedTab
-		}, set: { newTab in
-			selectedTab = newTab
-		})) {
-			ForEach(availableTabs) { tab in
-				tab.makeContentView()
-					.tabItem {
-						tab.label
-					}
-					.tag(tab)
-					.toolbarBackground(theme.primaryBackgroundColor.opacity(0.30), for: .tabBar)
+	var servicesSection: some View {
+		Section(L10n.servicesTitle) {
+			ForEach(Service.allCases) { service in
+				NavigationLink.empty {
+					service.label
+				} onTap: {
+					selectedDestination = .service(service: service)
+				}
+				.tag(Destination.service(service: service))
 			}
 		}
 	}
 }
 
 #Preview {
-	ContentView(selectedTab: .constant(.home), router: .constant(Router()))
+	ContentView(router: .constant(Router()))
 		.environmentObject(Theme.shared)
 		.environmentObject(UserPreferences.shared)
 }

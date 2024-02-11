@@ -11,6 +11,19 @@
 "tiktok" = "TikTok";
 "vimeo" = "Vimeo";
 "twitter" = "X/Twitter";
+"bilibili" = "Bilibili";
+"instagram" = "Instagram";
+"ok_video" = "OK.ru";
+"pinterest" = "Pinterest";
+"reddit" = "Reddit";
+"rutube" = "Rutube";
+"soundcloud" = "Soundcloud";
+"streamable" = "Streamable";
+"tumblr" = "Tumblr";
+"twitch" = "Twitch";
+"vine" = "Vine";
+"vk_video" = "VK";
+"services_title" = "Services";
 
 "done" = "Done";
 "cancel" = "Cancel";
