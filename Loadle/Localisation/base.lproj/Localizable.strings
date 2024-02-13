@@ -25,6 +25,10 @@
 "vk_video" = "VK";
 "services_title" = "Services";
 
+"download" = "Download";
+
+"all" = "All";
+
 "done" = "Done";
 "cancel" = "Cancel";
 "delete" = "Delete";

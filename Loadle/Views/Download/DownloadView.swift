@@ -34,21 +34,20 @@ struct DownloadView: View {
 				router.presented = .settings
 			}
 		}
-		.navigationBarTitle(L10n.appTitle)
+		.navigationBarTitle(L10n.download)
 		.background(theme.primaryBackgroundColor)
 	}
 
 	@ViewBuilder
 	var downloadView: some View {
-		ScrollView {
-			VStack {
-				Spacer()
+		List {
+			Section {
 				HStack {
 					Image(systemName: "link")
 					TextField(L10n.pasteLink, text: $url)
 				}
 				.padding()
-				.background(theme.secondaryBackgroundColor)
+				.background(theme.primaryBackgroundColor)
 				.cornerRadius(8)
 				.padding(.horizontal)
 				.padding(.vertical, 10)
@@ -75,46 +74,43 @@ struct DownloadView: View {
 				}
 				.toggleStyle(iOSCheckboxToggleStyle())
 				.padding(.bottom, 10)
+			}
+			.listRowBackground(theme.secondaryBackgroundColor)
 
-				ForEach(viewModel.loadingEvents, id: \.id) { event in
-					let view = DownloadTaskSectionView(
-						title: event.title,
-						image: event.image,
-						state: event.state,
-						onPause: {
-							viewModel.pauseDownload(event: event)
+			Section {
+				ForEach(viewModel.downloads, id: \.id) { download in
+					DownloadItemSectionView(
+						title: download.title,
+						image: download.image,
+						state: download.state,
+						onCancel: {
+							viewModel.cancel(download: download)
 						},
 						onResume: {
-							viewModel.resumeDownload(event: event)
+							viewModel.resume(download: download)
 						})
-						.swipeActions(edge: .trailing) {
-							Button(role: .destructive,
-								   action: { viewModel.delete(event: event) } ,
-								   label: { Image(systemName: "trash") } )
-						}
-					if let fileURL = event.fileURL {
-						view
-							.padding()
-							.frame(maxWidth: .infinity)
-							.background(Color(.systemBackground))
-							.cornerRadius(12)
-							.padding()
-							.contextMenu {
-								ShareLink(item: fileURL)
-							}
-					} else {
-						view
-							.padding()
-							.frame(maxWidth: .infinity)
-							.background(Color(.systemBackground))
-							.cornerRadius(12)
-							.padding()
+					.swipeActions(edge: .trailing) {
+						Button(role: .destructive,
+							   action: { viewModel.delete(download: download) } ,
+							   label: { Image(systemName: "trash") } )
 					}
 				}
-//				.scrollContentBackground(.hidden)
+			}
+			Section {
+				ForEach(viewModel.loadedAssets, id: \.id) { asset in
+					AssetItemSectionView(
+						title: asset.title,
+						image: asset.image,
+						fileURL: asset.fileURL)
+					.swipeActions(edge: .trailing) {
+						Button(role: .destructive,
+							   action: { viewModel.delete(asset: asset) } ,
+							   label: { Image(systemName: "trash") } )
+					}
+				}
 			}
 		}
-		.scrollDismissesKeyboard(.immediately)
+		.scrollContentBackground(.hidden)
 	}
 
 	@ViewBuilder

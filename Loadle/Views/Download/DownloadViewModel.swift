@@ -7,6 +7,7 @@
 
 import Foundation
 import Logger
+import SwiftUI
 import REST
 
 enum DownloadViewModelError: Error, CustomStringConvertible {
@@ -27,7 +28,8 @@ enum DownloadViewModelError: Error, CustomStringConvertible {
 @MainActor
 @Observable
 final class DownloadViewModel {
-	public var loadingEvents: [LoadingEvent]
+	public var downloads: [DownloadItem]
+	public var loadedAssets: [AssetItem]
 	public var isLoading: Bool = false
 	public var audioOnly: Bool = false
 
@@ -40,16 +42,14 @@ final class DownloadViewModel {
 			let downloadURL = try REST.Downloader.loadDownloadsURL()
 			let contents = try FileManager.default
 				.contentsOfDirectory(at: downloadURL, includingPropertiesForKeys: [.addedToDirectoryDateKey, .isHiddenKey], options: .skipsHiddenFiles)
-			self.loadingEvents = contents
-				.compactMap { url in
-					var event = LoadingEvent(url: url)
-					event.update(state: .success(url: url))
-					return event
-				}
+			self.loadedAssets = contents
+				.compactMap { AssetItem(fileURL: $0) }
 		} catch {
 			log(.error, error)
-			self.loadingEvents = []
+			self.loadedAssets = []
 		}
+
+		self.downloads = []
 	}
 
 	func startDownload(using url: String, preferences: UserPreferences, onComplete: @escaping (Result<Void, Error>) -> Void) {
@@ -99,52 +99,63 @@ final class DownloadViewModel {
 	}
 
 	private func download(originalURL: URL, redirectedURL: URL) {
-		let event = LoadingEvent(url: originalURL)
+		let download = DownloadItem(remoteURL: originalURL)
+		urlRegistry[originalURL] = redirectedURL
+		downloads.append(download)
+
 		downloader.download(url: redirectedURL) { [weak self] newState in
-			self?.process(newState, for: event)
+			self?.process(newState, for: download)
 		}
-
-		urlRegistry[event.url] = redirectedURL
-		loadingEvents.append(event)
 	}
 
-	private func process(_ state: REST.Download.State, for event: LoadingEvent) {
-		guard let eventIndex = loadingEvents.firstIndex(where: { $0.id == event.id }) else { return }
-		var registeredEvent = loadingEvents[eventIndex]
-		registeredEvent.update(state: state)
-		loadingEvents[eventIndex] = registeredEvent
-
-		if case let .success(url) = state {
+	private func process(_ state: REST.Downloader.ResultState, for download: DownloadItem) {
+		guard let downloadIndex = downloads.firstIndex(where: { $0.id == download.id }) else { return }
+		var registeredDownload = downloads[downloadIndex]
+		switch state {
+		case .progress(let currentBytes, let totalBytes):
+			registeredDownload.update(state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
+			downloads[downloadIndex] = registeredDownload
+		case .success(let url):
 			log(.info, "Successfully downloaded and stored the media at: \(url)")
-		} else if case .failed(let error) = state {
+			let assetItem = AssetItem(fileURL: url)
+			downloads.remove(at: downloadIndex)
+			loadedAssets.append(assetItem)
+		case .failed(let error):
 			log(.error, "The download failed due to the following error: \(error)")
+			registeredDownload.update(state: .failed)
+			downloads[downloadIndex] = registeredDownload
+		case .cancelled:
+			registeredDownload.update(state: .cancelled)
+			downloads[downloadIndex] = registeredDownload
 		}
 	}
 
-	public func delete(event: LoadingEvent) {
-		guard let eventIndex = loadingEvents.firstIndex(where: { $0.id == event.id }) else { return }
-		let event = loadingEvents[eventIndex]
-
-		if let fileURL = event.fileURL {
-			do {
-				try FileManager.default.removeItem(at: fileURL)
-			} catch {
-				log(.error, error)
-			}
-		}
-		loadingEvents.remove(at: eventIndex)
-		if let redirectURL = urlRegistry[event.url] {
+	public func delete(download: DownloadItem) {
+		guard let downloadIndex = downloads.firstIndex(where: { $0.id == download.id }) else { return }
+		let registeredDownload = downloads[downloadIndex]
+		if let redirectURL = urlRegistry[registeredDownload.remoteURL] {
 			downloader.deleteDownload(with: redirectURL)
 		}
+		downloads.remove(at: downloadIndex)
 	}
 
-	public func pauseDownload(event: LoadingEvent) {
-		guard let redirectURL = urlRegistry[event.url] else { return }
-		downloader.pauseDownload(with: redirectURL)
+	public func delete(asset: AssetItem) {
+		guard let loadedAssetIndex = loadedAssets.firstIndex(where: { $0.id == asset.id }) else { return }
+		do {
+			try FileManager.default.removeItem(at: asset.fileURL)
+		} catch {
+			log(.error, error)
+		}
+		loadedAssets.remove(at: loadedAssetIndex)
 	}
 
-	public func resumeDownload(event: LoadingEvent) {
-		guard let redirectURL = urlRegistry[event.url] else { return }
+	public func cancel(download: DownloadItem) {
+		guard let redirectURL = urlRegistry[download.remoteURL] else { return }
+		downloader.cancelDownload(with: redirectURL)
+	}
+
+	public func resume(download: DownloadItem) {
+		guard let redirectURL = urlRegistry[download.remoteURL] else { return }
 		downloader.resumeDownload(with: redirectURL)
 	}
 }

@@ -31,6 +31,9 @@ struct ContentView: View {
 				servicesSection
 			}
 			.listStyle(.insetGrouped)
+			.background(theme.secondaryBackgroundColor)
+			.scrollContentBackground(.hidden)
+			.navigationTitle(L10n.appTitle)
 		} detail: {
 			if let selectedDestination {
 				switch selectedDestination {
@@ -45,22 +48,20 @@ struct ContentView: View {
 				EmptyView()
 			}
 		}
-		.navigationTitle(L10n.appTitle)
+		.applyTheme(theme)
 	}
 
 	@ViewBuilder
 	var downloads: some View {
 		Section(L10n.downloadButtonTitle) {
-			NavigationLink.empty {
+			NavigationLink(value: Destination.downloads) {
 				Label {
-					Text("All")
+					Text(L10n.all)
 				} icon: {
 					Image(systemName: "icloud.and.arrow.down")
 				}
-			} onTap: {
-				selectedDestination = .downloads
+
 			}
-			.tag(Destination.downloads)
 		}
 	}
 
@@ -68,12 +69,9 @@ struct ContentView: View {
 	var servicesSection: some View {
 		Section(L10n.servicesTitle) {
 			ForEach(Service.allCases) { service in
-				NavigationLink.empty {
+				NavigationLink(value: Destination.service(service: service)) {
 					service.label
-				} onTap: {
-					selectedDestination = .service(service: service)
 				}
-				.tag(Destination.service(service: service))
 			}
 		}
 	}

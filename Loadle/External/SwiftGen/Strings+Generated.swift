@@ -10,6 +10,8 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name vertical_whitespace_opening_braces
 internal enum L10n {
+  /// All
+  internal static let all = L10n.tr("Localizable", "all", fallback: "All")
   /// Localizable.strings
   ///  Loadle
   /// 
@@ -35,6 +37,8 @@ internal enum L10n {
   internal static let delete = L10n.tr("Localizable", "delete", fallback: "Delete")
   /// Done
   internal static let done = L10n.tr("Localizable", "done", fallback: "Done")
+  /// Download
+  internal static let download = L10n.tr("Localizable", "download", fallback: "Download")
   /// Audio only
   internal static let downloadAudioOnly = L10n.tr("Localizable", "download_audio_only", fallback: "Audio only")
   /// Download

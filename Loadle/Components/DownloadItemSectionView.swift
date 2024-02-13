@@ -1,5 +1,5 @@
 //
-//  DownloadTaskSectionView.swift
+//  DownloadItemSectionView.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 05.02.2024.
@@ -9,20 +9,20 @@ import Foundation
 import REST
 import SwiftUI
 
-struct DownloadTaskSectionView: View {
+struct DownloadItemSectionView: View {
 	@EnvironmentObject private var theme: Theme
 
 	let title: String
 	let image: Image
-	let state: REST.Download.State
+	let state: DownloadItem.State
 
-	let onPause: () -> Void
+	let onCancel: () -> Void
 	let onResume: () -> Void
 
 	private let height: CGFloat = 20
 
     var body: some View {
-		Section {
+//		Section {
 			VStack(alignment: .leading) {
 				HStack {
 					image
@@ -38,23 +38,23 @@ struct DownloadTaskSectionView: View {
 				}
 				progressDescription
 			}
-		}
-		.applyTheme(theme)
+//		}
+//		.applyTheme(theme)
 	}
 
 	@ViewBuilder
 	var progressBar: some View {
 		switch state {
-		case .progress(let currentBytes, let totalBytes):
-			ProgressBar(currentBytes: currentBytes, totalBytes: totalBytes)
-				.frame(height: height)
-		case .success:
-			ProgressBar(currentBytes: 1.0, totalBytes: 1.0)
-				.frame(height: height)
 		case .pending:
 			ProgressBar(currentBytes: 0.0, totalBytes: 1.0)
 				.frame(height: height)
-		case .paused, .failed:
+		case .progress(let currentBytes, let totalBytes):
+			ProgressBar(currentBytes: currentBytes, totalBytes: totalBytes)
+				.frame(height: height)
+		case .completed:
+			ProgressBar(currentBytes: 1.0, totalBytes: 1.0)
+				.frame(height: height)
+		case .cancelled, .failed:
 			ProgressBar(currentBytes: 0.0, totalBytes: -1.0)
 				.frame(height: height)
 		}
@@ -67,9 +67,9 @@ struct DownloadTaskSectionView: View {
 			let completed: String = String(format: "%.1f MB", currentBytes / 1_000_000)
 			let outOf: String = totalBytes == .infinity || totalBytes <= 0 ? "n.a." : String(format: "%.1f MB", totalBytes / 1_000_000)
 			Text(L10n.inProgressDescription(completed, outOf))
-		case .success:
+		case .completed:
 			Text(L10n.completedDescription)
-		case .paused:
+		case .cancelled:
 			Text(L10n.canceledDescription)
 		case .failed:
 			Text(L10n.failedDescription)
@@ -83,19 +83,19 @@ struct DownloadTaskSectionView: View {
 		switch state {
 		case .progress:
 			Button {
-				onPause()
+				onCancel()
 			} label: {
 				Image(systemName: "xmark.circle")
 			}
 			.frame(width: height, height: height)
-		case .paused:
+		case .cancelled, .failed:
 			Button {
 				onResume()
 			} label: {
 				Image(systemName: "arrow.counterclockwise")
 			}
 			.frame(width: height, height: height)
-		case .failed, .pending, .success:
+		case .pending, .completed:
 			Button(action: {}, label: {
 				Text("")
 			})
@@ -107,15 +107,15 @@ struct DownloadTaskSectionView: View {
 
 #Preview(nil, traits: .sizeThatFitsLayout) {
 	List {
-		DownloadTaskSectionView(title: "HelloWorld.mp3",
+		DownloadItemSectionView(title: "HelloWorld.mp3",
 								image: Asset.movieIcon.swiftUIImage,
-						 //					 state: .pending,
-						 state: .progress(currentBytes: 1.0, totalBytes: -1.0),
-						 //					 state: .paused,
-						 //					 state: .failed(error: NSError()),
-						 //					 state: .success(url: URL(string: "https://youtube.com")!),
-						 onPause: {},
-						 onResume: {})
+								//					 state: .pending,
+								state: .progress(currentBytes: 1.0, totalBytes: -1.0),
+								//					 state: .paused,
+								//					 state: .failed(error: NSError()),
+								//					 state: .success(url: URL(string: "https://youtube.com")!),
+								onCancel: {},
+								onResume: {})
 	}
 	.environmentObject(Theme.shared)
 }
