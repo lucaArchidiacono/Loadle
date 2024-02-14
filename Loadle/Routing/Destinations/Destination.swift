@@ -6,16 +6,17 @@
 //
 
 import Foundation
+import Models
 
 enum Destination: Identifiable, Hashable {
 	case downloads
-	case service(service: Service)
+	case media(service: Service)
 
 	var id: String {
 		switch self {
 		case .downloads:
 			return "downloads"
-		case .service(let service):
+		case .media(let service):
 			return service.id
 		}
 	}

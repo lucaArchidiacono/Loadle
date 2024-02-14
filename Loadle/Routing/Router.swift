@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import Models
 import MessageUI
 
 enum PathDestination: Hashable {

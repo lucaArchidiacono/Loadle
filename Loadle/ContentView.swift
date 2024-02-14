@@ -6,6 +6,9 @@
 //
 
 import Logger
+import Environments
+import Generator
+import Models
 import SwiftUI
 
 struct ContentView: View {
@@ -40,9 +43,9 @@ struct ContentView: View {
 				case .downloads:
 					DownloadDestination()
 						.id(Destination.downloads)
-				case .service(let service):
-					ServiceDestination(service: service)
-						.id(Destination.service(service: service))
+				case .media(let service):
+					MediaDestination(service: service)
+						.id(Destination.media(service: service))
 				}
 			} else {
 				EmptyView()
@@ -69,7 +72,7 @@ struct ContentView: View {
 	var servicesSection: some View {
 		Section(L10n.servicesTitle) {
 			ForEach(Service.allCases) { service in
-				NavigationLink(value: Destination.service(service: service)) {
+				NavigationLink(value: Destination.media(service: service)) {
 					service.label
 				}
 			}

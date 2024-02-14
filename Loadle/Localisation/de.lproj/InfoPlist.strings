@@ -1,0 +1,9 @@
+/*
+ InfoPlist.strings
+ Loadle
+
+ Created by Luca Archidiacono on 06.02.2024.
+
+ */
+/* Bundle name */
+"CFBundleName" = "Loadle";

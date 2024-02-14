@@ -20,15 +20,10 @@ extension REST {
 		private static var dir = "DOWNLOADS"
 		
 		private var downloads: [URL: Download] = [:]
-		private var backgroundCompletionHandlers: [() -> Void] = []
 
-		public var debuggingBackroundTasks: Bool {
-			#if DEBUG
-			return true
-			#else
-			return false
-			#endif
-		}
+		public var backgroundCompletionHandler: (() -> Void)?
+
+		private let debuggingBackroundTasks: Bool
 
 		private lazy var downloadSession: URLSession = {
 			let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
@@ -37,9 +32,13 @@ extension REST {
 			return URLSession(configuration: config, delegate: self, delegateQueue: .main)
 		}()
 
-		public static var shared = REST.Downloader()
+		public static func shared(withDebuggingBackgroundTasks: Bool = false) -> REST.Downloader {
+			return REST.Downloader(debuggingBackroundTasks: withDebuggingBackgroundTasks)
+		}
+		
+		private init(debuggingBackroundTasks: Bool = false) {
+			self.debuggingBackroundTasks = debuggingBackroundTasks
 
-		private override init() {
 			super.init()
 
 			if debuggingBackroundTasks {
@@ -80,10 +79,6 @@ extension REST {
 			downloads[url]?.resume()
 		}
 
-		public func addBackgroundCompletionHandler(handler: @escaping () -> Void) {
-			backgroundCompletionHandlers.append(handler)
-		}
-
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
 			guard let url = downloadTask.originalRequest?.url else { return }
 			downloads[url]?.updateProgress(currentBytes: totalBytesWritten, totalBytes: totalBytesExpectedToWrite)
@@ -115,8 +110,7 @@ extension REST {
 
 		public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
 			DispatchQueue.main.async {
-				self.backgroundCompletionHandlers.forEach { $0() }
-				self.backgroundCompletionHandlers = []
+				self.backgroundCompletionHandler?()
 			}
 		}
 	}

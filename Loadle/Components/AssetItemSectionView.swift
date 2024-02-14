@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Models
+import Environments
 import SwiftUI
 
 struct AssetItemSectionView: View {
@@ -16,28 +18,31 @@ struct AssetItemSectionView: View {
 	let fileURL: URL
 
 	var body: some View {
-//		Section {
-			VStack(alignment: .leading) {
-				HStack {
-					image
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(width: 40, height: 40)
-					Text(title)
-						.font(.headline)
-				}
+		VStack(alignment: .leading) {
+			HStack {
+				image
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.frame(width: 40, height: 40)
+				Text(title)
+					.font(.headline)
 			}
-//		}
+		}
+		.applyTheme(theme)
 		.contextMenu {
 			ShareLink(item: fileURL)
 		}
-		.applyTheme(theme)
 	}
 }
 
 #Preview {
-	AssetItemSectionView(title: AssetItem.previews.title,
-					 image: AssetItem.previews.image,
-					 fileURL: AssetItem.previews.fileURL)
+	List {
+		Section {
+			AssetItemSectionView(title: AssetItem.previews.title,
+								 image: AssetItem.previews.image,
+								 fileURL: AssetItem.previews.fileURL)
+		}
+		.listRowBackground(Theme.shared.secondaryBackgroundColor)
+	}
 	.environmentObject(Theme.shared)
 }

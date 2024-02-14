@@ -7,6 +7,7 @@
 
 import Foundation
 import MessageUI
+import Models
 import SwiftUI
 
 struct MailComposerView: UIViewControllerRepresentable {

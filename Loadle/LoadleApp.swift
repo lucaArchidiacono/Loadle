@@ -7,6 +7,7 @@
 
 import REST
 import SwiftData
+import Environments
 import SwiftUI
 
 @main
@@ -15,14 +16,14 @@ struct LoadleApp: App {
 
     @State var theme = Theme.shared
     @State var preferences = UserPreferences.shared
-	@State var notificationService = NotificationService.shared
 
 	@State var router: Router = Router()
 
     var body: some Scene {
         WindowGroup {
 			ContentView(router: $router)
-				.environment(notificationService)
+				.environment(appDelegate.notificationService)
+				.environment(appDelegate.downloadService)
                 .environmentObject(theme)
                 .environmentObject(preferences)
         }

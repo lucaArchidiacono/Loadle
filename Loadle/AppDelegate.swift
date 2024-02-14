@@ -6,29 +6,26 @@
 //
 
 import Foundation
-import REST
 import UIKit
+import Environments
 
 class AppDelegate: NSObject, UIApplicationDelegate {
+	let notificationService: NotificationService = NotificationService.shared
+	let downloadService: DownloadService = DownloadService.shared
+
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         return true
     }
 
 	func applicationDidEnterBackground(_ application: UIApplication) {
 		#if DEBUG
-		if REST.Downloader.shared.debuggingBackroundTasks {
+		if downloadService.debuggingBackgroundTasks {
 				exit(0)
 		}
 		#endif
 	}
 
     func application(_: UIApplication, handleEventsForBackgroundURLSession identifier: String, completionHandler: @escaping () -> Void) {
-		REST.Downloader.shared.addBackgroundCompletionHandler(handler: completionHandler)
-		REST.Downloader.shared.addBackgroundCompletionHandler {
-			NotificationService.shared.dispatchNotification(
-				identifier: identifier,
-				title: L10n.notificationDownloadTitle,
-				body: L10n.notificationDownloadBody)
-		}
+		downloadService.addBackgroundCompletionHandler(handler: completionHandler)
     }
 }

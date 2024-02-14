@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import Environments
+import Generator
+import Models
 import SwiftUI
 
 struct SettingsView: View {
@@ -60,6 +63,7 @@ struct SettingsView: View {
 				}
 			}
 		}
+		.applyTheme(theme)
 		.background(theme.secondaryBackgroundColor)
 		.scrollContentBackground(.hidden)
 		.navigationTitle(L10n.settings)
@@ -187,4 +191,5 @@ struct SettingsView: View {
 	SettingsView()
 		.environmentObject(UserPreferences.shared)
 		.environmentObject(Theme.shared)
+		.environment(Router())
 }

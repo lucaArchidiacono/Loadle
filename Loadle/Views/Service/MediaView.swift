@@ -1,0 +1,27 @@
+//
+//  MediaView.swift
+//  Loadle
+//
+//  Created by Luca Archidiacono on 11.02.2024.
+//
+
+import Foundation
+import Environments
+import Models
+import SwiftUI
+
+struct MediaView: View {
+	@EnvironmentObject private var preferences: UserPreferences
+	@EnvironmentObject private var theme: Theme
+
+	@Environment(Router.self) private var router: Router
+
+	let service: Service
+
+	var body: some View {
+		ZStack {
+			EmptyView()
+		}
+		.navigationTitle(service.title)
+	}
+}

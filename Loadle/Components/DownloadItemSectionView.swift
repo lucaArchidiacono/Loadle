@@ -6,7 +6,9 @@
 //
 
 import Foundation
-import REST
+import Environments
+import Models
+import Generator
 import SwiftUI
 
 struct DownloadItemSectionView: View {
@@ -22,24 +24,22 @@ struct DownloadItemSectionView: View {
 	private let height: CGFloat = 20
 
     var body: some View {
-//		Section {
-			VStack(alignment: .leading) {
-				HStack {
-					image
-						.resizable()
-						.aspectRatio(contentMode: .fit)
-						.frame(width: 40, height: 40)
-					Text(title)
-						.font(.headline)
-				}
-				HStack {
-					progressBar
-					progressButton
-				}
-				progressDescription
+		VStack(alignment: .leading) {
+			HStack {
+				image
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.frame(width: 40, height: 40)
+				Text(title)
+					.font(.headline)
 			}
-//		}
-//		.applyTheme(theme)
+			HStack {
+				progressBar
+				progressButton
+			}
+			progressDescription
+		}
+		.applyTheme(theme)
 	}
 
 	@ViewBuilder
@@ -105,17 +105,20 @@ struct DownloadItemSectionView: View {
 	}
 }
 
-#Preview(nil, traits: .sizeThatFitsLayout) {
+#Preview {
 	List {
-		DownloadItemSectionView(title: "HelloWorld.mp3",
-								image: Asset.movieIcon.swiftUIImage,
-								//					 state: .pending,
-								state: .progress(currentBytes: 1.0, totalBytes: -1.0),
-								//					 state: .paused,
-								//					 state: .failed(error: NSError()),
-								//					 state: .success(url: URL(string: "https://youtube.com")!),
-								onCancel: {},
-								onResume: {})
+		Section {
+			DownloadItemSectionView(title: "HelloWorld.mp3",
+									image: Assets.movieIcon.swiftUIImage,
+									//					 state: .pending,
+									state: .progress(currentBytes: 1.0, totalBytes: -1.0),
+									//					 state: .paused,
+									//					 state: .failed(error: NSError()),
+									//					 state: .success(url: URL(string: "https://youtube.com")!),
+									onCancel: {},
+									onResume: {})
+		}
+		.listRowBackground(Theme.shared.secondaryBackgroundColor)
 	}
 	.environmentObject(Theme.shared)
 }

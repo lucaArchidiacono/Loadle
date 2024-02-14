@@ -1,0 +1,22 @@
+input_dir: Sources/Generator/Resources
+output_dir: ${DERIVED_SOURCES_DIR}
+
+strings:
+  inputs:
+    - en.lproj
+  outputs:
+    - templateName: structured-swift5
+      params:
+        publicAccess: true
+        bundle: Bundle.generator
+      output: Localization+Generated.swift
+xcassets:
+  inputs:
+    - Assets.xcassets
+  outputs:
+    - templateName: swift5
+      params:
+        publicAccess: true
+        enumName: Assets
+        bundle: Bundle.generator
+      output: Assets+Generated.swift
