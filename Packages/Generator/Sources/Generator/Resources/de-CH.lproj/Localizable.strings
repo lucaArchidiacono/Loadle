@@ -73,6 +73,7 @@
 /// Error Details Invalid URL
 "invalid_url_title" = "Invalid URL";
 "invalid_url_wrong_description" = "It seems like your URL is not valid. Please check for invalid characters.";
+"invalid_url_wrong_service_description" = "It seems like your URL does not match with one of the supported media services.";
 
 // Theme Settings View
 "settings_theme_title" = "Theme Selector";

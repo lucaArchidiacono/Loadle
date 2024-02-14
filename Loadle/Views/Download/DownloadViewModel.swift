@@ -15,7 +15,6 @@ import Generator
 @MainActor
 @Observable
 final class DownloadViewModel {
-	public var loadedAssets: [AssetItem] = []
 	public var errorDetails: ErrorDetails?
 
 	public var isLoading: Bool = false
@@ -26,38 +25,38 @@ final class DownloadViewModel {
 	init() {}
 
 	func startDownload(using url: String, preferences: UserPreferences, router: Router) {
+		guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
+			errorDetails = ErrorDetails(
+				title: L10n.invalidUrlTitle,
+				description: L10n.invalidUrlWrongDescription,
+				actions: [.primary(title: L10n.ok)])
+			return
+		}
+
+		guard MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) != nil else {
+			errorDetails = ErrorDetails(
+				title: L10n.invalidUrlTitle,
+				description: L10n.invalidUrlWrongServiceDescription,
+				actions: [.primary(title: L10n.ok)])
+			return
+		}
 		guard !isLoading else { return }
 		isLoading = true
 
 		downloadService.downloadMedia(using: url, preferences: preferences, audioOnly: audioOnly) { [weak self] result in
 			guard let self else { return }
 			self.isLoading = false
-
-			if case let .failure(error) = result {
-				log(.error, error)
-				buildErrorDetails(error, router: router)
+			switch result {
+			case .success(let url):
+				log(.info, url)
+			case .failure(let error):
+				errorDetails = buildGenericErrorDetails(using: error, router: router)
 			}
 		}
 	}
 }
 
 extension DownloadViewModel {
-	private func buildErrorDetails(_ error: Error, router: Router) {
-		if let error = error as? DownloadService.ServiceError {
-			switch error {
-			case .noValidURL:
-				errorDetails = ErrorDetails(
-					title: L10n.invalidUrlTitle,
-					description: L10n.invalidUrlWrongDescription,
-					actions: [.primary(title: L10n.ok)])
-			case .noRedirectURL:
-				errorDetails = buildGenericErrorDetails(using: error, router: router)
-			}
-		} else {
-			errorDetails = buildGenericErrorDetails(using: error, router: router)
-		}
-	}
-
 	private func buildGenericErrorDetails(using error: Error, router: Router) -> ErrorDetails {
 		var actions: [ErrorDetails.Action] = []
 		if MailComposerView.canSendEmail() {

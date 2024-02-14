@@ -16,7 +16,7 @@ struct MediaView: View {
 
 	@Environment(Router.self) private var router: Router
 
-	let service: Service
+	let service: MediaService
 
 	var body: some View {
 		ZStack {

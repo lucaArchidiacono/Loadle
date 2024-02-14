@@ -15,7 +15,7 @@ struct MediaDestination: View {
 	@EnvironmentObject private var preferences: UserPreferences
 	@State private var router = Router()
 
-	let service: Service
+	let service: MediaService
 
 	var body: some View {
 		NavigationStack(path: $router.path) {

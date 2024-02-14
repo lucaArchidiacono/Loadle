@@ -10,7 +10,7 @@ import Models
 
 enum Destination: Identifiable, Hashable {
 	case downloads
-	case media(service: Service)
+	case media(service: MediaService)
 
 	var id: String {
 		switch self {

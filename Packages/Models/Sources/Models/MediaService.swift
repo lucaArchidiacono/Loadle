@@ -1,16 +1,17 @@
 //
-//  Service.swift
+//  MediaService.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 11.02.2024.
 //
 
 import Foundation
+import Constants
 import Generator
 import SwiftUI
 
 @MainActor
-public enum Service: String, Hashable, Identifiable, CaseIterable {
+public enum MediaService: String, Hashable, Identifiable, CaseIterable {
 	case tiktok
 	case youtube
 	case instagram
@@ -41,6 +42,27 @@ public enum Service: String, Hashable, Identifiable, CaseIterable {
 		Self.title(for: self)
 	}
 
+	public var regex: Constants.URLRegex.RawValue {
+		switch self {
+		case .tiktok: Constants.URLRegex.tiktok.rawValue
+		case .youtube: Constants.URLRegex.youtube.rawValue
+		case .instagram: Constants.URLRegex.instagram.rawValue
+		case .twitter: Constants.URLRegex.twitter.rawValue
+		case .reddit: Constants.URLRegex.reddit.rawValue
+		case .twitch: Constants.URLRegex.twitchClips.rawValue
+		case .pinterest: Constants.URLRegex.pinterest.rawValue
+		case .bilibili: Constants.URLRegex.bilibili.rawValue
+		case .soundcloud: Constants.URLRegex.soundcloud.rawValue
+		case .okVideo: Constants.URLRegex.okVideo.rawValue
+		case .rutube: Constants.URLRegex.rutube.rawValue
+		case .streamable: Constants.URLRegex.streamable.rawValue
+		case .tumblr: Constants.URLRegex.tumblr.rawValue
+		case .vimeo: Constants.URLRegex.vimeo.rawValue
+		case .vine: Constants.URLRegex.vineArchive.rawValue
+		case .vkVideos: Constants.URLRegex.vkVideos.rawValue
+		}
+	}
+
 	private var icon: some View {
 		Self.color(for: self)
 			.clipShape(Circle())
@@ -51,7 +73,7 @@ public enum Service: String, Hashable, Identifiable, CaseIterable {
 		Text(Self.title(for: self))
 	}
 
-	static func color(for service: Service) -> Color {
+	static func color(for service: MediaService) -> Color {
 		switch service {
 		case .tiktok: return Color(red: 252/255, green: 0, blue: 118/255)
 		case .youtube: return Color(red: 255/255, green: 0, blue: 0)
@@ -72,7 +94,7 @@ public enum Service: String, Hashable, Identifiable, CaseIterable {
 		}
 	}
 
-	static func title(for service: Service) -> String {
+	static func title(for service: MediaService) -> String {
 		switch service {
 		case .tiktok: return L10n.tiktok
 		case .youtube: return L10n.youtube

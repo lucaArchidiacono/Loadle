@@ -10,20 +10,18 @@ import Logger
 import REST
 import Constants
 import SwiftUI
+import Generator
 import Models
 
 @Observable
 @MainActor
 public final class DownloadService {
 	public enum ServiceError: Error, CustomStringConvertible {
-		case noValidURL(string: String)
 		case noRedirectURL(inside: REST.HTTPResponse<POSTCobaltResponse>)
 
 		public var description: String {
 			let description = "\(type(of: self))."
 			switch self {
-			case .noValidURL(let string):
-				return description + "noValidURL: " + "Was not able to build a valid URL given: \(string)"
 			case .noRedirectURL(let response):
 				return description + "noRedirectURL: " + "There is no redirect URL inside: \(response)"
 			}
@@ -59,21 +57,11 @@ public final class DownloadService {
 		}
 	}
 
-	public func downloadWebsite(ursing url: String, preferences: UserPreferences, onComplete: @escaping (Result<Void, Error>) -> Void) {
-		guard let url = URL(string: url) else {
-			onComplete(.failure(ServiceError.noValidURL(string: url)))
-			return
-		}
-
+	public func downloadWebsite(ursing url: URL, preferences: UserPreferences, onComplete: @escaping (Result<Void, Error>) -> Void) {
 		// Download Website as archive
 	}
 
-	public func downloadMedia(using url: String, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
-		guard let url = URL(string: url) else {
-			onComplete(.failure(ServiceError.noValidURL(string: url)))
-			return
-		}
-
+	public func downloadMedia(using url: URL, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
 		let cobaltRequest = CobaltRequest(
 			url: url,
 			vCodec: preferences.videoYoutubeCodec,
@@ -92,8 +80,7 @@ public final class DownloadService {
 		loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
 			switch result {
 			case .success(let response):
-				self?.download(originalURL: url, redirectedURL: response.body.url!)
-				onComplete(.success(()))
+				self?.download(originalURL: url, redirectedURL: response.body.url!, onComplete: onComplete)
 			case .failure(let error):
 				log(.error, error)
 				onComplete(.failure(error))
@@ -101,17 +88,17 @@ public final class DownloadService {
 		}
 	}
 
-	private func download(originalURL: URL, redirectedURL: URL) {
+	private func download(originalURL: URL, redirectedURL: URL, onComplete: @escaping (Result<Void, Error>) -> Void) {
 		let download = DownloadItem(remoteURL: originalURL)
 		urlRegistry[originalURL] = redirectedURL
 		downloads.append(download)
 
 		downloader.download(url: redirectedURL) { [weak self] newState in
-			self?.process(newState, for: download)
+			self?.process(newState, for: download, onComplete: onComplete)
 		}
 	}
 
-	private func process(_ state: REST.Downloader.ResultState, for download: DownloadItem) {
+	private func process(_ state: REST.Downloader.ResultState, for download: DownloadItem, onComplete: @escaping (Result<Void, Error>) -> Void) {
 		guard let downloadIndex = downloads.firstIndex(where: { $0.id == download.id }) else { return }
 		var registeredDownload = downloads[downloadIndex]
 		switch state {
@@ -119,16 +106,17 @@ public final class DownloadService {
 			registeredDownload.update(state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
 			downloads[downloadIndex] = registeredDownload
 		case .success(let url):
-			log(.info, "Successfully downloaded and stored the media at: \(url)")
-			downloads.remove(at: downloadIndex)
+			log(.info, "Successfully downloaded the media: \(url)")
+			onComplete(.success(()))
+			registeredDownload.update(state: .completed)
 		case .failed(let error):
 			log(.error, "The download failed due to the following error: \(error)")
+			onComplete(.failure(error))
 			registeredDownload.update(state: .failed)
-			downloads[downloadIndex] = registeredDownload
 		case .cancelled:
 			registeredDownload.update(state: .cancelled)
-			downloads[downloadIndex] = registeredDownload
 		}
+		downloads[downloadIndex] = registeredDownload
 	}
 
 	public func delete(download: DownloadItem) {

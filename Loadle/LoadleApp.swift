@@ -14,18 +14,16 @@ import SwiftUI
 struct LoadleApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
-    @State var theme = Theme.shared
-    @State var preferences = UserPreferences.shared
-
 	@State var router: Router = Router()
 
     var body: some Scene {
         WindowGroup {
 			ContentView(router: $router)
+				.applyTheme(appDelegate.theme)
 				.environment(appDelegate.notificationService)
 				.environment(appDelegate.downloadService)
-                .environmentObject(theme)
-                .environmentObject(preferences)
+				.environmentObject(appDelegate.theme)
+				.environmentObject(appDelegate.preferences)
         }
     }
 }

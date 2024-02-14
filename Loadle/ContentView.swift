@@ -71,7 +71,7 @@ struct ContentView: View {
 	@ViewBuilder
 	var servicesSection: some View {
 		Section(L10n.servicesTitle) {
-			ForEach(Service.allCases) { service in
+			ForEach(MediaService.allCases) { service in
 				NavigationLink(value: Destination.media(service: service)) {
 					service.label
 				}

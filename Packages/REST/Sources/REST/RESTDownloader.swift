@@ -17,7 +17,6 @@ extension REST {
 		}
 
 		private static var identifier: String = "io.lucaa.Loadle.DownloadManager"
-		private static var dir = "DOWNLOADS"
 		
 		private var downloads: [URL: Download] = [:]
 
@@ -44,20 +43,6 @@ extension REST {
 			if debuggingBackroundTasks {
 				URLSession.shared.invalidateAndCancel()
 			}
-		}
-
-		public static func loadDownloadsURL() throws -> URL {
-			let downloadsURL = try FileManager.default
-				.url(for: .documentDirectory,
-					 in: .userDomainMask,
-					 appropriateFor: nil,
-					 create: false)
-				.appending(component: Self.dir, directoryHint: .isDirectory)
-
-			if !FileManager.default.fileExists(atPath: downloadsURL.standardized.path(percentEncoded: false)) {
-				try FileManager.default.createDirectory(at: downloadsURL, withIntermediateDirectories: true, attributes: nil)
-			}
-			return downloadsURL
 		}
 
 		public func download(url: URL, onStateChange: @escaping (ResultState) -> Void) {
@@ -88,19 +73,21 @@ extension REST {
 			guard let url = downloadTask.originalRequest?.url else { return }
 			let newFilename = downloadTask.response?.suggestedFilename ?? UUID().uuidString
 			do {
-				let downloadURL = try Self.loadDownloadsURL()
+				let downloadURL = location
+					.deletingLastPathComponent()
 					.appending(component: newFilename, directoryHint: .notDirectory)
 				try FileManager.default.moveItem(at: location, to: downloadURL)
 				downloads[url]?.complete(with: downloadURL)
-				downloads[url] = nil
 			} catch {
 				downloads[url]?.complete(with: error)
 			}
+			downloads[url] = nil
 		}
 
 		public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 			guard let error, let url = task.originalRequest?.url else { return }
 			downloads[url]?.complete(with: error)
+			downloads[url] = nil
 		}
 
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
@@ -111,6 +98,7 @@ extension REST {
 		public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
 			DispatchQueue.main.async {
 				self.backgroundCompletionHandler?()
+				self.backgroundCompletionHandler = nil
 			}
 		}
 	}

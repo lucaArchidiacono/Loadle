@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct ErrorDetails {
+public struct ErrorDetails: Identifiable, Hashable {
 	public enum Action: Hashable, Identifiable {
 		case secondary(title: String, _ action: (() -> Void)? = nil)
 		case primary(title: String, _ action: (() -> Void)? = nil)
@@ -32,6 +32,8 @@ public struct ErrorDetails {
 			lhs.id == rhs.id
 		}
 	}
+
+	public let id = UUID()
 	public let title: String
 	public let description: String
 	public let actions: [Action]
