@@ -33,17 +33,9 @@ final class DownloadViewModel {
 			return
 		}
 
-		guard MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) != nil else {
-			errorDetails = ErrorDetails(
-				title: L10n.invalidUrlTitle,
-				description: L10n.invalidUrlWrongServiceDescription,
-				actions: [.primary(title: L10n.ok)])
-			return
-		}
 		guard !isLoading else { return }
 		isLoading = true
-
-		downloadService.downloadMedia(using: url, preferences: preferences, audioOnly: audioOnly) { [weak self] result in
+		downloadService.download(using: url, preferences: preferences, audioOnly: audioOnly) { [weak self] result in
 			guard let self else { return }
 			self.isLoading = false
 			switch result {

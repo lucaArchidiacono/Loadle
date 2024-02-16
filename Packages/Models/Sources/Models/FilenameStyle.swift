@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum FilenameStyle: String, Encodable {
+public enum FilenameStyle: String, Codable {
     /// Default loadle file name pattern For example: `youtube_yPYZpwSpKmA_3840x2160_h264.mp4` or `youtube_yPYZpwSpKmA_audio.mp3`.
     case classic
     /// Title and Basic info in brackets. For example: `Video Title (2160p, h264).mp4` or `Audio Title - Audio Author.mp3`.

@@ -9,6 +9,56 @@ import Foundation
 
 extension REST {
 	public class Downloader: NSObject, URLSessionDownloadDelegate {
+		fileprivate class DownloaderStore {
+			private let queue = DispatchQueue(label: "REST.Downloader.Store")
+			private var downloads: [URL: Download] = [:]
+
+			func add(new download: Download, using url: URL) {
+				queue.sync {
+					downloads[url] = download
+				}
+			}
+
+			func cancel(using url: URL) {
+				queue.sync {
+					downloads[url]?.pause()
+				}
+			}
+
+			func delete(using url: URL) {
+				queue.sync {
+					downloads[url]?.cancel()
+					downloads.removeValue(forKey: url)
+				}
+			}
+
+			func resume(using url: URL) {
+				queue.sync {
+					downloads[url]?.resume()
+				}
+			}
+
+			func updateProgress(using url: URL, currentBytes: Int64, totalBytes: Int64) {
+				queue.sync {
+					downloads[url]?.updateProgress(currentBytes: currentBytes, totalBytes: totalBytes)
+				}
+			}
+
+			func complete(using url: URL, newFileLocation: URL) {
+				queue.sync {
+					downloads[url]?.complete(with: newFileLocation)
+					downloads[url] = nil
+				}
+			}
+
+			func complete(using url: URL, error: Error) {
+				queue.sync {
+					downloads[url]?.complete(with: error)
+					downloads[url] = nil
+				}
+			}
+		}
+
 		public enum ResultState {
 			case cancelled
 			case progress(currentBytes: Double, totalBytes: Double)
@@ -23,6 +73,7 @@ extension REST {
 		public var backgroundCompletionHandler: (() -> Void)?
 
 		private let debuggingBackroundTasks: Bool
+		private let store: DownloaderStore = DownloaderStore()
 
 		private lazy var downloadSession: URLSession = {
 			let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
@@ -47,26 +98,25 @@ extension REST {
 
 		public func download(url: URL, onStateChange: @escaping (ResultState) -> Void) {
 			let download = Download(session: downloadSession, url: url, completionHandler: onStateChange)
-			downloads[url] = download
+			store.add(new: download, using: url)
 			download.resume()
 		}
 
 		public func deleteDownload(with url: URL) {
-			downloads[url]?.cancel()
-			downloads.removeValue(forKey: url)
+			store.delete(using: url)
 		}
 
 		public func cancelDownload(with url: URL) {
-			downloads[url]?.pause()
+			store.cancel(using: url)
 		}
 
 		public func resumeDownload(with url: URL) {
-			downloads[url]?.resume()
+			store.resume(using: url)
 		}
 
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
 			guard let url = downloadTask.originalRequest?.url else { return }
-			downloads[url]?.updateProgress(currentBytes: totalBytesWritten, totalBytes: totalBytesExpectedToWrite)
+			store.updateProgress(using: url, currentBytes: totalBytesWritten, totalBytes: totalBytesExpectedToWrite)
 		}
 
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
@@ -77,22 +127,20 @@ extension REST {
 					.deletingLastPathComponent()
 					.appending(component: newFilename, directoryHint: .notDirectory)
 				try FileManager.default.moveItem(at: location, to: downloadURL)
-				downloads[url]?.complete(with: downloadURL)
+				store.complete(using: url, newFileLocation: downloadURL)
 			} catch {
-				downloads[url]?.complete(with: error)
+				store.complete(using: url, error: error)
 			}
-			downloads[url] = nil
 		}
 
 		public func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
 			guard let error, let url = task.originalRequest?.url else { return }
-			downloads[url]?.complete(with: error)
-			downloads[url] = nil
+			store.complete(using: url, error: error)
 		}
 
 		public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
 			guard let url = downloadTask.originalRequest?.url else { return }
-			downloads[url]?.updateProgress(currentBytes: fileOffset, totalBytes: expectedTotalBytes)
+			store.updateProgress(using: url, currentBytes: fileOffset, totalBytes: expectedTotalBytes)
 		}
 
 		public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {

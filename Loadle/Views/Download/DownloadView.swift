@@ -93,11 +93,11 @@ struct DownloadView: View {
 	@ViewBuilder
 	private var downloadItemsSection: some View {
 		Section {
-			ForEach(downloadService.downloads, id: \.id) { download in
+			ForEach(downloadService.store.downloads, id: \.id) { download in
 				DownloadItemSectionView(
 					title: download.title,
-					image: download.image,
 					state: download.state,
+					image: download.loadImage(completionHandler: <#T##(Image) -> Void#>),
 					onCancel: {
 						downloadService.cancel(download: download)
 					},

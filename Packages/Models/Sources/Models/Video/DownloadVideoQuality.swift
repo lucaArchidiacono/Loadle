@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum DownloadVideoQuality: String, Encodable, CaseIterable {
+public enum DownloadVideoQuality: String, Codable, CaseIterable {
     case _360 = "360"
     case _480 = "480"
     case _720 = "720"

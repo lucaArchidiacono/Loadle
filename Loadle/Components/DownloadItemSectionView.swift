@@ -15,8 +15,8 @@ struct DownloadItemSectionView: View {
 	@EnvironmentObject private var theme: Theme
 
 	let title: String
-	let image: Image
 	let state: DownloadItem.State
+	let loadImage: (Image) -> some View
 
 	let onCancel: () -> Void
 	let onResume: () -> Void
@@ -26,10 +26,12 @@ struct DownloadItemSectionView: View {
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
-				image
-					.resizable()
-					.aspectRatio(contentMode: .fit)
-					.frame(width: 40, height: 40)
+				loadImage { image in
+					image
+						.resizable()
+						.aspectRatio(contentMode: .fit)
+						.frame(width: 40, height: 40)
+				}
 				Text(title)
 					.font(.headline)
 			}

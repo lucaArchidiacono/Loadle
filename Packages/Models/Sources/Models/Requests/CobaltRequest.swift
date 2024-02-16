@@ -7,12 +7,12 @@
 
 import Foundation
 
-public struct CobaltRequest: Encodable {
+public struct CobaltRequest: Codable {
     public let url: URL
     public let vCodec: YoutubeVideoCodec
     public let vQuality: DownloadVideoQuality
     public let aFormat: AudioFormat
-    public let filenamePattern: FilenameStyle = .pretty
+	public let filenamePattern: FilenameStyle
     public let isAudioOnly: Bool
     public let isNoTTWatermark: Bool
     public let isTTFullAudio: Bool
@@ -35,5 +35,6 @@ public struct CobaltRequest: Encodable {
 		self.disableMetadata = disableMetadata
 		self.twitterGif = twitterGif
 		self.vimeoDash = vimeoDash
+		self.filenamePattern = .pretty
 	}
 }

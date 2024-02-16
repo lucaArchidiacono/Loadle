@@ -10,8 +10,7 @@ import Constants
 import Generator
 import SwiftUI
 
-@MainActor
-public enum MediaService: String, Hashable, Identifiable, CaseIterable {
+public enum MediaService: String, Hashable, Identifiable, CaseIterable, Codable {
 	case tiktok
 	case youtube
 	case instagram
@@ -29,13 +28,27 @@ public enum MediaService: String, Hashable, Identifiable, CaseIterable {
 	case vine
 	case vkVideos
 
-	public nonisolated var id: String {
-		rawValue
+	enum CodingKeys: String, CodingKey {
+		case tiktok
+		case youtube
+		case instagram
+		case twitter
+		case reddit
+		case twitch
+		case pinterest
+		case bilibili
+		case soundcloud
+		case okVideo
+		case rutube
+		case streamable
+		case tumblr
+		case vimeo
+		case vine
+		case vkVideos
 	}
 
-	@ViewBuilder
-	public var label: some View {
-		Label { text } icon: { icon }
+	public nonisolated var id: String {
+		rawValue
 	}
 
 	public var title: String {
@@ -61,6 +74,11 @@ public enum MediaService: String, Hashable, Identifiable, CaseIterable {
 		case .vine: Constants.URLRegex.vineArchive.rawValue
 		case .vkVideos: Constants.URLRegex.vkVideos.rawValue
 		}
+	}
+
+	@ViewBuilder
+	public var label: some View {
+		Label { text } icon: { icon }
 	}
 
 	private var icon: some View {
