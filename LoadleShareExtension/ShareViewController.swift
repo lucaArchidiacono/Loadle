@@ -8,10 +8,9 @@
 import UIKit
 
 class ShareViewController: UIViewController {
-	private let viewModel = ShareViewModel()
+    private let viewModel = ShareViewModel()
 
-	override func viewDidLoad() {}
+    override func viewDidLoad() {}
 
-
-	private func setupView() {}
+    private func setupView() {}
 }

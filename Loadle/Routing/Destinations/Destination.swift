@@ -9,12 +9,12 @@ import Foundation
 import Models
 
 enum Destination: Identifiable, Hashable {
-	case media(service: MediaService)
+    case media(service: MediaService)
 
-	var id: String {
-		switch self {
-		case .media(let service):
-			return service.id
-		}
-	}
+    var id: String {
+        switch self {
+        case let .media(service):
+            return service.id
+        }
+    }
 }

@@ -10,45 +10,45 @@ import Logger
 import SwiftUI
 
 public struct AsyncImageProvider<Content>: View where Content: View {
-	@State private var image: Image?
-	@State private var isLoading = false
+    @State private var image: Image?
+    @State private var isLoading = false
 
-	private let itemProvider: NSItemProvider?
-	private let placeholder: Image
+    private let itemProvider: NSItemProvider?
+    private let placeholder: Image
 
-	@ViewBuilder private var content: (Image) -> Content
+    @ViewBuilder private var content: (Image) -> Content
 
-	public init(itemProvider: NSItemProvider?, placeholder: Image, content: @escaping (Image) -> Content) {
-		self.itemProvider = itemProvider
-		self.placeholder = placeholder
-		self.content = content
-	}
+    public init(itemProvider: NSItemProvider?, placeholder: Image, content: @escaping (Image) -> Content) {
+        self.itemProvider = itemProvider
+        self.placeholder = placeholder
+        self.content = content
+    }
 
-	public var body: some View {
-		Group {
-			if let image = image {
-				content(image)
-			} else {
-				content(placeholder)
-			}
-		}
-		.onAppear {
-			loadImage()
-		}
-	}
+    public var body: some View {
+        Group {
+            if let image = image {
+                content(image)
+            } else {
+                content(placeholder)
+            }
+        }
+        .onAppear {
+            loadImage()
+        }
+    }
 
-	private func loadImage() {
-		guard !isLoading else { return }
-		isLoading = true
+    private func loadImage() {
+        guard !isLoading else { return }
+        isLoading = true
 
-		_ = itemProvider?.loadTransferable(type: Image.self, completionHandler: { result in
-			switch result {
-			case .success(let image): 
-				self.image = image
-			case .failure(let error):
-				log(.error, error)
-			}
-			isLoading = false
-		})
-	}
+        _ = itemProvider?.loadTransferable(type: Image.self, completionHandler: { result in
+            switch result {
+            case let .success(image):
+                self.image = image
+            case let .failure(error):
+                log(.error, error)
+            }
+            isLoading = false
+        })
+    }
 }

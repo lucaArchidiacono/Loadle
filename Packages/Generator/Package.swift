@@ -5,30 +5,32 @@ import PackageDescription
 
 let package = Package(
     name: "Generator",
-	defaultLocalization: "en",
+    defaultLocalization: "en",
     platforms: [.iOS(.v17), .macOS(.v14), .visionOS(.v1)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Generator",
-            targets: ["Generator"]),
+            targets: ["Generator"]
+        ),
     ],
-	dependencies: [
-		// Dependencies declare other packages that this package depends on.
-		// .package(url: /* package url */, from: "1.0.0"),
-		.package(url: "https://github.com/SwiftGen/SwiftGenPlugin", from: "6.6.0"),
-	],
+    dependencies: [
+        // Dependencies declare other packages that this package depends on.
+        // .package(url: /* package url */, from: "1.0.0"),
+        .package(url: "https://github.com/SwiftGen/SwiftGenPlugin", from: "6.6.0"),
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Generator",
-			plugins: [
-				.plugin(name: "SwiftGenPlugin", package: "SwiftGenPlugin"),
-			]
-		),
+            plugins: [
+                .plugin(name: "SwiftGenPlugin", package: "SwiftGenPlugin"),
+            ]
+        ),
         .testTarget(
             name: "GeneratorTests",
-            dependencies: ["Generator"]),
+            dependencies: ["Generator"]
+        ),
     ]
 )

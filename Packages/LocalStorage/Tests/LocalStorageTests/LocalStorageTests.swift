@@ -1,5 +1,5 @@
-import XCTest
 @testable import LocalStorage
+import XCTest
 
 final class LocalStorageTests: XCTestCase {
     func testExample() throws {

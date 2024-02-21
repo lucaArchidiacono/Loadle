@@ -9,17 +9,19 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "LocalStorage",
-            targets: ["LocalStorage"]),
+            targets: ["LocalStorage"]
+        ),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "LocalStorage",
-			resources: [.process("Resources/Loadle.xcdatamodeld")]
-		),
+            resources: [.process("Resources/Loadle.xcdatamodeld")]
+        ),
         .testTarget(
             name: "LocalStorageTests",
-            dependencies: ["LocalStorage"]),
+            dependencies: ["LocalStorage"]
+        ),
     ]
 )

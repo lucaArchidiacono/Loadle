@@ -8,6 +8,6 @@
 import Foundation
 
 struct MediaAssetItem: Codable {
-	public let fileURL: URL
-	public let mediaService: MediaService
+    public let fileURL: URL
+    public let mediaService: MediaService
 }

@@ -6,8 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import Models
+import SwiftUI
 
 @MainActor
 public final class UserPreferences: ObservableObject {

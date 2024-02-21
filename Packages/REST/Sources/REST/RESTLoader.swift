@@ -11,7 +11,7 @@ public extension REST {
     final class Loader: NSObject {
         private let session = URLSession.shared
 
-		public static let shared = Loader()
+        public static let shared = Loader()
 
         public func load(using request: REST.HTTPRequest, onComplete: @escaping (Result<REST.HTTPResponse<Data>, REST.HTTPError<Data>>) -> Void) {
             let result: Result<URLRequest, REST.HTTPError<Data>> = REST.transform(request)

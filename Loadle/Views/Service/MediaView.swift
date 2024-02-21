@@ -5,23 +5,23 @@
 //  Created by Luca Archidiacono on 11.02.2024.
 //
 
-import Foundation
 import Environments
+import Foundation
 import Models
 import SwiftUI
 
 struct MediaView: View {
-	@EnvironmentObject private var preferences: UserPreferences
-	@EnvironmentObject private var theme: Theme
+    @EnvironmentObject private var preferences: UserPreferences
+    @EnvironmentObject private var theme: Theme
 
-	@Environment(Router.self) private var router: Router
+    @Environment(Router.self) private var router: Router
 
-	let service: MediaService
+    let service: MediaService
 
-	var body: some View {
-		ZStack {
-			EmptyView()
-		}
-		.navigationTitle(service.title)
-	}
+    var body: some View {
+        ZStack {
+            EmptyView()
+        }
+        .navigationTitle(service.title)
+    }
 }

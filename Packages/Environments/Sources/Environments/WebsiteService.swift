@@ -6,94 +6,94 @@
 //
 
 import Foundation
-import WebKit
 import Logger
 import Models
+import WebKit
 
 @MainActor
 final class WebsiteService: NSObject {
-	private var store: [URL: WebViewWrapper] = [:]
+    private var store: [URL: WebViewWrapper] = [:]
 
-	public static let shared = WebsiteService()
+    public static let shared = WebsiteService()
 
-	private override init() {}
+    override private init() {}
 
-	public func download(url: URL, completionHandler: @escaping (Result<Array<WebsiteRepresentation>, Error>) -> Void) {
-		let webViewWrapper = WebViewWrapper()
+    public func download(url: URL, completionHandler: @escaping (Result<[WebsiteRepresentation], Error>) -> Void) {
+        let webViewWrapper = WebViewWrapper()
 
-		webViewWrapper.load(url: url) { [weak self] result in
-			completionHandler(result)
-			self?.store[url] = nil
-		}
+        webViewWrapper.load(url: url) { [weak self] result in
+            completionHandler(result)
+            self?.store[url] = nil
+        }
 
-		store[url] = webViewWrapper
-	}
+        store[url] = webViewWrapper
+    }
 }
 
 extension WebsiteService {
-	class WebViewWrapper: NSObject, WKNavigationDelegate {
-		private lazy var webView: WKWebView = {
-			let webView = WKWebView()
-			webView.navigationDelegate = self
-			return webView
-		}()
+    class WebViewWrapper: NSObject, WKNavigationDelegate {
+        private lazy var webView: WKWebView = {
+            let webView = WKWebView()
+            webView.navigationDelegate = self
+            return webView
+        }()
 
-		private var onComplete: ((Result<Array<WebsiteRepresentation>, Error>) -> Void)?
+        private var onComplete: ((Result<[WebsiteRepresentation], Error>) -> Void)?
 
-		func load(url: URL, onComplete: @escaping (Result<Array<WebsiteRepresentation>, Error>) -> Void) {
-			self.onComplete = onComplete
-			DispatchQueue.main.async {
-				self.webView.load(.init(url: url))
-			}
-		}
+        func load(url: URL, onComplete: @escaping (Result<[WebsiteRepresentation], Error>) -> Void) {
+            self.onComplete = onComplete
+            DispatchQueue.main.async {
+                self.webView.load(.init(url: url))
+            }
+        }
 
-		func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-			let group = DispatchGroup()
-			var representations: Array<WebsiteRepresentation> = []
+        func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
+            let group = DispatchGroup()
+            var representations: [WebsiteRepresentation] = []
 
-			let config = WKSnapshotConfiguration()
-			config.rect = .init(origin: .zero, size: webView.scrollView.contentSize)
+            let config = WKSnapshotConfiguration()
+            config.rect = .init(origin: .zero, size: webView.scrollView.contentSize)
 
-			/// Snapshot of Website - PNG Image
-			group.enter()
-			webView.takeSnapshot(with: config) { image, error in
-				defer { group.leave() }
+            /// Snapshot of Website - PNG Image
+            group.enter()
+            webView.takeSnapshot(with: config) { image, error in
+                defer { group.leave() }
 
-				if let error = error {
-					log(.error, error)
-					return
-				}
-				guard let pngData = image?.pngData() else { return }
-				representations.append(.snapshot(pngData))
-			}
+                if let error = error {
+                    log(.error, error)
+                    return
+                }
+                guard let pngData = image?.pngData() else { return }
+                representations.append(.snapshot(pngData))
+            }
 
-			/// PDF of Website
-			group.enter()
-			webView.createPDF { result in
-				defer { group.leave() }
-				switch result {
-				case .success(let data): representations.append(.pdf(data))
-				case .failure(let error): log(.error, error)
-				}
-			}
+            /// PDF of Website
+            group.enter()
+            webView.createPDF { result in
+                defer { group.leave() }
+                switch result {
+                case let .success(data): representations.append(.pdf(data))
+                case let .failure(error): log(.error, error)
+                }
+            }
 
-			/// Webarchive of Website
-			group.enter()
-			webView.createWebArchiveData { result in
-				defer { group.leave() }
-				switch result {
-				case .success(let data): representations.append(.archive(data))
-				case .failure(let error): log(.error, error)
-				}
-			}
+            /// Webarchive of Website
+            group.enter()
+            webView.createWebArchiveData { result in
+                defer { group.leave() }
+                switch result {
+                case let .success(data): representations.append(.archive(data))
+                case let .failure(error): log(.error, error)
+                }
+            }
 
-			group.notify(queue: .main) { [weak self] in
-				self?.onComplete?(.success(representations))
-			}
-		}
+            group.notify(queue: .main) { [weak self] in
+                self?.onComplete?(.success(representations))
+            }
+        }
 
-		func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-			onComplete?(.failure(error))
-		}
-	}
+        func webView(_: WKWebView, didFail _: WKNavigation!, withError error: Error) {
+            onComplete?(.failure(error))
+        }
+    }
 }

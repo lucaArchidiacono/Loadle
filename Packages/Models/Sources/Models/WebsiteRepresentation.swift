@@ -8,7 +8,7 @@
 import Foundation
 
 public enum WebsiteRepresentation: Codable {
-	case pdf(Data)
-	case snapshot(Data)
-	case archive(Data)
+    case pdf(Data)
+    case snapshot(Data)
+    case archive(Data)
 }
