@@ -175,19 +175,10 @@ struct SettingsView: View {
     var otherSegment: some View {
         Section(L10n.theme) {
             ForEach(availableColorsSets, id: \.id) { colorSetCouple in
-                Button {
-                    theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
-                } label: {
-                    HStack {
-                        Text(colorSetCouple.setName.rawValue)
-                        Spacer()
-                        if theme.selectedSet == colorSetCouple.setName {
-                            Image(systemName: "checkmark")
-                                .foregroundStyle(theme.tintColor)
-                        }
-                    }
-                }
-                .tint(colorScheme == .dark ? .white : .black)
+				SelectionButton(title: colorSetCouple.setName.rawValue, 
+								isSelected: theme.selectedSet == colorSetCouple.setName) {
+					theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
+				}
             }
 
             if MailComposerView.canSendEmail() {

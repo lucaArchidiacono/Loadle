@@ -51,6 +51,7 @@ struct DownloadView: View {
             downloadItemsSection
             //			assetItemsSection
         }
+        .background(theme.secondaryBackgroundColor)
         .scrollDismissesKeyboard(.immediately)
         .scrollContentBackground(.hidden)
     }
@@ -64,7 +65,7 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-            .background(theme.primaryBackgroundColor)
+            .background(theme.secondaryBackgroundColor)
             .cornerRadius(8)
             .foregroundColor(theme.tintColor)
 
@@ -88,7 +89,7 @@ struct DownloadView: View {
             }
         }
         .listRowSeparator(.hidden)
-        .listRowBackground(theme.secondaryBackgroundColor)
+        .listRowBackground(theme.primaryBackgroundColor)
     }
 
     @ViewBuilder
