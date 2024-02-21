@@ -11,16 +11,18 @@ import Models
 import MessageUI
 
 enum PathDestination: Hashable {
-	case themeSelector
 	case downloadDetail
 }
 
 enum SheetDestination: Hashable, Identifiable {
 	case settings
-	case mail(emailData: EmailData, onComplete: (Result<MFMailComposeResult, Error>) -> Void)
+	case download
+	case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
 
 	var id: String {
 		switch self {
+		case .download:
+			return "download"
 		case .settings:
 			return "settings"
 		case .mail:

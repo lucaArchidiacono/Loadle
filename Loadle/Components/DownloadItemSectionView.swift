@@ -10,13 +10,14 @@ import Environments
 import Models
 import Generator
 import SwiftUI
+import Fundamentals
 
 struct DownloadItemSectionView: View {
 	@EnvironmentObject private var theme: Theme
 
 	let title: String
 	let state: DownloadItem.State
-	let loadImage: (Image) -> some View
+	let iconProvider: NSItemProvider?
 
 	let onCancel: () -> Void
 	let onResume: () -> Void
@@ -26,11 +27,12 @@ struct DownloadItemSectionView: View {
     var body: some View {
 		VStack(alignment: .leading) {
 			HStack {
-				loadImage { image in
+				AsyncImageProvider(itemProvider: iconProvider, placeholder: Image(systemName: "bookmark.fill")) { image in
 					image
 						.resizable()
 						.aspectRatio(contentMode: .fit)
-						.frame(width: 40, height: 40)
+						.frame(width: 20, height: 20)
+						.foregroundStyle(theme.tintColor)
 				}
 				Text(title)
 					.font(.headline)
@@ -111,12 +113,11 @@ struct DownloadItemSectionView: View {
 	List {
 		Section {
 			DownloadItemSectionView(title: "HelloWorld.mp3",
-									image: Assets.movieIcon.swiftUIImage,
-									//					 state: .pending,
-									state: .progress(currentBytes: 1.0, totalBytes: -1.0),
+									state: .progress(currentBytes: 1.0, totalBytes: -1.0), 
 									//					 state: .paused,
 									//					 state: .failed(error: NSError()),
 									//					 state: .success(url: URL(string: "https://youtube.com")!),
+									iconProvider: nil,
 									onCancel: {},
 									onResume: {})
 		}

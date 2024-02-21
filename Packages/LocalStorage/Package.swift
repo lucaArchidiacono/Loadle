@@ -4,30 +4,22 @@
 import PackageDescription
 
 let package = Package(
-    name: "Fundamentals",
-    platforms: [.iOS(.v17), .macOS(.v14), .visionOS(.v1)],
+    name: "LocalStorage",
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "Fundamentals",
-            targets: ["Fundamentals"]
-        ),
-    ],
-    dependencies: [
-        .package(path: "../Logger"),
+            name: "LocalStorage",
+            targets: ["LocalStorage"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "Fundamentals",
-			dependencies: [
-				.product(name: "Logger", package: "Logger"),
-			]
+            name: "LocalStorage",
+			resources: [.process("Resources/Loadle.xcdatamodeld")]
 		),
         .testTarget(
-            name: "FundamentalsTests",
-            dependencies: ["Fundamentals"]
-        ),
+            name: "LocalStorageTests",
+            dependencies: ["LocalStorage"]),
     ]
 )

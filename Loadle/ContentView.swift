@@ -30,19 +30,26 @@ struct ContentView: View {
 	var sidebarView: some View {
 		NavigationSplitView {
 			List(selection: $selectedDestination) {
-				downloads
 				servicesSection
 			}
 			.listStyle(.insetGrouped)
 			.background(theme.secondaryBackgroundColor)
 			.scrollContentBackground(.hidden)
 			.navigationTitle(L10n.appTitle)
+			.toolbar {
+				SettingsToolbar(placement: .topBarLeading) {
+					router.presented = .settings
+				}
+				AddToolbar(placement: .topBarTrailing) {
+					router.presented = .download
+				}
+			}
+			.withPath()
+			.withSheetDestinations(destination: $router.presented)
+			.withCoverDestinations(destination: $router.covered)
 		} detail: {
 			if let selectedDestination {
 				switch selectedDestination {
-				case .downloads:
-					DownloadDestination()
-						.id(Destination.downloads)
 				case .media(let service):
 					MediaDestination(service: service)
 						.id(Destination.media(service: service))
@@ -55,22 +62,8 @@ struct ContentView: View {
 	}
 
 	@ViewBuilder
-	var downloads: some View {
-		Section(L10n.downloadButtonTitle) {
-			NavigationLink(value: Destination.downloads) {
-				Label {
-					Text(L10n.all)
-				} icon: {
-					Image(systemName: "icloud.and.arrow.down")
-				}
-
-			}
-		}
-	}
-
-	@ViewBuilder
 	var servicesSection: some View {
-		Section(L10n.servicesTitle) {
+		Section(L10n.mediaServicesTitle) {
 			ForEach(MediaService.allCases) { service in
 				NavigationLink(value: Destination.media(service: service)) {
 					service.label

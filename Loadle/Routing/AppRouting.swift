@@ -13,8 +13,6 @@ extension View {
 	@ViewBuilder
 	private func build(_ destination: PathDestination) -> some View {
 		switch destination {
-		case .themeSelector:
-			ThemeSelectorView()
 		case .downloadDetail:
 			EmptyView()
 		}
@@ -23,8 +21,10 @@ extension View {
 	@ViewBuilder
 	private func build(_ destination: SheetDestination) -> some View {
 		switch destination {
+		case .download:
+			DownloadDestination()
 		case .settings:
-			SettingsView()
+			SettingsDestination()
 		case let .mail(emailData, result):
 			MailComposerView(emailData: emailData, result: result)
 		}

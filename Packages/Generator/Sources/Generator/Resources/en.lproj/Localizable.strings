@@ -7,6 +7,7 @@
  */
 
 "app_title" = "Loadle";
+
 "youtube" = "Youtube";
 "tiktok" = "TikTok";
 "vimeo" = "Vimeo";
@@ -23,7 +24,11 @@
 "twitch" = "Twitch";
 "vine" = "Vine";
 "vk_video" = "VK";
-"services_title" = "Services";
+
+"media_services_title" = "Media Services";
+
+"light_theme" = "Light";
+"dark_theme" = "Dark";
 
 "download" = "Download";
 
@@ -38,9 +43,9 @@
 "other" = "Other";
 "ok" = "Ok";
 
-"send_email" = "Send Email";
-"send_email_subject" = "Loadle Bug: %@";
-"send_email_description" = "I'd like to take the chance and thank you for using my app!\nWith this email you are trying to file a bug. Please state your issue below this line:\n\n\nYour Error:\n%@";
+"send_log_file_title" = "Send Log Files";
+"send_log_file_email_subject" = "Log Files";
+"send_log_file_email_description" = "I'd like to take the chance and thank you for using my app!\nWith this email you are trying to file a bug. Please state your issue below this line:\n\n\n";
 
 "best" = "Best";
 "max" = "Max";

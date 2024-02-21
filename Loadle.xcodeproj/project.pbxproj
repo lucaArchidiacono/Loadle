@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1432B86140600F94F79 /* AddToolbar.swift */; };
+		5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1462B86384700F94F79 /* SettingsViewModel.swift */; };
+		5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1492B86530900F94F79 /* DoneToolbar.swift */; };
+		5C06E14C2B86539400F94F79 /* CancelToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E14B2B86539400F94F79 /* CancelToolbar.swift */; };
 		5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C46621D2B7C0D9300779BBE /* AssetItemSectionView.swift */; };
 		5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */; };
 		5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154C2B766DF900381627 /* MailComposerView.swift */; };
@@ -22,7 +26,6 @@
 		5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 5C5BB96B2B5E658C00ABB76C /* Logger */; };
 		5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2B2B73EA9100C34933 /* Router.swift */; };
 		5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */; };
-		5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */; };
 		5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923592B7170310032B49C /* ProgressBar.swift */; };
@@ -71,6 +74,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5C06E1432B86140600F94F79 /* AddToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbar.swift; sourceTree = "<group>"; };
+		5C06E1452B8618CC00F94F79 /* LocalStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalStorage; sourceTree = "<group>"; };
+		5C06E1462B86384700F94F79 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		5C06E1492B86530900F94F79 /* DoneToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoneToolbar.swift; sourceTree = "<group>"; };
+		5C06E14B2B86539400F94F79 /* CancelToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancelToolbar.swift; sourceTree = "<group>"; };
 		5C46621D2B7C0D9300779BBE /* AssetItemSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetItemSectionView.swift; sourceTree = "<group>"; };
 		5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSCheckBoxToggleStyle.swift; sourceTree = "<group>"; };
 		5C48154C2B766DF900381627 /* MailComposerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MailComposerView.swift; sourceTree = "<group>"; };
@@ -89,7 +97,6 @@
 		5C5BB96A2B5E657E00ABB76C /* Logger */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Logger; sourceTree = "<group>"; };
 		5C5C7D2B2B73EA9100C34933 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
 		5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouting.swift; sourceTree = "<group>"; };
-		5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorView.swift; sourceTree = "<group>"; };
 		5C7ADFB52B613A7C00B810C7 /* Fundamentals */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Fundamentals; sourceTree = "<group>"; };
 		5CB923512B716B730032B49C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadItemSectionView.swift; sourceTree = "<group>"; };
@@ -142,6 +149,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C06E1482B86529F00F94F79 /* Toolbars */ = {
+			isa = PBXGroup;
+			children = (
+				5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */,
+				5C06E1432B86140600F94F79 /* AddToolbar.swift */,
+				5C06E1492B86530900F94F79 /* DoneToolbar.swift */,
+				5C06E14B2B86539400F94F79 /* CancelToolbar.swift */,
+			);
+			path = Toolbars;
+			sourceTree = "<group>";
+		};
 		5C4815432B7665BB00381627 /* Styles */ = {
 			isa = PBXGroup;
 			children = (
@@ -211,6 +229,7 @@
 		5C5BB9652B5E646D00ABB76C /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				5C06E1452B8618CC00F94F79 /* LocalStorage */,
 				5CCA9A3D2B7CBA16000307C1 /* Generator */,
 				5CCA9A3C2B7CB8C1000307C1 /* Models */,
 				5CCA9A392B7CB7C4000307C1 /* Environments */,
@@ -246,7 +265,6 @@
 				5CF59DCF2B7910BE0051E49D /* Settings */,
 				5CF59DCE2B7910B80051E49D /* Onboarding */,
 				5C4815502B78D08C00381627 /* Download */,
-				5C5C7D2F2B73EBE600C34933 /* ThemeSelectorView.swift */,
 				5C48154C2B766DF900381627 /* MailComposerView.swift */,
 			);
 			path = Views;
@@ -255,10 +273,10 @@
 		5CB923582B7170240032B49C /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				5C06E1482B86529F00F94F79 /* Toolbars */,
 				5CB923592B7170310032B49C /* ProgressBar.swift */,
 				5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */,
 				5C48154E2B7686A800381627 /* ErrorView.swift */,
-				5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */,
 				5C46621D2B7C0D9300779BBE /* AssetItemSectionView.swift */,
 			);
 			path = Components;
@@ -295,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				5CB923512B716B730032B49C /* SettingsView.swift */,
+				5C06E1462B86384700F94F79 /* SettingsViewModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -436,6 +455,7 @@
 			files = (
 				5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */,
+				5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */,
 				5C4815522B78D09700381627 /* DownloadView.swift in Sources */,
 				5C4815592B78D8A200381627 /* DownloadDestination.swift in Sources */,
 				5CF59DD92B7956990051E49D /* Destination.swift in Sources */,
@@ -444,8 +464,9 @@
 				5CF59DCD2B7910440051E49D /* OnboardingDestination.swift in Sources */,
 				5CF59DD62B7925550051E49D /* MediaView.swift in Sources */,
 				5C4815542B78D09E00381627 /* DownloadViewModel.swift in Sources */,
+				5C06E14C2B86539400F94F79 /* CancelToolbar.swift in Sources */,
+				5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
-				5C5C7D302B73EBE600C34933 /* ThemeSelectorView.swift in Sources */,
 				5CF59DD32B7925040051E49D /* MediaDestination.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
@@ -454,6 +475,7 @@
 				5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */,
 				5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */,
 				5CC83DCC2B70EB59005948C1 /* ThemeApplier.swift in Sources */,
+				5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */,
 				5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */,
 				5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */,
 				5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */,
@@ -646,6 +668,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
@@ -689,6 +712,7 @@
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";

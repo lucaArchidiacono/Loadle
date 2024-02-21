@@ -39,8 +39,8 @@ final class DownloadViewModel {
 			guard let self else { return }
 			self.isLoading = false
 			switch result {
-			case .success(let url):
-				log(.info, url)
+			case .success:
+				log(.info, "Successfully downloaded!")
 			case .failure(let error):
 				errorDetails = buildGenericErrorDetails(using: error, router: router)
 			}
@@ -50,41 +50,9 @@ final class DownloadViewModel {
 
 extension DownloadViewModel {
 	private func buildGenericErrorDetails(using error: Error, router: Router) -> ErrorDetails {
-		var actions: [ErrorDetails.Action] = []
-		if MailComposerView.canSendEmail() {
-			actions.append(.primary(title: L10n.sendEmail) {
-				Logging.shared.getLogFiles { urls in
-					let attachements: [EmailData.AttachmentData] = urls
-						.compactMap { url in
-							guard let data = try? Data(contentsOf: url) else { return nil }
-							return EmailData.AttachmentData(data: data, mimeType: url.mimeType(), fileName: url.lastPathComponent)
-						}
-					router.presented = .mail(
-						emailData: .init(subject: L10n.sendEmailSubject(UUID()),
-										 body: .raw(body: L10n.sendEmailDescription(error)),
-										 attachments: attachements),
-						onComplete: { [weak self] result in
-							switch result {
-							case .success(let mailResult):
-								log(.info, mailResult)
-							case .failure(let error):
-								log(.error, error)
-								self?.errorDetails = nil
-								self?.errorDetails = ErrorDetails(
-									title: L10n.sendEmailFailedTitle,
-									description: L10n.sendEmailFailedDescription,
-									actions: [.primary(title: L10n.ok)])
-							}
-						})
-				}
-			})
-			actions.append(.secondary(title: L10n.cancel))
-		} else {
-			actions.append(.primary(title: L10n.ok))
-		}
 		return ErrorDetails(
 			title: L10n.somethingWentWrongTitle,
 			description: L10n.somethingWentWrongDescription,
-			actions: actions)
+			actions: [.primary(title: L10n.ok)])
 	}
 }

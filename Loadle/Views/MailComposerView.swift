@@ -14,7 +14,7 @@ struct MailComposerView: UIViewControllerRepresentable {
 	@Environment(\.dismiss) private var dismiss
 
 	let emailData: EmailData
-	var result: (Result<MFMailComposeResult, Error>) -> Void
+	var result: ((Result<MFMailComposeResult, Error>) -> Void)?
 
 	class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
 		var parent: MailComposerView
@@ -25,11 +25,11 @@ struct MailComposerView: UIViewControllerRepresentable {
 
 		func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
 			if let error = error {
-				parent.result(.failure(error))
+				parent.result?(.failure(error))
 				return
 			}
 
-			parent.result(.success(result))
+			parent.result?(.success(result))
 
 			parent.dismiss()
 		}

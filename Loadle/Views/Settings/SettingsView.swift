@@ -12,18 +12,19 @@ import Models
 import SwiftUI
 
 struct SettingsView: View {
+	@Environment(\.colorScheme) private var colorScheme
 	@Environment(\.dismiss) private var dismiss
 
 	private enum Segment: String, CaseIterable {
 		case video
 		case audio
-//		case other
+		case other
 
 		var rawValue: String {
 			switch self {
 			case .video: return L10n.video
 			case .audio: return L10n.audio
-//			case .other: return L10n.other
+			case .other: return L10n.other
 			}
 		}
 	}
@@ -32,6 +33,7 @@ struct SettingsView: View {
     @EnvironmentObject private var theme: Theme
 	@Environment(Router.self) private var router: Router
 
+	@State private var viewModel: SettingsViewModel = SettingsViewModel()
 	@State private var selected: Segment = .video
 
 	var body: some View {
@@ -52,15 +54,13 @@ struct SettingsView: View {
 				videoSegment
 			case .audio:
 				audioSegment
-				//				case .other:
-				//					otherSegment
+			case .other:
+				otherSegment
 			}
 		}
 		.toolbar {
-			ToolbarItem(placement: .topBarTrailing) {
-				Button(L10n.done) {
-					dismiss()
-				}
+			DoneToolbar(placement: .topBarTrailing) {
+				dismiss()
 			}
 		}
 		.applyTheme(theme)
@@ -173,15 +173,29 @@ struct SettingsView: View {
 
 	@ViewBuilder
 	var otherSegment: some View {
-		Section {
-			NavigationLink.empty {
-				HStack {
-					Text(L10n.theme)
-					Spacer()
-					Text(theme.selectedSet.rawValue)
+		Section(L10n.theme) {
+		ForEach(availableColorsSets, id: \.id) { colorSetCouple in
+				Button {
+					theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
+				} label: {
+					HStack {
+						Text(colorSetCouple.setName.rawValue)
+						Spacer()
+						if theme.selectedSet == colorSetCouple.setName {
+							Image(systemName: "checkmark")
+								.foregroundStyle(theme.tintColor)
+						}
+					}
 				}
-			} onTap: {
-				router.path.append(.themeSelector)
+				.tint(colorScheme == .dark ? .white : .black)
+		}
+
+			if MailComposerView.canSendEmail() {
+				Button(L10n.sendLogFileTitle) {
+					viewModel.loadLogFiles { emailData in
+						router.presented = .mail(emailData: emailData)
+					}
+				}
 			}
 		}
 	}

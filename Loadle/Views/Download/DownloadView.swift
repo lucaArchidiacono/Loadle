@@ -12,6 +12,7 @@ import Generator
 import SwiftUI
 
 struct DownloadView: View {
+	@Environment(\.dismiss) private var dismiss: DismissAction
 	@Environment(DownloadService.self) private var downloadService: DownloadService
 
 	@EnvironmentObject private var preferences: UserPreferences
@@ -34,8 +35,8 @@ struct DownloadView: View {
 			errorView
 		}
 		.toolbar {
-			SettingsToolbar {
-				router.presented = .settings
+			CancelToolbar(placement: .topBarLeading) {
+				dismiss()
 			}
 		}
 		.applyTheme(theme)
@@ -97,18 +98,19 @@ struct DownloadView: View {
 				DownloadItemSectionView(
 					title: download.title,
 					state: download.state,
-					image: download.loadImage(completionHandler: <#T##(Image) -> Void#>),
+					iconProvider: download.metaData.iconProvider,
 					onCancel: {
-						downloadService.cancel(download: download)
+						downloadService.cancel(id: download.id)
 					},
 					onResume: {
-						downloadService.resume(download: download)
+						downloadService.resume(id: download.id)
 					})
 				.swipeActions(edge: .trailing) {
 					Button(role: .destructive,
-						   action: { downloadService.delete(download: download) } ,
+						   action: { downloadService.delete(id: download.id) } ,
 						   label: { Image(systemName: "trash") } )
 				}
+
 			}
 		}
 		.listRowBackground(theme.secondaryBackgroundColor)
@@ -142,5 +144,6 @@ struct DownloadView: View {
 	DownloadView()
 		.environmentObject(Theme.shared)
 		.environmentObject(UserPreferences.shared)
+		.environment(DownloadService.shared)
 		.environment(Router())
 }

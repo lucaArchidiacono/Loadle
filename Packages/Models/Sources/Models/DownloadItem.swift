@@ -17,10 +17,11 @@ public struct DownloadItem: Identifiable, Codable {
 		case cancelled
 		case failed
 	}
-	public struct MediaDownloadInformation: Codable {
+
+	public struct MediaInformation: Codable {
 		public let mediaService: MediaService
 		public let cobaltRequest: CobaltRequest
-		
+
 		public init(mediaService: MediaService, cobaltRequest: CobaltRequest) {
 			self.mediaService = mediaService
 			self.cobaltRequest = cobaltRequest
@@ -30,21 +31,13 @@ public struct DownloadItem: Identifiable, Codable {
 	public let id: UUID
 	public let remoteURL: URL
 	public let state: State
-	public let mediaDownloadInformation: MediaDownloadInformation?
+	public let mediaInformation: MediaInformation?
 	public let metaData: LPLinkMetadata
+	public let websiteRepresentations: [WebsiteRepresentation]
 	public let onComplete: ((Result<Void, Error>) -> Void)?
 
 	public var title: String {
 		metaData.title ?? remoteURL.absoluteString
-	}
-
-	public func loadImage(completionHandler: @escaping (Image) -> Void) {
-		_ = metaData.imageProvider?.loadTransferable(type: Image.self, completionHandler: { result in
-			switch result {
-			case .success(let image): completionHandler(image)
-			case .failure: completionHandler(Image(systemName: "bookmark.fill"))
-			}
-		})
 	}
 
 	public enum CodingKeys: String, CodingKey {
@@ -53,24 +46,27 @@ public struct DownloadItem: Identifiable, Codable {
 		case remoteURL
 		case state
 		case mediaDownloadInformation
+		case websiteRepresentations
 	}
 
-	public init(remoteURL: URL, metaData: LPLinkMetadata, onComplete: ((Result<Void, Error>) -> Void)?) {
+	public init(remoteURL: URL, metaData: LPLinkMetadata, websiteRepresentations: [WebsiteRepresentation], onComplete: ((Result<Void, Error>) -> Void)?) {
 		self.id = UUID()
 		self.state = .pending
 		self.remoteURL = remoteURL
 		self.metaData = metaData
-		self.mediaDownloadInformation = nil
+		self.mediaInformation = nil
 		self.onComplete = onComplete
+		self.websiteRepresentations = websiteRepresentations
 	}
 
-	private init(id: UUID, remoteURL: URL, metaData: LPLinkMetadata, state: State, mediaDownloadInformation: MediaDownloadInformation?, onComplete: ((Result<Void, Error>) -> Void)?) {
+	private init(id: UUID, remoteURL: URL, metaData: LPLinkMetadata, state: State, mediaInformation: MediaInformation?, websiteRepresentations: [WebsiteRepresentation], onComplete: ((Result<Void, Error>) -> Void)?) {
 		self.id = id
 		self.state = state
 		self.remoteURL = remoteURL
 		self.metaData = metaData
-		self.mediaDownloadInformation = mediaDownloadInformation
+		self.mediaInformation = mediaInformation
 		self.onComplete = onComplete
+		self.websiteRepresentations = websiteRepresentations
 	}
 
 	public init(from decoder: Decoder) throws {
@@ -80,7 +76,8 @@ public struct DownloadItem: Identifiable, Codable {
 		self.metaData = try NSKeyedUnarchiver.unarchivedObject(ofClass: LPLinkMetadata.self, from: metaData)!
 		self.remoteURL = try container.decode(URL.self, forKey: .remoteURL)
 		self.state = try container.decode(State.self, forKey: .state)
-		self.mediaDownloadInformation = try container.decodeIfPresent(MediaDownloadInformation.self, forKey: .mediaDownloadInformation)
+		self.mediaInformation = try container.decodeIfPresent(MediaInformation.self, forKey: .mediaDownloadInformation)
+		self.websiteRepresentations = try container.decode(Array<WebsiteRepresentation>.self, forKey: .websiteRepresentations)
 		self.onComplete = nil
 	}
 
@@ -91,7 +88,8 @@ public struct DownloadItem: Identifiable, Codable {
 		try container.encode(encodedMetadata, forKey: .metaData)
 		try container.encode(self.remoteURL, forKey: .remoteURL)
 		try container.encode(self.state, forKey: .state)
-		try container.encodeIfPresent(self.mediaDownloadInformation, forKey: .mediaDownloadInformation)
+		try container.encodeIfPresent(self.mediaInformation, forKey: .mediaDownloadInformation)
+		try container.encode(self.websiteRepresentations, forKey: .websiteRepresentations)
 	}
 
 	public func update(state: State) -> Self {
@@ -99,16 +97,18 @@ public struct DownloadItem: Identifiable, Codable {
 						 remoteURL: self.remoteURL,
 						 metaData: self.metaData,
 						 state: state,
-						 mediaDownloadInformation: self.mediaDownloadInformation,
+						 mediaInformation: self.mediaInformation,
+						 websiteRepresentations: self.websiteRepresentations,
 						 onComplete: self.onComplete)
 	}
 
-	public func update(mediaDownloadInformation: MediaDownloadInformation) -> Self {
+	public func update(mediaInformation: MediaInformation) -> Self {
 		return Self.init(id: self.id,
 						 remoteURL: self.remoteURL,
 						 metaData: self.metaData,
 						 state: self.state,
-						 mediaDownloadInformation: mediaDownloadInformation,
+						 mediaInformation: mediaInformation,
+						 websiteRepresentations: self.websiteRepresentations,
 						 onComplete: self.onComplete)
 	}
 
@@ -120,7 +120,8 @@ public struct DownloadItem: Identifiable, Codable {
 			remoteURL: self.remoteURL,
 			metaData: self.metaData,
 			state: self.state,
-			mediaDownloadInformation: self.mediaDownloadInformation) { result in
+			mediaInformation: self.mediaInformation,
+			websiteRepresentations: self.websiteRepresentations) { result in
 				initialOnComplete?(result)
 				onComplete(result)
 			}

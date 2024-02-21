@@ -54,7 +54,6 @@ extension REST {
 			func complete(using url: URL, error: Error) {
 				queue.sync {
 					downloads[url]?.complete(with: error)
-					downloads[url] = nil
 				}
 			}
 		}
