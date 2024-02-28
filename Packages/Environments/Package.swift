@@ -29,6 +29,7 @@ let package = Package(
                 .product(name: "REST", package: "REST"),
                 .product(name: "Constants", package: "Constants"),
                 .product(name: "Models", package: "Models"),
+//				.product(name: "SQLite", package: "SQLite")
             ]
         ),
         .testTarget(

@@ -95,26 +95,25 @@ struct DownloadView: View {
     @ViewBuilder
     private var downloadItemsSection: some View {
         Section {
-            ForEach(downloadService.store.downloads, id: \.id) { download in
+			ForEach(downloadService.store.downloads, id: \.id) { download in
                 DownloadItemSectionView(
-                    title: download.title,
+					title: download.remoteURL.absoluteString,
                     state: download.state,
-                    iconProvider: download.metaData.iconProvider,
                     onCancel: {
-                        downloadService.cancel(id: download.id)
+						downloadService.cancel(item: download)
                     },
                     onResume: {
-                        downloadService.resume(id: download.id)
+                        downloadService.resume(item: download)
                     }
                 )
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive,
-                           action: { downloadService.delete(id: download.id) },
+                           action: { downloadService.delete(item: download) },
                            label: { Image(systemName: "trash") })
                 }
             }
         }
-        .listRowBackground(theme.secondaryBackgroundColor)
+        .listRowBackground(theme.primaryBackgroundColor)
     }
 
     //	@ViewBuilder

@@ -12,6 +12,7 @@
 		5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1492B86530900F94F79 /* DoneToolbar.swift */; };
 		5C06E14C2B86539400F94F79 /* CancelToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E14B2B86539400F94F79 /* CancelToolbar.swift */; };
 		5C06E14E2B86563800F94F79 /* SelectionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E14D2B86563800F94F79 /* SelectionButton.swift */; };
+		5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5C06E16D2B8E8E5200F94F79 /* LocalStorage */; };
 		5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C46621D2B7C0D9300779BBE /* AssetItemSectionView.swift */; };
 		5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */; };
 		5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C48154C2B766DF900381627 /* MailComposerView.swift */; };
@@ -135,6 +136,7 @@
 				5CB923812B73CBB90032B49C /* Shimmer in Frameworks */,
 				5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */,
 				5CCA9A322B7C9B05000307C1 /* Constants in Frameworks */,
+				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
 				5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */,
@@ -365,6 +367,7 @@
 				5CCA9A312B7C9B05000307C1 /* Constants */,
 				5CCA9A3A2B7CB826000307C1 /* Environments */,
 				5CCA9A3E2B7CC2A9000307C1 /* Models */,
+				5C06E16D2B8E8E5200F94F79 /* LocalStorage */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -824,6 +827,10 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5C06E16D2B8E8E5200F94F79 /* LocalStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LocalStorage;
+		};
 		5C5BB96B2B5E658C00ABB76C /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;

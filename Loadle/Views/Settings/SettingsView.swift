@@ -42,12 +42,15 @@ struct SettingsView: View {
                 Picker("", selection: $selected) {
                     ForEach(Segment.allCases, id: \.self) { segment in
                         Text(segment.rawValue)
+							.tag(segment)
                     }
                 }
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
+				.id("segment")
             }
+			.listRowBackground(theme.primaryBackgroundColor)
 
             switch selected {
             case .video:
@@ -80,6 +83,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoQualityDescription)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTiktokWatermarkDisabled, label: {
                 Text(L10n.settingsVideoTiktokTitleDisableWatermark)
@@ -87,6 +91,7 @@ struct SettingsView: View {
         } header: {
             Text(L10n.tiktok)
         }
+			.listRowBackground(theme.primaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTwitterConvertGifsToGif, label: {
                 Text(L10n.settingsVideoTwitterTitleConvertGifsToGif)
@@ -96,6 +101,8 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoTwitterDescriptionConvertGifsToGif)
         }
+					.listRowBackground(theme.primaryBackgroundColor)
+
         Section {
             Picker(L10n.settingsVideoYoutubeTitleCodec, selection: preferences.$videoYoutubeCodec) {
                 ForEach(YoutubeVideoCodec.allCases, id: \.self) { codec in
@@ -107,7 +114,9 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoYoutubeDescriptionCodec)
         }
-        Section {
+					.listRowBackground(theme.primaryBackgroundColor)
+
+		Section {
             Picker(L10n.settingsVideoVimeoTitleDownloadType, selection: preferences.$videoVimeoDownloadType) {
                 ForEach(ViemoDownloadVideoType.allCases, id: \.self) { type in
                     switch type {
@@ -123,6 +132,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoVimeoDescriptionDownloadType)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -136,6 +146,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioFormatDescription)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$audioMute, label: {
                 Text(L10n.settingsAudioMuteTitle)
@@ -143,6 +154,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioMuteDescription)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
         Section {
             Picker(L10n.settingsAudioYoutubeTitleAudioTrack, selection: preferences.$audioYoutubeTrack) {
                 ForEach(YoutubeAudioTrack.allCases, id: \.self) { track in
@@ -159,6 +171,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioYoutubeDescriptionAudioTrack)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
 
         Section {
             Toggle(isOn: preferences.$audioTiktokFullAudio, label: {
@@ -169,6 +182,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioTiktokDescriptionFullAudio)
         }
+		.listRowBackground(theme.primaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -180,15 +194,20 @@ struct SettingsView: View {
 					theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
 				}
             }
+        }
+		.listRowBackground(theme.primaryBackgroundColor)
 
+		Section {
             if MailComposerView.canSendEmail() {
                 Button(L10n.sendLogFileTitle) {
                     viewModel.loadLogFiles { emailData in
                         router.presented = .mail(emailData: emailData)
                     }
                 }
+				.tint(theme.tintColor)
             }
-        }
+		}
+		.listRowBackground(theme.primaryBackgroundColor)
     }
 }
 

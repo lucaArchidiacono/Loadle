@@ -41,9 +41,18 @@ final class DownloadViewModel {
             self.isLoading = false
             switch result {
             case .success:
-                log(.info, "Successfully downloaded!")
+                log(.info, "Successfully launched a download!")
             case let .failure(error):
-                errorDetails = buildGenericErrorDetails(using: error, router: router)
+				if let downloadServiceError = error as? DownloadService.Error {
+					switch downloadServiceError {
+					case .noValidMediaService:
+						errorDetails = ErrorDetails(title: L10n.invalidUrlTitle,
+													description: L10n.mediaServicesTitle,
+													actions: [.primary(title: L10n.ok)])
+					}
+				} else {
+					errorDetails = buildGenericErrorDetails(using: error, router: router)
+				}
             }
         }
     }

@@ -6,7 +6,15 @@
 //
 
 import Foundation
+import LocalStorage
 
-class StorageService {
-    init() {}
+public class StorageService {
+	public let mediaAssetStorage: MediaAssetStorage = MediaAssetStorage(persistenceController: PersistenceController.shared)
+	public let downloadItemStorage: DownloadItemStorage = DownloadItemStorage(persistenceController: PersistenceController.shared)
+
+	public static let shared: StorageService = StorageService()
+
+    private init() {}
+
+
 }

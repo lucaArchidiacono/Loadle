@@ -13,45 +13,77 @@ extension REST {
             private let queue = DispatchQueue(label: "REST.Downloader.Store")
             private var downloads: [URL: Download] = [:]
 
-            func add(new download: Download, using url: URL) {
+			fileprivate func setup(using session: URLSession) {
+				queue.async { [weak self] in
+					guard let self else { return }
+
+					let group = DispatchGroup()
+					group.enter()
+					session.getAllTasks { tasks in
+						defer { group.leave() }
+
+						let downloads = tasks
+							.compactMap { task -> (URL, Download)? in
+								guard let downloadTask = task as? URLSessionDownloadTask, let url = downloadTask.originalRequest?.url else { return nil }
+								let download = Download(downloadTask: downloadTask, session: session, url: url)
+								return (url, download)
+							}
+							.reduce(into: [URL: Download](), { partialResult, couple in
+								partialResult[couple.0] = couple.1
+							})
+
+						self.downloads = downloads
+					}
+					group.wait()
+				}
+			}
+
+			fileprivate func getAllDownloads(onComplete: @escaping ([Download]) -> Void) {
+				queue.async { [weak self] in
+					guard let self else { return }
+					onComplete(Array(self.downloads.values).sorted(by: { $0.createdAt < $1.createdAt }))
+				}
+			}
+
+            fileprivate func add(new download: Download, using url: URL) {
                 queue.sync {
                     downloads[url] = download
                 }
             }
 
-            func cancel(using url: URL) {
+            fileprivate func cancel(using url: URL) {
                 queue.sync {
                     downloads[url]?.pause()
                 }
             }
 
-            func delete(using url: URL) {
+            fileprivate func delete(using url: URL) {
                 queue.sync {
                     downloads[url]?.cancel()
                     downloads.removeValue(forKey: url)
                 }
             }
 
-            func resume(using url: URL) {
+            fileprivate func resume(using url: URL) {
                 queue.sync {
                     downloads[url]?.resume()
                 }
             }
 
-            func updateProgress(using url: URL, currentBytes: Int64, totalBytes: Int64) {
+            fileprivate func updateProgress(using url: URL, currentBytes: Int64, totalBytes: Int64) {
                 queue.sync {
                     downloads[url]?.updateProgress(currentBytes: currentBytes, totalBytes: totalBytes)
                 }
             }
 
-            func complete(using url: URL, newFileLocation: URL) {
+            fileprivate func complete(using url: URL, newFileLocation: URL) {
                 queue.sync {
                     downloads[url]?.complete(with: newFileLocation)
                     downloads[url] = nil
                 }
             }
 
-            func complete(using url: URL, error: Error) {
+            fileprivate func complete(using url: URL, error: Error) {
                 queue.sync {
                     downloads[url]?.complete(with: error)
                 }
@@ -59,6 +91,7 @@ extension REST {
         }
 
         public enum ResultState {
+			case pending
             case cancelled
             case progress(currentBytes: Double, totalBytes: Double)
             case success(url: URL)
@@ -67,12 +100,10 @@ extension REST {
 
         private static var identifier: String = "io.lucaa.Loadle.DownloadManager"
 
-        private var downloads: [URL: Download] = [:]
-
         public var backgroundCompletionHandler: (() -> Void)?
 
         private let debuggingBackroundTasks: Bool
-        private let store: DownloaderStore = .init()
+		private let store: DownloaderStore = DownloaderStore()
 
         private lazy var downloadSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
@@ -87,16 +118,23 @@ extension REST {
 
         private init(debuggingBackroundTasks: Bool = false) {
             self.debuggingBackroundTasks = debuggingBackroundTasks
-
+			
             super.init()
 
             if debuggingBackroundTasks {
                 URLSession.shared.invalidateAndCancel()
             }
+
+			store.setup(using: downloadSession)
         }
 
+		public func getAllDownloads(onComplete: @escaping ([Download]) -> Void) {
+			store.getAllDownloads(onComplete: onComplete)
+		}
+
         public func download(url: URL, onStateChange: @escaping (ResultState) -> Void) {
-            let download = Download(session: downloadSession, url: url, completionHandler: onStateChange)
+            let download = Download(session: downloadSession, url: url)
+			download.completionHandler = onStateChange
             store.add(new: download, using: url)
             download.resume()
         }
@@ -134,6 +172,7 @@ extension REST {
 
         public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
             guard let error, let url = task.originalRequest?.url else { return }
+			if let urlError = error as NSError?, urlError.code == NSURLErrorCancelled { return }
             store.complete(using: url, error: error)
         }
 
@@ -150,7 +189,7 @@ extension REST {
         }
     }
 
-    fileprivate class Download: NSObject {
+    public class Download: NSObject {
         fileprivate enum State: String {
             case ready
             case downloading
@@ -163,10 +202,21 @@ extension REST {
         private var downloadTask: URLSessionDownloadTask?
         private var resumedData: Data?
 
-        private let url: URL
-        private let completionHandler: (Downloader.ResultState) -> Void
+		fileprivate let createdAt: Date = .now
 
-        private(set) var state: State = .ready
+        public let url: URL
+		public var completionHandler: ((Downloader.ResultState) -> Void)? {
+			didSet {
+				completionHandler?(resultState)
+			}
+		}
+
+		private(set) fileprivate var resultState: Downloader.ResultState = .pending {
+			didSet {
+				completionHandler?(resultState)
+			}
+		}
+        private(set) fileprivate var state: State = .ready
 
         var isCoalescable: Bool {
             return (state == .ready) ||
@@ -187,10 +237,10 @@ extension REST {
             return state == .completed
         }
 
-        init(session: URLSession, url: URL, completionHandler: @escaping (Downloader.ResultState) -> Void) {
+		init(downloadTask: URLSessionDownloadTask? = nil, session: URLSession, url: URL) {
+			self.downloadTask = downloadTask
             self.session = session
             self.url = url
-            self.completionHandler = completionHandler
         }
 
         fileprivate func resume() {
@@ -220,7 +270,7 @@ extension REST {
                 guard let self else { return }
                 defer {
                     self.cleanup()
-                    self.completionHandler(.cancelled)
+					self.resultState = .cancelled
                 }
 
                 guard let resumedData else { return }
@@ -237,7 +287,7 @@ extension REST {
                 cleanup()
             }
 
-            completionHandler(.success(url: newFileLocation))
+            resultState = .success(url: newFileLocation)
         }
 
         fileprivate func complete(with error: Error) {
@@ -249,11 +299,11 @@ extension REST {
                 cleanup()
             }
 
-            completionHandler(.failed(error: error))
+			resultState = .failed(error: error)
         }
 
         fileprivate func updateProgress(currentBytes: Int64, totalBytes: Int64) {
-            completionHandler(.progress(currentBytes: Double(currentBytes), totalBytes: Double(totalBytes)))
+            completionHandler?(.progress(currentBytes: Double(currentBytes), totalBytes: Double(totalBytes)))
         }
 
         private func cleanup() {

@@ -17,7 +17,6 @@ struct DownloadItemSectionView: View {
 
     let title: String
     let state: DownloadItem.State
-    let iconProvider: NSItemProvider?
 
     let onCancel: () -> Void
     let onResume: () -> Void
@@ -27,14 +26,12 @@ struct DownloadItemSectionView: View {
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
-                AsyncImageProvider(itemProvider: iconProvider, placeholder: Image(systemName: "bookmark.fill")) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 20, height: 20)
-                        .foregroundStyle(theme.tintColor)
-                }
-                Text(title)
+				Image(systemName: "bookmark.fill")
+					.resizable()
+					.aspectRatio(contentMode: .fit)
+					.frame(width: 20, height: 20)
+					.foregroundStyle(theme.tintColor)
+				Text(title)
                     .font(.headline)
             }
             HStack {
@@ -117,7 +114,6 @@ struct DownloadItemSectionView: View {
                                     //					 state: .paused,
                                     //					 state: .failed(error: NSError()),
                                     //					 state: .success(url: URL(string: "https://youtube.com")!),
-                                    iconProvider: nil,
                                     onCancel: {},
                                     onResume: {})
         }

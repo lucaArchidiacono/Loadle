@@ -18,113 +18,70 @@ public struct DownloadItem: Identifiable, Codable {
         case failed
     }
 
-    public struct MediaInformation: Codable {
-        public let mediaService: MediaService
-        public let cobaltRequest: CobaltRequest
-
-        public init(mediaService: MediaService, cobaltRequest: CobaltRequest) {
-            self.mediaService = mediaService
-            self.cobaltRequest = cobaltRequest
-        }
-    }
-
     public let id: UUID
     public let remoteURL: URL
+    public let streamURL: URL
     public let state: State
-    public let mediaInformation: MediaInformation?
-    public let metaData: LPLinkMetadata
-    public let websiteRepresentations: [WebsiteRepresentation]
-    public let onComplete: ((Result<Void, Error>) -> Void)?
+	public let metadata: LPLinkMetadata
+	public let service: MediaService
 
-    public var title: String {
-        metaData.title ?? remoteURL.absoluteString
-    }
+	enum CodingKeys: CodingKey {
+		case id
+		case remoteURL
+		case streamURL
+		case state
+		case service
+		case metadata
+	}
 
-    public enum CodingKeys: String, CodingKey {
-        case id
-        case metaData
-        case remoteURL
-        case state
-        case mediaDownloadInformation
-        case websiteRepresentations
-    }
-
-    public init(remoteURL: URL, metaData: LPLinkMetadata, websiteRepresentations: [WebsiteRepresentation], onComplete: ((Result<Void, Error>) -> Void)?) {
-        id = UUID()
-        state = .pending
+	public init(remoteURL: URL, streamURL: URL, service: MediaService, metadata: LPLinkMetadata) {
+		self.id = UUID()
+		self.state = .pending
         self.remoteURL = remoteURL
-        self.metaData = metaData
-        mediaInformation = nil
-        self.onComplete = onComplete
-        self.websiteRepresentations = websiteRepresentations
+		self.service = service
+		self.streamURL = streamURL
+		self.metadata = metadata
     }
 
-    private init(id: UUID, remoteURL: URL, metaData: LPLinkMetadata, state: State, mediaInformation: MediaInformation?, websiteRepresentations: [WebsiteRepresentation], onComplete: ((Result<Void, Error>) -> Void)?) {
+	public init(id: UUID, remoteURL: URL, streamURL: URL, service: MediaService, state: State, metadata: LPLinkMetadata) {
         self.id = id
         self.state = state
         self.remoteURL = remoteURL
-        self.metaData = metaData
-        self.mediaInformation = mediaInformation
-        self.onComplete = onComplete
-        self.websiteRepresentations = websiteRepresentations
+		self.streamURL = streamURL
+		self.service = service
+		self.metadata = metadata
     }
 
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(UUID.self, forKey: .id)
-        let metaData = try container.decode(Data.self, forKey: .metaData)
-        self.metaData = try NSKeyedUnarchiver.unarchivedObject(ofClass: LPLinkMetadata.self, from: metaData)!
-        remoteURL = try container.decode(URL.self, forKey: .remoteURL)
-        state = try container.decode(State.self, forKey: .state)
-        mediaInformation = try container.decodeIfPresent(MediaInformation.self, forKey: .mediaDownloadInformation)
-        websiteRepresentations = try container.decode([WebsiteRepresentation].self, forKey: .websiteRepresentations)
-        onComplete = nil
-    }
+	public init(from decoder: Decoder) throws {
+		let container = try decoder.container(keyedBy: CodingKeys.self)
+		self.id = try container.decode(UUID.self, forKey: .id)
+		self.remoteURL = try container.decode(URL.self, forKey: .remoteURL)
+		self.streamURL = try container.decode(URL.self, forKey: .streamURL)
+		self.state = try container.decode(State.self, forKey: .state)
+		self.service = try container.decode(MediaService.self, forKey: .service)
 
-    public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encode(id, forKey: .id)
-        let encodedMetadata = try NSKeyedArchiver.archivedData(withRootObject: metaData, requiringSecureCoding: true)
-        try container.encode(encodedMetadata, forKey: .metaData)
-        try container.encode(remoteURL, forKey: .remoteURL)
-        try container.encode(state, forKey: .state)
-        try container.encodeIfPresent(mediaInformation, forKey: .mediaDownloadInformation)
-        try container.encode(websiteRepresentations, forKey: .websiteRepresentations)
-    }
+		let metadata = try container.decode(Data.self, forKey: .metadata)
+		self.metadata = try NSKeyedUnarchiver.unarchivedObject(ofClass: LPLinkMetadata.self, from: metadata)!
+	}
+
+	public func encode(to encoder: Encoder) throws {
+		var container = encoder.container(keyedBy: CodingKeys.self)
+		try container.encode(id, forKey: .id)
+		try container.encode(remoteURL, forKey: .remoteURL)
+		try container.encode(streamURL, forKey: .streamURL)
+		try container.encode(state, forKey: .state)
+		try container.encode(service, forKey: .service)
+
+		let encodedMetadata = try NSKeyedArchiver.archivedData(withRootObject: metadata, requiringSecureCoding: true)
+		try container.encode(encodedMetadata, forKey: .metadata)
+	}
 
     public func update(state: State) -> Self {
         return Self(id: id,
-                    remoteURL: remoteURL,
-                    metaData: metaData,
+					remoteURL: remoteURL, 
+					streamURL: streamURL,
+					service: service,
                     state: state,
-                    mediaInformation: mediaInformation,
-                    websiteRepresentations: websiteRepresentations,
-                    onComplete: onComplete)
-    }
-
-    public func update(mediaInformation: MediaInformation) -> Self {
-        return Self(id: id,
-                    remoteURL: remoteURL,
-                    metaData: metaData,
-                    state: state,
-                    mediaInformation: mediaInformation,
-                    websiteRepresentations: websiteRepresentations,
-                    onComplete: onComplete)
-    }
-
-    public func update(onComplete: @escaping (Result<Void, Error>) -> Void) -> Self {
-        let initialOnComplete = self.onComplete
-
-        return Self(
-            id: id,
-            remoteURL: remoteURL,
-            metaData: metaData,
-            state: state,
-            mediaInformation: mediaInformation,
-            websiteRepresentations: websiteRepresentations
-        ) { result in
-            initialOnComplete?(result)
-            onComplete(result)
-        }
+					metadata: metadata)
     }
 }

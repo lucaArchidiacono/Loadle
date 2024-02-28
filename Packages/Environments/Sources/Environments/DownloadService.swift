@@ -18,126 +18,15 @@ import SwiftUI
 @Observable
 @MainActor
 public final class DownloadService {
-    public enum ServiceError: Error, CustomStringConvertible {
-        case noRedirectURL(inside: REST.HTTPResponse<POSTCobaltResponse>)
+	public enum Error: Swift.Error, CustomStringConvertible {
+		case noValidMediaService(url: URL)
 
         public var description: String {
             let description = "\(type(of: self))."
             switch self {
-            case let .noRedirectURL(response):
-                return description + "noRedirectURL: " + "There is no redirect URL inside: \(response)"
+			case let .noValidMediaService(url):
+				return description + "noValidMediaService: " + "No valid `MediaService` found given the url: \(url)"
             }
-        }
-    }
-
-    @Observable
-    public class DownloadServiceStore {
-        private static func fileURL() throws -> URL {
-            let downloadsURL = try FileManager.default
-                .url(for: .documentDirectory,
-                     in: .userDomainMask,
-                     appropriateFor: .documentsDirectory,
-                     create: true)
-                .appendingPathComponent("DOWNLOADS", conformingTo: .directory)
-
-            if !FileManager.default.fileExists(atPath: downloadsURL.standardizedFileURL.path(percentEncoded: false)) {
-                try FileManager.default.createDirectory(at: downloadsURL, withIntermediateDirectories: true, attributes: nil)
-            }
-
-            return downloadsURL.appendingPathComponent("downloadItems.data", conformingTo: .data)
-        }
-
-        public var downloads: [DownloadItem] = []
-
-        @ObservationIgnored
-        private var mediaURLRegistry: [DownloadItem.ID: URL] = [:]
-        @ObservationIgnored
-        private var queue = DispatchQueue(label: "Service.Download.Store")
-
-        init() {
-            //			self.downloads = loadFromStorage()
-            //			self.mediaURLRegistry = self.downloads.reduce(into: [DownloadItem.ID: URL](), { partialResult, downloadItem in
-            //				partialResult[downloadItem.id] = downloadItem.remoteURL
-            //			})
-        }
-
-        func store(download: DownloadItem) {
-            queue.sync {
-                downloads.append(download)
-                //				storeIntoStorage()
-            }
-        }
-
-        func store(mediaURL: URL, using id: DownloadItem.ID) {
-            queue.sync {
-                mediaURLRegistry[id] = mediaURL
-            }
-        }
-
-        func get(with id: DownloadItem.ID) -> URL? {
-            queue.sync {
-                mediaURLRegistry[id]
-            }
-        }
-
-        func delete(with id: DownloadItem.ID) {
-            queue.sync {
-                guard let index = downloads.firstIndex(where: { $0.id == id }) else { return }
-                downloads.remove(at: index)
-                //				storeIntoStorage()
-                mediaURLRegistry.removeValue(forKey: id)
-            }
-        }
-
-        func update(with id: DownloadItem.ID, result: Result<Void, Error>) {
-            queue.sync {
-                guard let index = downloads.firstIndex(where: { $0.id == id }) else { return }
-
-                switch result {
-                case .success:
-                    downloads[index] = downloads[index].update(state: .completed)
-                    //					storeIntoStorage()
-                    downloads[index].onComplete?(.success(()))
-                case let .failure(error):
-                    downloads[index] = downloads[index].update(state: .failed)
-                    //					storeIntoStorage()
-                    downloads[index].onComplete?(.failure(error))
-                }
-            }
-        }
-
-        func update(with id: DownloadItem.ID, state: DownloadItem.State) {
-            queue.sync {
-                guard let index = downloads.firstIndex(where: { $0.id == id }) else { return }
-                downloads[index] = downloads[index].update(state: state)
-                //				storeIntoStorage()
-            }
-        }
-
-        func update(with id: DownloadItem.ID, mediaInformation: DownloadItem.MediaInformation) {
-            queue.sync {
-                guard let index = downloads.firstIndex(where: { $0.id == id }) else { return }
-                downloads[index] = downloads[index].update(mediaInformation: mediaInformation)
-                //				storeIntoStorage()
-            }
-        }
-
-        private func storeIntoStorage() {
-            guard let data = try? JSONEncoder().encode(downloads),
-                  let outfile = try? Self.fileURL()
-            else { return }
-
-            try? data.write(to: outfile)
-        }
-
-        private func loadFromStorage() -> [DownloadItem] {
-            guard let outfile = try? Self.fileURL(),
-                  let data = try? Data(contentsOf: outfile)
-            else { return [] }
-
-            let downloadItems = try? JSONDecoder().decode([DownloadItem].self, from: data)
-
-            return downloadItems ?? []
         }
     }
 
@@ -149,15 +38,66 @@ public final class DownloadService {
         #endif
     }
 
-    public let store: DownloadServiceStore = .init()
+	@Observable
+	public final class DownloadServiceStore {
+		public var downloads: [DownloadItem] = []
 
+		@ObservationIgnored
+		private var queue = DispatchQueue(label: "Service.Download.Store")
+
+		func setup(downloadTasks: [REST.Download]) {
+			StorageService.shared.downloadItemStorage.loadAll()
+				.filter { downloadItem in
+					!downloadTasks.contains(where: { $0.url == downloadItem.streamURL })
+				}
+				.forEach {
+					StorageService.shared.downloadItemStorage.delete($0.id)
+				}
+
+			self.downloads = StorageService.shared.downloadItemStorage.loadAll()
+		}
+
+		func addNew(_ downloadItem: DownloadItem) {
+			queue.sync {
+				downloads.append(downloadItem)
+				StorageService.shared.downloadItemStorage.store(downloadItem: downloadItem)
+			}
+		}
+
+		func delete(_ downloadItem: DownloadItem) {
+			queue.sync {
+				guard let index = downloads.firstIndex(where: { $0.id == downloadItem.id }) else {
+					log(.warning, "Was not able to find and delete `DownloadItem` with id: \(downloadItem.id)")
+					return
+				}
+
+				downloads.remove(at: index)
+				StorageService.shared.downloadItemStorage.delete(downloadItem.id)
+			}
+		}
+
+		func update(using url: URL, state: DownloadItem.State) {
+			queue.sync {
+				guard let index = downloads.firstIndex(where: { $0.streamURL == url }) else {
+					log(.warning, "Was not able to find and update `DownloadItem` with url: \(url)")
+					return
+				}
+
+				let updatedDownloadItem = downloads[index].update(state: state)
+				downloads[index] = updatedDownloadItem
+				StorageService.shared.downloadItemStorage.store(downloadItem: updatedDownloadItem)
+			}
+		}
+	}
+
+	public let store = DownloadServiceStore()
+	
     @ObservationIgnored
     private var backgroundCompletionHandlers: [() -> Void] = []
     @ObservationIgnored
     private let loader = REST.Loader.shared
     @ObservationIgnored
     private lazy var mediaDownloader: REST.Downloader = .shared(withDebuggingBackgroundTasks: debuggingBackgroundTasks)
-
     @ObservationIgnored
     private let websiteLoader = WebsiteService.shared
     @ObservationIgnored
@@ -170,43 +110,109 @@ public final class DownloadService {
             self?.backgroundCompletionHandlers.forEach { $0() }
             self?.backgroundCompletionHandlers = []
         }
+
+		mediaDownloader.getAllDownloads { [weak self] downloadTasks in
+			guard let self else { return }
+			self.store.setup(downloadTasks: downloadTasks)
+
+			downloadTasks.forEach { download in
+				download.completionHandler = { newState in
+					self.process(url: download.url, newState: newState)
+				}
+			}
+		}
     }
 
-    public func download(using url: URL, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
-        let provider = LPMetadataProvider()
+	public func download(using url: URL, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
+		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
+			onComplete(.failure(Error.noValidMediaService(url: url)))
+			return
+		}
 
-        provider.startFetchingMetadata(for: url) { [weak self] metadata, error in
-            guard let self else { return }
-            if let error {
-                log(.error, error)
-                onComplete(.failure(error))
-                return
-            }
-
-            guard let metadata else { return }
-            log(.debug, "Fetched metadata successfully: \(metadata)")
-
-            startDownload(using: url, metadata: metadata, preferences: preferences, audioOnly: audioOnly, onComplete: onComplete)
-        }
+		fetchMetaData(using: url) { [weak self] result in
+			guard let self else { return }
+			
+			switch result {
+			case .success(let metadata):
+				self.downloadMedia(using: url,
+							  preferences: preferences,
+							  audioOnly: audioOnly,
+							  metadata: metadata,
+							  service: mediaService,
+							  onComplete: onComplete)
+			case .failure(let error):
+				onComplete(.failure(error))
+			}
+		}
     }
 
-    public func delete(id: DownloadItem.ID) {
-        if let mediaURL: URL = store.get(with: id) {
-            mediaDownloader.deleteDownload(with: mediaURL)
-        }
-        store.delete(with: id)
+	private func fetchMetaData(using url: URL, onComplete: @escaping (Result<LPLinkMetadata, Swift.Error>) -> Void) {
+		let provider = LPMetadataProvider()
+
+		provider.startFetchingMetadata(for: url) { metadata, error in
+			if let error {
+				log(.error, error)
+				onComplete(.failure(error))
+				return
+			}
+
+			log(.debug, "Fetched metadata successfully: \(metadata!)")
+			onComplete(.success(metadata!))
+		}
+	}
+
+	private func downloadMedia(using url: URL, 
+							   preferences: UserPreferences,
+							   audioOnly: Bool,
+							   metadata: LPLinkMetadata,
+							   service: MediaService,
+							   onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
+		let cobaltRequest = CobaltRequest(
+			url: url,
+			vCodec: preferences.videoYoutubeCodec,
+			vQuality: preferences.videoDownloadQuality,
+			aFormat: preferences.audioFormat,
+			isAudioOnly: audioOnly,
+			isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
+			isTTFullAudio: preferences.audioTiktokFullAudio,
+			isAudioMuted: preferences.audioMute,
+			dubLang: preferences.audioYoutubeTrack == .original ? false : true,
+			disableMetadata: false,
+			twitterGif: preferences.videoTwitterConvertGifsToGif,
+			vimeoDash: preferences.videoVimeoDownloadType == .progressive ? nil : true
+		)
+
+		let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
+
+		loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
+			guard let self else { return }
+			switch result {
+			case let .success(response):
+				let streamURL = response.body.url!
+				let downloadItem = DownloadItem(remoteURL: url, streamURL: streamURL, service: service, metadata: metadata)
+				store.addNew(downloadItem)
+
+				mediaDownloader.download(url: streamURL) { newState in
+					self.process(url: streamURL, newState: newState)
+				}
+
+				onComplete(.success(()))
+			case let .failure(error):
+				onComplete(.failure(error))
+			}
+		}
+	}
+
+	public func delete(item: DownloadItem) {
+		mediaDownloader.deleteDownload(with: item.remoteURL)
     }
 
-    public func cancel(id: DownloadItem.ID) {
-        if let mediaURL: URL = store.get(with: id) {
-            mediaDownloader.cancelDownload(with: mediaURL)
-        }
+    public func cancel(item: DownloadItem) {
+		mediaDownloader.cancelDownload(with: item.remoteURL)
     }
 
-    public func resume(id: DownloadItem.ID) {
-        if let mediaURL: URL = store.get(with: id) {
-            mediaDownloader.resumeDownload(with: mediaURL)
-        }
+    public func resume(item: DownloadItem) {
+		mediaDownloader.resumeDownload(with: item.remoteURL)
     }
 
     public func addBackgroundCompletionHandler(handler: @escaping () -> Void) {
@@ -217,93 +223,19 @@ public final class DownloadService {
 // MARK: - Private API
 
 extension DownloadService {
-    private func startDownload(using url: URL, metadata: LPLinkMetadata, preferences: UserPreferences, audioOnly: Bool, onComplete: @escaping (Result<Void, Error>) -> Void) {
-        downloadWebsite(using: url) { [weak self] result in
-            guard let self else { return }
-
-            switch result {
-            case let .success(websiteRepresentations):
-                let download = DownloadItem(remoteURL: url, metaData: metadata, websiteRepresentations: websiteRepresentations, onComplete: onComplete)
-                store.store(download: download)
-
-                guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
-                    // Save to local DB as Asset without Media
-                    self.store.update(with: download.id, result: .success(()))
-                    return
-                }
-
-                let cobaltRequest = CobaltRequest(
-                    url: download.remoteURL,
-                    vCodec: preferences.videoYoutubeCodec,
-                    vQuality: preferences.videoDownloadQuality,
-                    aFormat: preferences.audioFormat,
-                    isAudioOnly: audioOnly,
-                    isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
-                    isTTFullAudio: preferences.audioTiktokFullAudio,
-                    isAudioMuted: preferences.audioMute,
-                    dubLang: preferences.audioYoutubeTrack == .original ? false : true,
-                    disableMetadata: false,
-                    twitterGif: preferences.videoTwitterConvertGifsToGif,
-                    vimeoDash: preferences.videoVimeoDownloadType == .progressive ? nil : true
-                )
-
-                let mediaInformation = DownloadItem.MediaInformation(mediaService: mediaService, cobaltRequest: cobaltRequest)
-                store.update(with: download.id, mediaInformation: mediaInformation)
-
-                self.downloadMedia(id: download.id, mediaInformation: mediaInformation)
-            case let .failure(error):
-                onComplete(.failure(error))
-            }
-        }
-    }
-
-    private func downloadWebsite(using url: URL, onComplete: @escaping (Result<[WebsiteRepresentation], Error>) -> Void) {
-        // Download Website as archive
-        websiteLoader.download(url: url) { result in
-            switch result {
-            case let .success(representations):
-                log(.debug, "Downloaded following representations: \(representations)")
-                onComplete(.success(representations))
-            case let .failure(error):
-                log(.error, error)
-                onComplete(.failure(error))
-            }
-        }
-    }
-
-    private func downloadMedia(id: DownloadItem.ID, mediaInformation: DownloadItem.MediaInformation) {
-        let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(mediaInformation.cobaltRequest))
-        loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
-            guard let self else { return }
-            switch result {
-            case let .success(response):
-                self.downloadMedia(id: id, redirectedURL: response.body.url!)
-            case let .failure(error):
-                self.store.update(with: id, result: .failure(error))
-            }
-        }
-    }
-
-    private func downloadMedia(id: DownloadItem.ID, redirectedURL: URL) {
-        store.store(mediaURL: redirectedURL, using: id)
-
-        mediaDownloader.download(url: redirectedURL) { [weak self] newState in
-            self?.process(newState, for: id)
-        }
-    }
-
-    private func process(_ state: REST.Downloader.ResultState, for id: DownloadItem.ID) {
-        switch state {
-        case let .progress(currentBytes, totalBytes):
-            store.update(with: id, state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
-        case let .success(url):
-            log(.info, "Successfully downloaded the media: \(url)")
-            store.update(with: id, result: .success(()))
-        case let .failed(error):
-            log(.error, "The download failed due to the following error: \(error)")
-            store.update(with: id, result: .failure(error))
-        case .cancelled:
-            store.update(with: id, state: .cancelled)
-        }
-    }
+	private func process(url: URL, newState: REST.Downloader.ResultState) {
+		switch newState {
+		case .pending: break
+		case let .progress(currentBytes, totalBytes):
+			store.update(using: url, state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
+		case let .success(fileURL):
+			log(.info, "Successfully downloaded the media: \(url)")
+			store.update(using: url, state: .completed)
+		case let .failed(error):
+			log(.error, "The download failed due to the following error: \(error)")
+			store.update(using: url, state: .failed)
+		case .cancelled:
+			store.update(using: url, state: .cancelled)
+		}
+	}
 }

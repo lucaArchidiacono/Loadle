@@ -70,6 +70,7 @@ struct ContentView: View {
                 }
             }
         }
+		.listRowBackground(theme.primaryBackgroundColor)
     }
 }
 
