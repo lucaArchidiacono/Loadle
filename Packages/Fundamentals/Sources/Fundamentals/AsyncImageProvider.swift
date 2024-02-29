@@ -14,11 +14,11 @@ public struct AsyncImageProvider<Content>: View where Content: View {
     @State private var isLoading = false
 
     private let itemProvider: NSItemProvider?
-    private let placeholder: Image
+    private let placeholder: Image?
 
     @ViewBuilder private var content: (Image) -> Content
 
-    public init(itemProvider: NSItemProvider?, placeholder: Image, content: @escaping (Image) -> Content) {
+    public init(itemProvider: NSItemProvider?, placeholder: Image?, content: @escaping (Image) -> Content) {
         self.itemProvider = itemProvider
         self.placeholder = placeholder
         self.content = content
@@ -28,9 +28,11 @@ public struct AsyncImageProvider<Content>: View where Content: View {
         Group {
             if let image = image {
                 content(image)
-            } else {
+            } else if let placeholder = placeholder {
                 content(placeholder)
-            }
+			} else {
+				content(Image(uiImage: UIImage()))
+			}
         }
         .onAppear {
             loadImage()
@@ -45,8 +47,7 @@ public struct AsyncImageProvider<Content>: View where Content: View {
             switch result {
             case let .success(image):
                 self.image = image
-            case let .failure(error):
-                log(.error, error)
+            case .failure: break
             }
             isLoading = false
         })

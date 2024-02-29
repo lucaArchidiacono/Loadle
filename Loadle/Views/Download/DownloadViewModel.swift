@@ -36,7 +36,7 @@ final class DownloadViewModel {
 
         guard !isLoading else { return }
         isLoading = true
-        downloadService.download(using: url, preferences: preferences, audioOnly: audioOnly) { [weak self] result in
+        downloadService.download(using: url, audioOnly: audioOnly) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
             switch result {

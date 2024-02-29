@@ -12,8 +12,8 @@ import CoreData
 public final class DownloadItemStorage {
 	private let context: NSManagedObjectContext
 
-	public init(persistenceController: PersistenceController) {
-		self.context = persistenceController.container.newBackgroundContext()
+	init(container: PMPersistentContainer) {
+		self.context = container.newBackgroundContext()
 		self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 	}
 

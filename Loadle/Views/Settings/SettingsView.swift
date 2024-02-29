@@ -50,7 +50,7 @@ struct SettingsView: View {
                 .listRowInsets(EdgeInsets())
 				.id("segment")
             }
-			.listRowBackground(theme.primaryBackgroundColor)
+			.listRowBackground(theme.secondaryBackgroundColor)
 
             switch selected {
             case .video:
@@ -67,7 +67,7 @@ struct SettingsView: View {
             }
         }
         .applyTheme(theme)
-        .background(theme.secondaryBackgroundColor)
+        .background(theme.primaryBackgroundColor)
         .scrollContentBackground(.hidden)
         .navigationTitle(L10n.settings)
     }
@@ -83,7 +83,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoQualityDescription)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTiktokWatermarkDisabled, label: {
                 Text(L10n.settingsVideoTiktokTitleDisableWatermark)
@@ -91,7 +91,7 @@ struct SettingsView: View {
         } header: {
             Text(L10n.tiktok)
         }
-			.listRowBackground(theme.primaryBackgroundColor)
+			.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTwitterConvertGifsToGif, label: {
                 Text(L10n.settingsVideoTwitterTitleConvertGifsToGif)
@@ -101,7 +101,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoTwitterDescriptionConvertGifsToGif)
         }
-					.listRowBackground(theme.primaryBackgroundColor)
+					.listRowBackground(theme.secondaryBackgroundColor)
 
         Section {
             Picker(L10n.settingsVideoYoutubeTitleCodec, selection: preferences.$videoYoutubeCodec) {
@@ -114,7 +114,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoYoutubeDescriptionCodec)
         }
-					.listRowBackground(theme.primaryBackgroundColor)
+					.listRowBackground(theme.secondaryBackgroundColor)
 
 		Section {
             Picker(L10n.settingsVideoVimeoTitleDownloadType, selection: preferences.$videoVimeoDownloadType) {
@@ -132,7 +132,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoVimeoDescriptionDownloadType)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -146,7 +146,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioFormatDescription)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$audioMute, label: {
                 Text(L10n.settingsAudioMuteTitle)
@@ -154,7 +154,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioMuteDescription)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Picker(L10n.settingsAudioYoutubeTitleAudioTrack, selection: preferences.$audioYoutubeTrack) {
                 ForEach(YoutubeAudioTrack.allCases, id: \.self) { track in
@@ -171,7 +171,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioYoutubeDescriptionAudioTrack)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
 
         Section {
             Toggle(isOn: preferences.$audioTiktokFullAudio, label: {
@@ -182,7 +182,7 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioTiktokDescriptionFullAudio)
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -195,7 +195,7 @@ struct SettingsView: View {
 				}
             }
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
 
 		Section {
             if MailComposerView.canSendEmail() {
@@ -207,7 +207,7 @@ struct SettingsView: View {
 				.tint(theme.tintColor)
             }
 		}
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
     }
 }
 

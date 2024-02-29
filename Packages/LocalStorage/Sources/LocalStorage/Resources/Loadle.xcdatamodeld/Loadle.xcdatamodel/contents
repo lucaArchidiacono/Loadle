@@ -7,8 +7,14 @@
         <attribute name="service" attributeType="String"/>
         <attribute name="state" attributeType="Binary"/>
         <attribute name="streamURL" attributeType="URI"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="MediaAssetEntity" representedClassName="MediaAssetEntity" syncable="YES">
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fileURL" attributeType="URI"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="metadata" attributeType="Transformable" valueTransformerName="LPLinkMetadataTransformer"/>
@@ -17,6 +23,9 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>
+            </uniquenessConstraint>
+            <uniquenessConstraint>
+                <constraint value="fileURL"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

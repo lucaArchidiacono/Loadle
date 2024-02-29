@@ -30,10 +30,9 @@ public final class MetadataService {
 	public func fetch(using url: URL, onComplete: @escaping (Result<LPLinkMetadata, Swift.Error>) -> Void) {
 		let provider = LPMetadataProvider()
 
-		provider.startFetchingMetadata(for: url) { [weak self] metadata, error in
-			guard let self else { return }
+		provider.startFetchingMetadata(for: url) { metadata, error in
 			if let error {
-				log(.error, error)
+				log(.error, "Fetching metadata for \(url) resulted into: \(error)")
 				onComplete(.failure(error))
 				return
 			}

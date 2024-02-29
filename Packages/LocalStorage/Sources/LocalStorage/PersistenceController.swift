@@ -27,10 +27,15 @@ class PMPersistentContainer: NSPersistentContainer {
 public struct PersistenceController {
 	public static let shared = PersistenceController()
 
+	public let downloadItem: DownloadItemStorage
+	public let mediaAsset: MediaAssetStorage
+	
 	let container: PMPersistentContainer
 
 	init(inMemory: Bool = false) {
 		self.container = PMPersistentContainer(name: "Loadle")
+		self.downloadItem = DownloadItemStorage(container: container)
+		self.mediaAsset = MediaAssetStorage(container: container)
 
 		setup(inMemory: inMemory)
 	}

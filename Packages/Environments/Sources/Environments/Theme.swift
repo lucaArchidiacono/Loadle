@@ -28,6 +28,8 @@ public final class Theme: ObservableObject {
 
     public static var allColorSet: [ColorSet] {
         [
+            SystemDark(),
+            SystemLight(),
             DesertDark(),
             DesertLight(),
             NemesisDark(),

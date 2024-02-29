@@ -41,7 +41,6 @@ struct DownloadView: View {
         }
         .applyTheme(theme)
         .navigationBarTitle(L10n.download)
-        .background(theme.primaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -51,7 +50,7 @@ struct DownloadView: View {
             downloadItemsSection
             //			assetItemsSection
         }
-        .background(theme.secondaryBackgroundColor)
+        .background(theme.primaryBackgroundColor)
         .scrollDismissesKeyboard(.immediately)
         .scrollContentBackground(.hidden)
     }
@@ -65,7 +64,7 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-            .background(theme.secondaryBackgroundColor)
+            .background(theme.primaryBackgroundColor)
             .cornerRadius(8)
             .foregroundColor(theme.tintColor)
 
@@ -89,7 +88,7 @@ struct DownloadView: View {
             }
         }
         .listRowSeparator(.hidden)
-        .listRowBackground(theme.primaryBackgroundColor)
+        .listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -97,8 +96,9 @@ struct DownloadView: View {
         Section {
 			ForEach(downloadService.store.downloads, id: \.id) { download in
                 DownloadItemSectionView(
-					title: download.remoteURL.absoluteString,
+					title: download.metadata.title ?? download.remoteURL.absoluteString,
                     state: download.state,
+					iconProvider: download.metadata.iconProvider,
                     onCancel: {
 						downloadService.cancel(item: download)
                     },
@@ -113,7 +113,7 @@ struct DownloadView: View {
                 }
             }
         }
-        .listRowBackground(theme.primaryBackgroundColor)
+        .listRowBackground(theme.secondaryBackgroundColor)
     }
 
     //	@ViewBuilder

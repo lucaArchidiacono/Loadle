@@ -33,7 +33,7 @@ struct ContentView: View {
                 servicesSection
             }
             .listStyle(.insetGrouped)
-            .background(theme.secondaryBackgroundColor)
+            .background(theme.primaryBackgroundColor)
             .scrollContentBackground(.hidden)
             .navigationTitle(L10n.appTitle)
             .toolbar {
@@ -50,9 +50,9 @@ struct ContentView: View {
         } detail: {
             if let selectedDestination {
                 switch selectedDestination {
-                case let .media(service):
-                    MediaDestination(service: service)
-                        .id(Destination.media(service: service))
+                case let .media(mediaService):
+                    MediaServiceDestination(mediaService: mediaService)
+                        .id(Destination.media(service: mediaService))
                 }
             } else {
                 EmptyView()
@@ -70,12 +70,14 @@ struct ContentView: View {
                 }
             }
         }
-		.listRowBackground(theme.primaryBackgroundColor)
+		.listRowBackground(theme.secondaryBackgroundColor)
     }
 }
 
 #Preview {
     ContentView(router: .constant(Router()))
+		.environment(MediaAssetService.shared)
+		.environment(DownloadService.shared)
         .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
 }

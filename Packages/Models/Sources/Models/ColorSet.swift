@@ -10,20 +10,26 @@ import Generator
 import SwiftUI
 
 public let availableColorsSets: [ColorSetCouple] =
-    [.init(light: DesertLight(), dark: DesertDark()),
-     .init(light: NemesisLight(), dark: NemesisDark()),
-     .init(light: MediumLight(), dark: MediumDark()),
-     .init(light: ConstellationLight(), dark: ConstellationDark()),
-     .init(light: ThreadsLight(), dark: ThreadsDark())]
+	[
+		.init(light: SystemLight(), dark: SystemDark()),
+		.init(light: DesertLight(), dark: DesertDark()),
+		.init(light: NemesisLight(), dark: NemesisDark()),
+		.init(light: MediumLight(), dark: MediumDark()),
+		.init(light: ConstellationLight(), dark: ConstellationDark()),
+		.init(light: ThreadsLight(), dark: ThreadsDark())
+	]
 
 public protocol ColorSet {
     var name: ColorSetName { get }
-    var nameWithScheme: String { get }
     var scheme: SwiftUI.ColorScheme { get }
     var tintColor: Color { get set }
     var primaryBackgroundColor: Color { get set }
     var secondaryBackgroundColor: Color { get set }
     var labelColor: Color { get set }
+}
+
+extension ColorSet {
+	public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 }
 
 public extension ColorScheme {
@@ -45,6 +51,7 @@ public enum ColorSetName: String {
     case medium = "Medium"
     case constellation = "Constellation"
     case threads = "Threads"
+	case system = "System"
 }
 
 public struct ColorSetCouple: Identifiable {
@@ -55,6 +62,28 @@ public struct ColorSetCouple: Identifiable {
     public let dark: ColorSet
 }
 
+public struct SystemLight: ColorSet {
+	public var name: ColorSetName = .system
+	public var scheme: SwiftUI.ColorScheme = .light
+	public var tintColor: Color = .blue
+	public var primaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
+	public var secondaryBackgroundColor: Color = .init(hex: 0xF0F0F5)
+	public var labelColor: Color = .black
+
+	public init() {}
+}
+
+public struct SystemDark: ColorSet {
+	public var name: ColorSetName = .system
+	public var scheme: SwiftUI.ColorScheme = .dark
+	public var tintColor: Color = .blue
+	public var primaryBackgroundColor: Color = .init(hex: 0x000000)
+	public var secondaryBackgroundColor: Color = .init(hex: 0x1A1A1C)
+	public var labelColor: Color = .white
+
+	public init() {}
+}
+
 public struct DesertDark: ColorSet {
     public var name: ColorSetName = .desert
     public var scheme: SwiftUI.ColorScheme = .dark
@@ -62,8 +91,6 @@ public struct DesertDark: ColorSet {
     public var primaryBackgroundColor: Color = .init(hex: 0x433744)
     public var secondaryBackgroundColor: Color = .init(hex: 0x654868)
     public var labelColor: Color = .white
-
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 
     public init() {}
 }
@@ -76,8 +103,6 @@ public struct DesertLight: ColorSet {
     public var secondaryBackgroundColor: Color = .init(hex: 0xEEEDE7)
     public var labelColor: Color = .black
 
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
-
     public init() {}
 }
 
@@ -88,8 +113,6 @@ public struct NemesisDark: ColorSet {
     public var primaryBackgroundColor: Color = .init(hex: 0x000000)
     public var secondaryBackgroundColor: Color = .init(hex: 0x151E2B)
     public var labelColor: Color = .white
-
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 
     public init() {}
 }
@@ -102,8 +125,6 @@ public struct NemesisLight: ColorSet {
     public var secondaryBackgroundColor: Color = .init(hex: 0xE8ECEF)
     public var labelColor: Color = .black
 
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
-
     public init() {}
 }
 
@@ -114,8 +135,6 @@ public struct MediumDark: ColorSet {
     public var primaryBackgroundColor: Color = .init(hex: 0x121212)
     public var secondaryBackgroundColor: Color = .init(hex: 0x191919)
     public var labelColor: Color = .white
-
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 
     public init() {}
 }
@@ -128,8 +147,6 @@ public struct MediumLight: ColorSet {
     public var secondaryBackgroundColor: Color = .init(hex: 0xF4F0EC)
     public var labelColor: Color = .black
 
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
-
     public init() {}
 }
 
@@ -140,8 +157,6 @@ public struct ConstellationDark: ColorSet {
     public var primaryBackgroundColor: Color = .init(hex: 0x09192C)
     public var secondaryBackgroundColor: Color = .init(hex: 0x304C7A)
     public var labelColor: Color = .init(hex: 0xE2E4E2)
-
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 
     public init() {}
 }
@@ -154,8 +169,6 @@ public struct ConstellationLight: ColorSet {
     public var secondaryBackgroundColor: Color = .init(hex: 0xACC7E5)
     public var labelColor: Color = .black
 
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
-
     public init() {}
 }
 
@@ -167,8 +180,6 @@ public struct ThreadsDark: ColorSet {
     public var secondaryBackgroundColor: Color = .init(hex: 0x181818)
     public var labelColor: Color = .init(hex: 0xE2E4E2)
 
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
-
     public init() {}
 }
 
@@ -177,10 +188,8 @@ public struct ThreadsLight: ColorSet {
     public var scheme: ColorScheme = .light
     public var tintColor: Color = .init(hex: 0x0095F6)
     public var primaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
-    public var secondaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
+    public var secondaryBackgroundColor: Color = .init(hex: 0xF8F8F8)
     public var labelColor: Color = .black
-
-    public var nameWithScheme: String { "\(name) - \(scheme.name)" }
 
     public init() {}
 }
