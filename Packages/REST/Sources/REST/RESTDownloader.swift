@@ -29,9 +29,11 @@ extension REST {
             private var downloads: [URL: Download] = [:]
 
 			fileprivate func setup(using session: URLSession) {
+				log(.verbose, "Will fetch all tasks.")
 				queue.async { [weak self] in
 					guard let self else { return }
 
+					log(.verbose, "Is fetching tasks.")
 					let group = DispatchGroup()
 					
 					group.enter()
@@ -48,63 +50,131 @@ extension REST {
 								partialResult[couple.0] = couple.1
 							})
 
+						log(.verbose, "Found following running tasks: \(runningDownloads)")
 						self.downloads = runningDownloads
 					}
 
+					log(.verbose, "Waiting for task fetching to be done.")
 					group.wait()
+					log(.verbose, "Finished fetching tasks")
 				}
 			}
 
 			fileprivate func getAllDownloads(onComplete: @escaping ([Download]) -> Void) {
+				log(.verbose, "Will fetch all stored downloads.")
 				queue.async { [weak self] in
 					guard let self else { return }
-					onComplete(Array(self.downloads.values).sorted(by: { $0.createdAt < $1.createdAt }))
+					log(.verbose, "Is fetching stored downloads.")
+					let downloads = Array(self.downloads.values).sorted(by: { $0.createdAt < $1.createdAt })
+					log(.verbose, "downloads: \(downloads)")
+					onComplete(downloads)
+					log(.verbose, "Finished fetching stored downloads.")
 				}
 			}
 
             fileprivate func add(new download: Download, using url: URL) {
-                queue.sync {
+				log(.verbose, "Will add download to store.")
+                queue.sync { [weak self] in
+					guard let self else { return }
+					log(.verbose, "Is adding download to store.")
+					log(.verbose, "download: \(download), url: \(url)")
                     downloads[url] = download
+					log(.verbose, "Finished adding download to store.")
                 }
             }
 
             fileprivate func cancel(using url: URL) {
-                queue.sync {
-                    downloads[url]?.pause()
+				log(.verbose, "Will cancel download to store.")
+                queue.sync { [weak self] in
+					guard let self else { return }
+					log(.verbose, "Is cancelling download to store.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), url: \(url)")
+						download.pause()
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
+					log(.verbose, "url: \(url)")
+					log(.verbose, "Finished cancelling download to store.")
                 }
             }
 
             fileprivate func delete(using url: URL) {
-                queue.sync {
-                    downloads[url]?.cancel()
-                    downloads.removeValue(forKey: url)
+				log(.verbose, "Will delete download to store.")
+                queue.sync { [weak self] in
+					guard let self else { return }
+					log(.verbose, "Is deleting download to store.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), url: \(url)")
+						download.cancel()
+						downloads.removeValue(forKey: url)
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
+					log(.verbose, "Finished deleting download to store.")
                 }
             }
 
             fileprivate func resume(using url: URL) {
-                queue.sync {
-                    downloads[url]?.resume()
+				log(.verbose, "Will resume download to store.")
+                queue.sync { [weak self] in
+					guard let self else { return }
+					log(.verbose, "Is resuming download to store.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), url: \(url)")
+						download.resume()
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
+					log(.verbose, "Finished resuming download to store.")
                 }
             }
 
             fileprivate func updateProgress(using url: URL, currentBytes: Int64, totalBytes: Int64) {
-                queue.sync {
-                    downloads[url]?.updateProgress(currentBytes: currentBytes, totalBytes: totalBytes)
+				log(.verbose, "Will update download with progress state.")
+                queue.async { [weak self] in
+					guard let self else { return }
+					log(.verbose, "Is updating download with progress state.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), url: \(url), currentBytes: \(currentBytes), totalBytes: \(totalBytes)")
+						download.updateProgress(currentBytes: currentBytes, totalBytes: totalBytes)
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
+					log(.verbose, "Finished download task with progress state.")
                 }
             }
 
             fileprivate func complete(using url: URL, newFileLocation: URL) {
-                queue.sync {
-					log(.info, "Something wants to complete given remoteURL: \(url) fileURL: \(newFileLocation)")
-					log(.info, "Current downloads: \(downloads)")
-                    downloads[url]?.complete(with: newFileLocation)
+				log(.verbose, "Will complete download task with success.")
+                queue.async { [weak self] in
+					guard let self else { return }
+
+					log(.verbose, "Is completing download task with success.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), remoteURL: \(url), fileURL: \(newFileLocation)")
+						download.complete(with: newFileLocation)
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
                     downloads[url] = nil
+					log(.verbose, "Finished completing download task with success.")
                 }
             }
 
             fileprivate func complete(using url: URL, error: Error) {
-                queue.sync {
-                    downloads[url]?.complete(with: error)
+				log(.verbose, "Will complete download task with error.")
+                queue.async { [weak self] in
+					guard let self else { return }
+
+					log(.verbose, "Is completing download task with error.")
+					if let download = downloads[url] {
+						log(.verbose, "download: \(download), error: \(error)")
+						download.complete(with: error)
+					} else {
+						log(.warning, "Was not able to find download using url: \(url)")
+					}
+					log(.verbose, "Finished completing download task with error.")
                 }
             }
         }
@@ -122,7 +192,7 @@ extension REST {
         public var backgroundCompletionHandler: (() -> Void)?
 
         private let debuggingBackroundTasks: Bool
-		private let store: DownloaderStore = DownloaderStore()
+		private let store: DownloaderStore
 
         private lazy var downloadSession: URLSession = {
             let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
@@ -137,7 +207,8 @@ extension REST {
 
         private init(debuggingBackroundTasks: Bool) {
             self.debuggingBackroundTasks = debuggingBackroundTasks
-			
+			self.store = DownloaderStore()
+
             super.init()
 
             if debuggingBackroundTasks {
@@ -181,9 +252,10 @@ extension REST {
             do {
 				let downloadURL = try Self.loadBaseURL()
 					.appending(component: newFilename, directoryHint: .notDirectory)
-
+				if FileManager.default.fileExists(atPath: downloadURL.standardizedFileURL.path(percentEncoded: false)) {
+					try FileManager.default.removeItem(at: downloadURL)
+				}
 				try FileManager.default.moveItem(at: location, to: downloadURL)
-				log(.info, "Will store \(location) to \(downloadURL)")
                 store.complete(using: url, newFileLocation: downloadURL)
             } catch {
                 store.complete(using: url, error: error)
