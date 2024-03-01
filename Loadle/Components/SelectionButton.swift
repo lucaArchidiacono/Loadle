@@ -12,7 +12,7 @@ import SwiftUI
 struct SelectionButton: View {
 	@Environment(\.colorScheme) private var colorScheme: ColorScheme
 
-	@EnvironmentObject private var theme: Theme
+//	@EnvironmentObject private var theme: Theme
 
 	let title: String
 	let isSelected: Bool
@@ -33,7 +33,7 @@ struct SelectionButton: View {
 				Spacer()
 				if isSelected {
 					Image(systemName: "checkmark")
-						.foregroundStyle(theme.tintColor)
+//						.foregroundStyle(theme.tintColor)
 				}
 			}
 		}

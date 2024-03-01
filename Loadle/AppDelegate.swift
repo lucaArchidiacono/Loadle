@@ -9,18 +9,20 @@ import Constants
 import Environments
 import Foundation
 import Generator
+import Logger
+
 import UIKit
 
-class AppDelegate: NSObject, UIApplicationDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate{
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         return true
     }
 
     func applicationDidEnterBackground(_: UIApplication) {
-        #if DEBUG
+		#if DEBUG
 			if DownloadService.shared.debuggingBackgroundTasks {
-                exit(0)
-            }
+				exit(0)
+			}
         #endif
     }
 

@@ -14,7 +14,7 @@ import SwiftUI
 struct LoadleApp: App {
 	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
-	@StateObject private var theme: Theme = .shared
+//	@StateObject private var theme: Theme = .shared
 	@StateObject private var userPreferences: UserPreferences = .shared
 
 	@State private var downloadService: DownloadService = .shared
@@ -26,11 +26,11 @@ struct LoadleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(router: $router)
-                .applyTheme(theme)
+//                .applyTheme(theme)
                 .environment(notificationService)
                 .environment(downloadService)
                 .environment(mediaAssetService)
-                .environmentObject(theme)
+//                .environmentObject(theme)
                 .environmentObject(userPreferences)
         }
     }

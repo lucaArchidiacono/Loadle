@@ -13,7 +13,7 @@ import Fundamentals
 
 struct MediaServiceView: View {
     @EnvironmentObject private var preferences: UserPreferences
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
 
     @Environment(MediaAssetService.self) private var service: MediaAssetService
     @Environment(Router.self) private var router: Router
@@ -29,11 +29,11 @@ struct MediaServiceView: View {
 			content
 		}
 		.navigationTitle(viewModel.mediaService.title)
-		.background(theme.primaryBackgroundColor)
+//		.background(theme.primaryBackgroundColor)
 		.onAppear {
 			viewModel.fetchAll(service: service)
 		}
-		.applyTheme(theme)
+//		.applyTheme(theme)
     }
 
 	var content: some View {
@@ -42,7 +42,7 @@ struct MediaServiceView: View {
 				mediaSection(mediaAssetItem: mediaAssetItem)
 			}
 		}
-        .background(theme.secondaryBackgroundColor)
+//        .background(theme.secondaryBackgroundColor)
 		.toolbarBackground(.hidden)
         .scrollContentBackground(.hidden)
 	}
@@ -56,7 +56,7 @@ struct MediaServiceView: View {
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.frame(width: 10, height: 10)
-							.foregroundStyle(theme.tintColor)
+//							.foregroundStyle(theme.tintColor)
 					}
 					Text(mediaAssetItem.metadata.title ?? mediaAssetItem.remoteURL.absoluteString)
 
@@ -65,11 +65,11 @@ struct MediaServiceView: View {
 							.resizable()
 							.aspectRatio(contentMode: .fit)
 							.frame(width: 30, height: 30)
-							.foregroundStyle(theme.tintColor)
+//							.foregroundStyle(theme.tintColor)
 					}
 				}
 			}
 		}
-		.listRowBackground(theme.primaryBackgroundColor)
+//		.listRowBackground(theme.primaryBackgroundColor)
 	}
 }

@@ -13,7 +13,7 @@ import Models
 import SwiftUI
 
 struct DownloadItemSectionView: View {
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
 
     let title: String
     let state: DownloadItem.State
@@ -32,7 +32,7 @@ struct DownloadItemSectionView: View {
 						.resizable()
 						.aspectRatio(contentMode: .fit)
 						.frame(width: 20, height: 20)
-						.foregroundStyle(theme.tintColor)
+//						.foregroundStyle(theme.tintColor)
 				})
 
 				Text(title)
@@ -44,7 +44,7 @@ struct DownloadItemSectionView: View {
             }
             progressDescription
         }
-        .applyTheme(theme)
+//        .applyTheme(theme)
     }
 
     @ViewBuilder

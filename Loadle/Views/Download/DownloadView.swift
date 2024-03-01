@@ -16,7 +16,7 @@ struct DownloadView: View {
     @Environment(DownloadService.self) private var downloadService: DownloadService
 
     @EnvironmentObject private var preferences: UserPreferences
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
 
     @Environment(Router.self) private var router: Router
 
@@ -39,7 +39,7 @@ struct DownloadView: View {
                 dismiss()
             }
         }
-        .applyTheme(theme)
+//        .applyTheme(theme)
         .navigationBarTitle(L10n.download)
     }
 
@@ -50,7 +50,7 @@ struct DownloadView: View {
             downloadItemsSection
             //			assetItemsSection
         }
-        .background(theme.primaryBackgroundColor)
+//        .background(theme.primaryBackgroundColor)
         .scrollDismissesKeyboard(.immediately)
         .scrollContentBackground(.hidden)
     }
@@ -64,9 +64,9 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-            .background(theme.primaryBackgroundColor)
+//            .background(theme.primaryBackgroundColor)
             .cornerRadius(8)
-            .foregroundColor(theme.tintColor)
+//            .foregroundColor(theme.tintColor)
 
             Button {
                 viewModel.startDownload(using: url, preferences: preferences, router: router)
@@ -88,7 +88,7 @@ struct DownloadView: View {
             }
         }
         .listRowSeparator(.hidden)
-        .listRowBackground(theme.secondaryBackgroundColor)
+//        .listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -113,26 +113,8 @@ struct DownloadView: View {
                 }
             }
         }
-        .listRowBackground(theme.secondaryBackgroundColor)
+//        .listRowBackground(theme.secondaryBackgroundColor)
     }
-
-    //	@ViewBuilder
-    //	private var assetItemsSection: some View {
-    //		Section {
-    //			ForEach(viewModel.loadedAssets, id: \.id) { asset in
-    //				AssetItemSectionView(
-    //					title: asset.title,
-    //					image: asset.image,
-    //					fileURL: asset.fileURL)
-    //				.swipeActions(edge: .trailing) {
-    //					Button(role: .destructive,
-    //						   action: { /*viewModel.delete(asset: asset)*/ } ,
-    //						   label: { Image(systemName: "trash") } )
-    //				}
-    //			}
-    //		}
-    //		.listRowBackground(theme.secondaryBackgroundColor)
-    //	}
 
     @ViewBuilder
     private var errorView: some View {
@@ -142,7 +124,7 @@ struct DownloadView: View {
 
 #Preview {
     DownloadView()
-        .environmentObject(Theme.shared)
+//        .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
         .environment(DownloadService.shared)
         .environment(Router())

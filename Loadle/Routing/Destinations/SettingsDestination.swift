@@ -10,7 +10,7 @@ import Foundation
 import SwiftUI
 
 struct SettingsDestination: View {
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
     @EnvironmentObject private var preferences: UserPreferences
     @State private var router = Router()
 
@@ -21,9 +21,9 @@ struct SettingsDestination: View {
                 .withCoverDestinations(destination: $router.covered)
                 .withSheetDestinations(destination: $router.presented)
         }
-        .applyTheme(theme)
+//        .applyTheme(theme)
         .environment(router)
-        .environmentObject(theme)
+//        .environmentObject(theme)
         .environmentObject(preferences)
     }
 }

@@ -11,7 +11,7 @@ import Generator
 import SwiftUI
 
 struct DoneToolbar: ToolbarContent {
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
 
     let placement: ToolbarItemPlacement
     let onTap: () -> Void
@@ -26,7 +26,7 @@ struct DoneToolbar: ToolbarContent {
             Button(L10n.done) {
                 onTap()
             }
-            .tint(theme.tintColor)
+//            .tint(theme.tintColor)
         }
     }
 }

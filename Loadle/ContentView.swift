@@ -15,7 +15,7 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @EnvironmentObject private var theme: Theme
+//    @EnvironmentObject private var theme: Theme
     @EnvironmentObject private var preferences: UserPreferences
 
     @State private var selectedDestination: Destination?
@@ -33,7 +33,7 @@ struct ContentView: View {
                 servicesSection
             }
             .listStyle(.insetGrouped)
-            .background(theme.primaryBackgroundColor)
+//            .background(theme.primaryBackgroundColor)
             .scrollContentBackground(.hidden)
             .navigationTitle(L10n.appTitle)
             .toolbar {
@@ -58,7 +58,7 @@ struct ContentView: View {
                 EmptyView()
             }
         }
-        .applyTheme(theme)
+//        .applyTheme(theme)
     }
 
     @ViewBuilder
@@ -70,7 +70,7 @@ struct ContentView: View {
                 }
             }
         }
-		.listRowBackground(theme.secondaryBackgroundColor)
+//		.listRowBackground(theme.secondaryBackgroundColor)
     }
 }
 
@@ -78,6 +78,6 @@ struct ContentView: View {
     ContentView(router: .constant(Router()))
 		.environment(MediaAssetService.shared)
 		.environment(DownloadService.shared)
-        .environmentObject(Theme.shared)
+//        .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
 }
