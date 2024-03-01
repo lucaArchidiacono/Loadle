@@ -12,7 +12,7 @@ import SwiftUI
 
 @main
 struct LoadleApp: App {
-	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+	@UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
 //	@StateObject private var theme: Theme = .shared
 	@StateObject private var userPreferences: UserPreferences = .shared

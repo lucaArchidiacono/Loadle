@@ -20,7 +20,9 @@ class AppDelegate: NSObject, UIApplicationDelegate{
 
     func applicationDidEnterBackground(_: UIApplication) {
 		#if DEBUG
+			log(.warning, "App did enter Background.")
 			if DownloadService.shared.debuggingBackgroundTasks {
+				log(.warning, "App got exit.")
 				exit(0)
 			}
         #endif

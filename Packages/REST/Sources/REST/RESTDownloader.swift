@@ -6,9 +6,24 @@
 //
 
 import Foundation
+import Logger
 
 extension REST {
     public class Downloader: NSObject, URLSessionDownloadDelegate {
+		static func loadBaseURL() throws -> URL {
+			let downloadURL = try FileManager.default.url(for: .documentDirectory,
+														  in: .userDomainMask,
+														  appropriateFor: .documentsDirectory,
+														  create: true)
+				.appending(component: "DOWNLOADS", directoryHint: .isDirectory)
+
+			if !FileManager.default.fileExists(atPath: downloadURL.standardizedFileURL.path(percentEncoded: false)) {
+				try FileManager.default.createDirectory(at: downloadURL, withIntermediateDirectories: true)
+			}
+
+			return downloadURL
+		}
+
         fileprivate class DownloaderStore {
             private let queue = DispatchQueue(label: "REST.Downloader.Store")
             private var downloads: [URL: Download] = [:]
@@ -18,11 +33,12 @@ extension REST {
 					guard let self else { return }
 
 					let group = DispatchGroup()
+					
 					group.enter()
 					session.getAllTasks { tasks in
 						defer { group.leave() }
 
-						let downloads = tasks
+						let runningDownloads = tasks
 							.compactMap { task -> (URL, Download)? in
 								guard let downloadTask = task as? URLSessionDownloadTask, let url = downloadTask.originalRequest?.url else { return nil }
 								let download = Download(downloadTask: downloadTask, session: session, url: url)
@@ -32,8 +48,9 @@ extension REST {
 								partialResult[couple.0] = couple.1
 							})
 
-						self.downloads = downloads
+						self.downloads = runningDownloads
 					}
+
 					group.wait()
 				}
 			}
@@ -78,6 +95,8 @@ extension REST {
 
             fileprivate func complete(using url: URL, newFileLocation: URL) {
                 queue.sync {
+					log(.info, "Something wants to complete given remoteURL: \(url) fileURL: \(newFileLocation)")
+					log(.info, "Current downloads: \(downloads)")
                     downloads[url]?.complete(with: newFileLocation)
                     downloads[url] = nil
                 }
@@ -116,7 +135,7 @@ extension REST {
             return REST.Downloader(debuggingBackroundTasks: withDebuggingBackgroundTasks)
         }
 
-        private init(debuggingBackroundTasks: Bool = false) {
+        private init(debuggingBackroundTasks: Bool) {
             self.debuggingBackroundTasks = debuggingBackroundTasks
 			
             super.init()
@@ -160,10 +179,11 @@ extension REST {
             guard let url = downloadTask.originalRequest?.url else { return }
             let newFilename = downloadTask.response?.suggestedFilename ?? UUID().uuidString
             do {
-                let downloadURL = location
-                    .deletingLastPathComponent()
-                    .appending(component: newFilename, directoryHint: .notDirectory)
-                try FileManager.default.moveItem(at: location, to: downloadURL)
+				let downloadURL = try Self.loadBaseURL()
+					.appending(component: newFilename, directoryHint: .notDirectory)
+
+				try FileManager.default.moveItem(at: location, to: downloadURL)
+				log(.info, "Will store \(location) to \(downloadURL)")
                 store.complete(using: url, newFileLocation: downloadURL)
             } catch {
                 store.complete(using: url, error: error)

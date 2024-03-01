@@ -12,6 +12,7 @@ import Models
 import SwiftUI
 
 struct ContentView: View {
+	@Environment(\.scenePhase) var scenePhase
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
