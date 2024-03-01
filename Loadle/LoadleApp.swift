@@ -7,12 +7,14 @@
 
 import Environments
 import REST
-import SwiftData
+import Logger
 import SwiftUI
 
 @main
 struct LoadleApp: App {
-	@UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+
+	@Environment(\.scenePhase) var scenePhase
 
 //	@StateObject private var theme: Theme = .shared
 	@StateObject private var userPreferences: UserPreferences = .shared
@@ -32,6 +34,27 @@ struct LoadleApp: App {
                 .environment(mediaAssetService)
 //                .environmentObject(theme)
                 .environmentObject(userPreferences)
+				.onChange(of: scenePhase) { _, newValue in
+					handleScenePhase(scenePhase: newValue)
+				}
         }
     }
+
+	func handleScenePhase(scenePhase: ScenePhase) {
+		switch scenePhase {
+		case .background:
+			log(.verbose, "App is in background.")
+			#if DEBUG
+				if DownloadService.shared.debuggingBackgroundTasks {
+					exit(0)
+				}
+			#endif
+		case .inactive:
+			log(.verbose, "App is inactive.")
+		case .active:
+			log(.verbose, "App is active.")
+		@unknown default:
+			fatalError()
+		}
+	}
 }

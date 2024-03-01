@@ -18,16 +18,6 @@ class AppDelegate: NSObject, UIApplicationDelegate{
         return true
     }
 
-    func applicationDidEnterBackground(_: UIApplication) {
-		#if DEBUG
-			log(.warning, "App did enter Background.")
-			if DownloadService.shared.debuggingBackgroundTasks {
-				log(.warning, "App got exit.")
-				exit(0)
-			}
-        #endif
-    }
-
     func application(_: UIApplication, handleEventsForBackgroundURLSession _: String, completionHandler: @escaping () -> Void) {
         DownloadService.shared.addBackgroundCompletionHandler(handler: completionHandler)
 		DownloadService.shared.addBackgroundCompletionHandler {
