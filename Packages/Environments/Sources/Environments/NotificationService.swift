@@ -25,8 +25,10 @@ public class NotificationService {
             case .notDetermined:
                 notificationCenter.requestAuthorization(options: [.alert, .sound]) { didAllow, _ in
                     if didAllow {
-                        log(.verbose, "User did not allow the retrieval of notifications.")
-                    }
+                        log(.verbose, "User did allow the retrieval of notifications.")
+					} else {
+                        log(.warning, "User did NOT allow the retrieval of notifications.")
+					}
                 }
             default: return
             }
