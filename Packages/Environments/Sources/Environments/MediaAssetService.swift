@@ -83,6 +83,12 @@ public final class MediaAssetService {
 	public func loadAllAssets(for service: MediaService) -> [MediaAssetItem] {
 		queue.sync {
 			PersistenceController.shared.mediaAsset.loadAll(using: service)
+				.compactMap { mediaAssetItem in
+					guard let serviceURL = try? Self.loadBaseURL(service: mediaAssetItem.service) else { return nil }
+					let urlString = mediaAssetItem.fileURL.absoluteString
+					let newFileURL = URL(filePath: urlString, relativeTo: serviceURL)
+					return mediaAssetItem.configure(fileURL: newFileURL)
+				}
 		}
 	}
 }

@@ -59,4 +59,13 @@ public struct MediaAssetItem: Identifiable, Codable {
 
 		try container.encode(createdAt, forKey: .createdAt)
 	}
+
+	public func configure(fileURL: URL) -> Self {
+		Self.init(id: id,
+				  remoteURL: remoteURL,
+				  fileURL: fileURL,
+				  service: service,
+				  metadata: metadata,
+				  createdAt: createdAt)
+	}
 }
