@@ -269,7 +269,6 @@
 			children = (
 				5CF59DD42B7925470051E49D /* MediaService */,
 				5CF59DCF2B7910BE0051E49D /* Settings */,
-				5CF59DCE2B7910B80051E49D /* Onboarding */,
 				5C4815502B78D08C00381627 /* Download */,
 				5C48154C2B766DF900381627 /* MailComposerView.swift */,
 			);
@@ -307,13 +306,6 @@
 				5CF59DD82B7956990051E49D /* Destination.swift */,
 			);
 			path = Destinations;
-			sourceTree = "<group>";
-		};
-		5CF59DCE2B7910B80051E49D /* Onboarding */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		5CF59DCF2B7910BE0051E49D /* Settings */ = {
