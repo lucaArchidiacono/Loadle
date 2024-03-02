@@ -10,7 +10,6 @@ import Logger
 import Models
 import WebKit
 
-@MainActor
 final class WebsiteService: NSObject {
     private var store: [URL: WebViewWrapper] = [:]
 

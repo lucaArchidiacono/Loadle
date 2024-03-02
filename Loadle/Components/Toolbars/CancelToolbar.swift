@@ -11,8 +11,6 @@ import Generator
 import SwiftUI
 
 struct CancelToolbar: ToolbarContent {
-//    @EnvironmentObject private var theme: Theme
-
     let placement: ToolbarItemPlacement
     let onTap: () -> Void
 
@@ -26,7 +24,6 @@ struct CancelToolbar: ToolbarContent {
             Button(L10n.cancel) {
                 onTap()
             }
-//            .tint(theme.tintColor)
         }
     }
 }

@@ -9,8 +9,6 @@ import Foundation
 import Logger
 import LinkPresentation
 
-@Observable
-@MainActor
 public final class MetadataService {
 	public enum Error: Swift.Error, CustomStringConvertible {
 		case noMetadataAvailable(url: URL)
@@ -27,7 +25,6 @@ public final class MetadataService {
 
 	private init() {}
 
-	nonisolated
 	public func fetch(using url: URL, onComplete: @escaping (Result<LPLinkMetadata, Swift.Error>) -> Void) {
 		let provider = LPMetadataProvider()
 

@@ -30,7 +30,6 @@ struct SettingsView: View {
     }
 
     @EnvironmentObject private var preferences: UserPreferences
-//    @EnvironmentObject private var theme: Theme
     @Environment(Router.self) private var router: Router
 
     @State private var viewModel: SettingsViewModel = .init()
@@ -50,7 +49,6 @@ struct SettingsView: View {
                 .listRowInsets(EdgeInsets())
 				.id("segment")
             }
-//			.listRowBackground(theme.secondaryBackgroundColor)
 
             switch selected {
             case .video:
@@ -66,8 +64,6 @@ struct SettingsView: View {
                 dismiss()
             }
         }
-//        .applyTheme(theme)
-//        .background(theme.primaryBackgroundColor)
         .scrollContentBackground(.hidden)
         .navigationTitle(L10n.settings)
     }
@@ -83,7 +79,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoQualityDescription)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTiktokWatermarkDisabled, label: {
                 Text(L10n.settingsVideoTiktokTitleDisableWatermark)
@@ -91,7 +86,6 @@ struct SettingsView: View {
         } header: {
             Text(L10n.tiktok)
         }
-//			.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$videoTwitterConvertGifsToGif, label: {
                 Text(L10n.settingsVideoTwitterTitleConvertGifsToGif)
@@ -101,7 +95,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoTwitterDescriptionConvertGifsToGif)
         }
-//					.listRowBackground(theme.secondaryBackgroundColor)
 
         Section {
             Picker(L10n.settingsVideoYoutubeTitleCodec, selection: preferences.$videoYoutubeCodec) {
@@ -114,7 +107,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoYoutubeDescriptionCodec)
         }
-//					.listRowBackground(theme.secondaryBackgroundColor)
 
 		Section {
             Picker(L10n.settingsVideoVimeoTitleDownloadType, selection: preferences.$videoVimeoDownloadType) {
@@ -132,7 +124,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsVideoVimeoDescriptionDownloadType)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -146,7 +137,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioFormatDescription)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Toggle(isOn: preferences.$audioMute, label: {
                 Text(L10n.settingsAudioMuteTitle)
@@ -154,7 +144,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioMuteDescription)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
         Section {
             Picker(L10n.settingsAudioYoutubeTitleAudioTrack, selection: preferences.$audioYoutubeTrack) {
                 ForEach(YoutubeAudioTrack.allCases, id: \.self) { track in
@@ -171,7 +160,6 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioYoutubeDescriptionAudioTrack)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
 
         Section {
             Toggle(isOn: preferences.$audioTiktokFullAudio, label: {
@@ -204,10 +192,8 @@ struct SettingsView: View {
                         router.presented = .mail(emailData: emailData)
                     }
                 }
-//				.tint(theme.tintColor)
             }
 		}
-//		.listRowBackground(theme.secondaryBackgroundColor)
     }
 }
 

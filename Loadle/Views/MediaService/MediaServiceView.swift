@@ -13,7 +13,6 @@ import Fundamentals
 
 struct MediaServiceView: View {
     @EnvironmentObject private var preferences: UserPreferences
-//    @EnvironmentObject private var theme: Theme
 
     @Environment(Router.self) private var router: Router
 
@@ -28,11 +27,6 @@ struct MediaServiceView: View {
 			content
 		}
 		.navigationTitle(viewModel.mediaService.title)
-//		.background(theme.primaryBackgroundColor)
-		.onAppear {
-			viewModel.fetchAll()
-		}
-//		.applyTheme(theme)
     }
 
 	var content: some View {
@@ -44,7 +38,6 @@ struct MediaServiceView: View {
 					}
 			}
 		}
-//        .background(theme.secondaryBackgroundColor)
 		.toolbarBackground(.hidden)
         .scrollContentBackground(.hidden)
 		.listStyle(.inset)
@@ -60,29 +53,18 @@ struct MediaServiceView: View {
 								.resizable()
 								.aspectRatio(contentMode: .fit)
 								.frame(width: 20, height: 20)
-							//							.foregroundStyle(theme.tintColor)
 						}
 						Spacer()
 					}
 
 					VStack {
 						Text(mediaAssetItem.metadata.title!)
-//						Text(mediaAssetItem.remoteURL.absoluteString)
 						Spacer()
 					}
-//					VStack {
-//						AsyncImageProvider(itemProvider: mediaAssetItem.metadata.imageProvider, placeholder: nil) { image in
-//							image
-//								.resizable()
-//								.aspectRatio(contentMode: .fit)
-//								.frame(width: 30, height: 30)
-//							//							.foregroundStyle(theme.tintColor)
-//						}
-//					}
 				}
+                Text(mediaAssetItem.remoteURL.absoluteString)
 			}
 		}
 		.frame(height: 100)
-//		.listRowBackground(theme.primaryBackgroundColor)
 	}
 }

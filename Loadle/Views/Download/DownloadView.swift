@@ -15,7 +15,6 @@ struct DownloadView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
 
 	@EnvironmentObject private var preferences: UserPreferences
-//    @EnvironmentObject private var theme: Theme
 
     @Environment(Router.self) private var router: Router
 
@@ -47,9 +46,7 @@ struct DownloadView: View {
         List {
             downloadSection
             downloadItemsSection
-            //			assetItemsSection
         }
-//        .background(theme.primaryBackgroundColor)
         .scrollDismissesKeyboard(.immediately)
         .scrollContentBackground(.hidden)
     }
@@ -65,7 +62,6 @@ struct DownloadView: View {
             .padding()
 			.background(Color.secondaryBackground)
             .cornerRadius(8)
-//            .foregroundColor(theme.tintColor)
 
             Button {
                 viewModel.startDownload(using: url, preferences: preferences, router: router)
@@ -87,7 +83,6 @@ struct DownloadView: View {
             }
         }
         .listRowSeparator(.hidden)
-//        .listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -112,7 +107,6 @@ struct DownloadView: View {
                 }
             }
         }
-//        .listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
@@ -123,7 +117,6 @@ struct DownloadView: View {
 
 #Preview {
     DownloadView()
-//        .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
         .environment(Router())
 }

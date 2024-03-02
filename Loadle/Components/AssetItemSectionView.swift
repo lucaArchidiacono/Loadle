@@ -11,8 +11,6 @@ import Models
 import SwiftUI
 
 struct AssetItemSectionView: View {
-//    @EnvironmentObject private var theme: Theme
-
     let title: String
     let image: Image
     let fileURL: URL
@@ -28,7 +26,6 @@ struct AssetItemSectionView: View {
                     .font(.headline)
             }
         }
-//        .applyTheme(theme)
         .contextMenu {
             ShareLink(item: fileURL)
         }
@@ -44,5 +41,4 @@ struct AssetItemSectionView: View {
         }
         .listRowBackground(Theme.shared.secondaryBackgroundColor)
     }
-//    .environmentObject(Theme.shared)
 }

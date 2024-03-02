@@ -17,9 +17,6 @@ final class MediaServiceViewModel {
 
 	init(mediaService: MediaService) {
 		self.mediaService = mediaService
-	}
-
-	func fetchAll() {
-		self.mediaAssetItems = MediaAssetService.shared.loadAllAssets(for: mediaService)
+        self.mediaAssetItems = MediaAssetService.shared.loadAllAssets(for: mediaService)
 	}
 }

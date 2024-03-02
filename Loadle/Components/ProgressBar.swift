@@ -11,8 +11,6 @@ import Shimmer
 import SwiftUI
 
 struct ProgressBar: View {
-//    @EnvironmentObject private var theme: Theme
-
     let currentBytes: Double
     let totalBytes: Double
 
@@ -40,7 +38,6 @@ struct ProgressBar: View {
                 }
                 Rectangle()
                     .frame(width: width, height: geometry.size.height)
-//                    .foregroundStyle(theme.tintColor)
                     .shimmering(gradient: Gradient(colors: [.black, .black.opacity(0.5), .black]), bandSize: 10)
             }
             .cornerRadius(5.0)

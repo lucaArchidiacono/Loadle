@@ -10,8 +10,6 @@ import Foundation
 import SwiftUI
 
 struct AddToolbar: ToolbarContent {
-//    @EnvironmentObject private var theme: Theme
-
     let placement: ToolbarItemPlacement
     let onTap: () -> Void
 
@@ -26,7 +24,6 @@ struct AddToolbar: ToolbarContent {
                 onTap()
             } label: {
                 Image(systemName: "plus")
-//                    .foregroundColor(theme.tintColor)
             }
         }
     }
