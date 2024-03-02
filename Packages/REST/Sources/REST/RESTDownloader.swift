@@ -10,20 +10,6 @@ import Logger
 
 extension REST {
     public class Downloader: NSObject, URLSessionDownloadDelegate {
-		static func loadBaseURL() throws -> URL {
-			let downloadURL = try FileManager.default.url(for: .documentDirectory,
-														  in: .userDomainMask,
-														  appropriateFor: .documentsDirectory,
-														  create: true)
-				.appending(component: "DOWNLOADS", directoryHint: .isDirectory)
-
-			if !FileManager.default.fileExists(atPath: downloadURL.standardizedFileURL.path(percentEncoded: false)) {
-				try FileManager.default.createDirectory(at: downloadURL, withIntermediateDirectories: true)
-			}
-
-			return downloadURL
-		}
-
         fileprivate class DownloaderStore {
             private let queue = DispatchQueue(label: "REST.Downloader.Store")
             private var downloads: [URL: Download] = [:]
@@ -250,7 +236,8 @@ extension REST {
             guard let url = downloadTask.originalRequest?.url else { return }
             let newFilename = downloadTask.response?.suggestedFilename ?? UUID().uuidString
             do {
-				let downloadURL = try Self.loadBaseURL()
+				let downloadURL = location
+					.deletingLastPathComponent()
 					.appending(component: newFilename, directoryHint: .notDirectory)
 				if FileManager.default.fileExists(atPath: downloadURL.standardizedFileURL.path(percentEncoded: false)) {
 					try FileManager.default.removeItem(at: downloadURL)
