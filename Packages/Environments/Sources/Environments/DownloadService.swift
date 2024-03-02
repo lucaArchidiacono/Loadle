@@ -12,8 +12,6 @@ import Models
 import REST
 import LocalStorage
 
-@Observable
-@MainActor
 public final class DownloadService {
 	public enum Error: Swift.Error, CustomStringConvertible {
 		case noValidMediaService(url: URL)
@@ -27,21 +25,42 @@ public final class DownloadService {
         }
     }
 
-    public var debuggingBackgroundTasks: Bool {
-        #if DEBUG
-            return true
-        #else
-            return false
-        #endif
-    }
-
-	@Observable
 	public final class DownloadServiceStore {
-		public var downloads: [DownloadItem] = []
-
-		@ObservationIgnored
+		private var downloads: [DownloadItem] = [] {
+			didSet {
+				onUpdate?(downloads)
+			}
+		}
 		private var queue = DispatchQueue(label: "Service.Download.Store")
+		fileprivate var onUpdate: (([DownloadItem]) -> Void)? {
+			didSet {
+				onUpdate?(downloads)
+			}
+		}
 
+		func setup(mediaDownloader: REST.Downloader, completion: @escaping ([REST.Download]) -> Void) {
+			let group = DispatchGroup()
+			queue.async { [weak self] in
+				guard let self else { return }
+				group.enter()
+				mediaDownloader.getAllDownloads { downloadTasks in
+					defer { group.leave() }
+
+					PersistenceController.shared.downloadItem.loadAll()
+						.filter { downloadItem in
+							!downloadTasks.contains(where: { $0.url == downloadItem.streamURL })
+						}
+						.forEach {
+							PersistenceController.shared.downloadItem.delete($0.id)
+						}
+
+					self.downloads = PersistenceController.shared.downloadItem.loadAll()
+
+					completion(downloadTasks)
+				}
+				group.wait()
+			}
+		}
 		func setup(downloadTasks: [REST.Download]) {
 			PersistenceController.shared.downloadItem.loadAll()
 				.filter { downloadItem in
@@ -90,18 +109,34 @@ public final class DownloadService {
 		}
 	}
 
-	public let store = DownloadServiceStore()
-	
-    @ObservationIgnored
-    private var backgroundCompletionHandlers: [() -> Void] = []
-    @ObservationIgnored
+	private let store = DownloadServiceStore()
     private let loader = REST.Loader.shared
-    @ObservationIgnored
-    private lazy var mediaDownloader: REST.Downloader = .shared(withDebuggingBackgroundTasks: debuggingBackgroundTasks)
-    @ObservationIgnored
     private let websiteLoader = WebsiteService.shared
+	private let group = DispatchGroup()
+
+	private var backgroundCompletionHandlers: [() -> Void] = []
+	private var queue = DispatchQueue(label: "Service.Download")
+
+    private lazy var mediaDownloader: REST.Downloader = .shared(withDebuggingBackgroundTasks: debuggingBackgroundTasks)
+
+	public var debuggingBackgroundTasks: Bool {
+		#if DEBUG
+			return true
+		#else
+			return false
+		#endif
+	}
 
     public static let shared = DownloadService()
+
+	public var onUpdate: (([DownloadItem]) -> Void)? {
+		didSet {
+			store.onUpdate = { [weak self] downloads in
+				guard let self else { return }
+				onUpdate?(downloads)
+			}
+		}
+	}
 
     private init() {
         mediaDownloader.backgroundCompletionHandler = { [weak self] in
@@ -109,57 +144,67 @@ public final class DownloadService {
             self?.backgroundCompletionHandlers = []
         }
 
-		mediaDownloader.getAllDownloads { [weak self] downloadTasks in
+		store.setup(mediaDownloader: mediaDownloader) { [weak self] downloadTasks in
 			guard let self else { return }
-			self.store.setup(downloadTasks: downloadTasks)
-
-			downloadTasks.forEach { download in
-				download.completionHandler = { newState in
-					self.process(url: download.url, newState: newState)
+			downloadTasks.forEach { downloadTask in
+				downloadTask.completionHandler = { newState in
+					self.process(url: downloadTask.url, newState: newState)
 				}
 			}
 		}
     }
 
-	public func download(using url: URL, audioOnly: Bool, onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
+	public func download(using url: URL, preferences: Preferences, onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
 		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
 			onComplete(.failure(Error.noValidMediaService(url: url)))
 			return
 		}
 
-		MetadataService.shared.fetch(using: url) { [weak self] result in
+		queue.async { [weak self] in
 			guard let self else { return }
-			switch result {
-			case .success(let metadata):
-				self.downloadMedia(using: metadata.url!,
-								   audioOnly: audioOnly,
-								   metadata: metadata,
-								   service: mediaService,
-								   onComplete: onComplete)
-			case .failure(let error):
-				onComplete(.failure(error))
+			group.enter()
+			MetadataService.shared.fetch(using: url) { result in
+				switch result {
+				case .success(let metadata):
+					self.downloadMedia(using: metadata.url!,
+									   preferences: preferences,
+									   metadata: metadata,
+									   service: mediaService) { result in
+						switch result {
+						case .success:
+							onComplete(.success(()))
+						case .failure(let error):
+							onComplete(.failure(error))
+						}
+						self.group.leave()
+					}
+				case .failure(let error):
+					onComplete(.failure(error))
+					self.group.leave()
+				}
 			}
+			group.wait()
 		}
     }
 
 	private func downloadMedia(using url: URL,
-							   audioOnly: Bool,
+							   preferences: Preferences,
 							   metadata: LPLinkMetadata,
 							   service: MediaService,
 							   onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
 		let cobaltRequest = CobaltRequest(
 			url: DataTransformer.URL.transform(url, service: service),
-			vCodec: UserPreferences.shared.videoYoutubeCodec,
-			vQuality: UserPreferences.shared.videoDownloadQuality,
-			aFormat: UserPreferences.shared.audioFormat,
-			isAudioOnly: audioOnly,
-			isNoTTWatermark: UserPreferences.shared.videoTiktokWatermarkDisabled,
-			isTTFullAudio: UserPreferences.shared.audioTiktokFullAudio,
-			isAudioMuted: UserPreferences.shared.audioMute,
-			dubLang: UserPreferences.shared.audioYoutubeTrack == .original ? false : true,
+			vCodec: preferences.videoYoutubeCodec,
+			vQuality: preferences.videoDownloadQuality,
+			aFormat: preferences.audioFormat,
+			isAudioOnly: preferences.audioOnly,
+			isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
+			isTTFullAudio: preferences.audioTiktokFullAudio,
+			isAudioMuted: preferences.audioMute,
+			dubLang: preferences.audioYoutubeTrack == .original ? false : true,
 			disableMetadata: false,
-			twitterGif: UserPreferences.shared.videoTwitterConvertGifsToGif,
-			vimeoDash: UserPreferences.shared.videoVimeoDownloadType == .progressive ? nil : true
+			twitterGif: preferences.videoTwitterConvertGifsToGif,
+			vimeoDash: preferences.videoVimeoDownloadType == .progressive ? nil : true
 		)
 
 		let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
@@ -185,16 +230,22 @@ public final class DownloadService {
 	}
 
 	public func delete(item: DownloadItem) {
-		mediaDownloader.deleteDownload(with: item.streamURL)
-		store.delete(using: item.streamURL)
+		queue.sync {
+			mediaDownloader.deleteDownload(with: item.streamURL)
+			store.delete(using: item.streamURL)
+		}
     }
 
     public func cancel(item: DownloadItem) {
-		mediaDownloader.cancelDownload(with: item.streamURL)
+		queue.sync {
+			mediaDownloader.cancelDownload(with: item.streamURL)
+		}
     }
 
     public func resume(item: DownloadItem) {
-		mediaDownloader.resumeDownload(with: item.streamURL)
+		queue.sync {
+			mediaDownloader.resumeDownload(with: item.streamURL)
+		}
     }
 
     public func addBackgroundCompletionHandler(handler: @escaping () -> Void) {
@@ -206,23 +257,27 @@ public final class DownloadService {
 
 extension DownloadService {
 	private func process(url: URL, newState: REST.Downloader.ResultState) {
-		switch newState {
-		case .pending: break
-		case let .progress(currentBytes, totalBytes):
-			store.update(using: url, state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
-		case let .success(fileURL):
-			log(.info, "Successfully downloaded the media: \(fileURL)")
-			guard let updatedDownloadItem = store.update(using: url, state: .completed) else { return }
-			MediaAssetService.shared.store(downloadItem: updatedDownloadItem, originalFileURL: fileURL)
-			DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-				self?.store.delete(using: url)
+		queue.async { [weak self] in
+			guard let self else { return }
+
+			switch newState {
+			case .pending: break
+			case let .progress(currentBytes, totalBytes):
+				self.store.update(using: url, state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
+			case let .success(fileURL):
+				log(.info, "Successfully downloaded the media: \(fileURL)")
+				guard let updatedDownloadItem = self.store.update(using: url, state: .completed) else { return }
+				MediaAssetService.shared.store(downloadItem: updatedDownloadItem, originalFileURL: fileURL)
+				self.queue.asyncAfter(deadline: .now() + 1.0) {
+					self.store.delete(using: url)
+				}
+			case let .failed(error):
+				log(.error, "The download failed due to the following error: \(error)")
+				self.store.update(using: url, state: .failed)
+			case .cancelled:
+				log(.warning, "Download with has been cancelled with following url: \(url)")
+				self.store.update(using: url, state: .cancelled)
 			}
-		case let .failed(error):
-			log(.error, "The download failed due to the following error: \(error)")
-			store.update(using: url, state: .failed)
-		case .cancelled:
-			log(.warning, "Download with has been cancelled with following url: \(url)")
-			store.update(using: url, state: .cancelled)
 		}
 	}
 }

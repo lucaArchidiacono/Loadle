@@ -27,6 +27,7 @@ public final class MetadataService {
 
 	private init() {}
 
+	nonisolated
 	public func fetch(using url: URL, onComplete: @escaping (Result<LPLinkMetadata, Swift.Error>) -> Void) {
 		let provider = LPMetadataProvider()
 

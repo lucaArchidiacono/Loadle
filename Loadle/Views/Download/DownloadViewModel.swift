@@ -16,13 +16,21 @@ import SwiftUI
 @Observable
 final class DownloadViewModel {
     public var errorDetails: ErrorDetails?
+	public var downloads: [DownloadItem] = []
 
     public var isLoading: Bool = false
     public var audioOnly: Bool = false
 
     private let downloadService: DownloadService = .shared
 
-    init() {}
+    init() {
+		downloadService.onUpdate = { [weak self] downloads in
+			guard let self else { return }
+			Task { @MainActor in
+				self.downloads = downloads
+			}
+		}
+	}
 
     func startDownload(using url: String, preferences: UserPreferences, router: Router) {
         guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
@@ -36,7 +44,18 @@ final class DownloadViewModel {
 
         guard !isLoading else { return }
         isLoading = true
-        downloadService.download(using: url, audioOnly: audioOnly) { [weak self] result in
+		let preferences = Preferences(audioOnly: audioOnly,
+									  filenameStyle: preferences.filenameStyle,
+									  videoDownloadQuality: preferences.videoDownloadQuality,
+									  videoYoutubeCodec: preferences.videoYoutubeCodec,
+									  videoVimeoDownloadType: preferences.videoVimeoDownloadType,
+									  videoTiktokWatermarkDisabled: preferences.videoTiktokWatermarkDisabled,
+									  videoTwitterConvertGifsToGif: preferences.videoTwitterConvertGifsToGif,
+									  audioFormat: preferences.audioFormat,
+									  audioYoutubeTrack: preferences.audioYoutubeTrack,
+									  audioMute: preferences.audioMute,
+									  audioTiktokFullAudio: preferences.audioTiktokFullAudio)
+        downloadService.download(using: url, preferences: preferences) { [weak self] result in
             guard let self else { return }
             self.isLoading = false
             switch result {
@@ -56,6 +75,18 @@ final class DownloadViewModel {
             }
         }
     }
+
+	func cancel(item: DownloadItem) {
+		downloadService.cancel(item: item)
+	}
+
+	func delete(item: DownloadItem) {
+		downloadService.delete(item: item)
+	}
+
+	func resume(item: DownloadItem) {
+		downloadService.resume(item: item)
+	}
 }
 
 extension DownloadViewModel {

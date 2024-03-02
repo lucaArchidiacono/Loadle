@@ -10,8 +10,6 @@ import Models
 import Logger
 import LocalStorage
 
-@Observable
-@MainActor
 public final class MediaAssetService {
 	public static let shared = MediaAssetService()
 
@@ -83,10 +81,10 @@ public final class MediaAssetService {
 	public func loadAllAssets(for service: MediaService) -> [MediaAssetItem] {
 		queue.sync {
 			PersistenceController.shared.mediaAsset.loadAll(using: service)
-				.compactMap { mediaAssetItem in
+				.compactMap { mediaAssetItem -> MediaAssetItem? in
+					let urlString = mediaAssetItem.fileURL.path
 					guard let serviceURL = try? Self.loadBaseURL(service: mediaAssetItem.service) else { return nil }
-					let urlString = mediaAssetItem.fileURL.absoluteString
-					let newFileURL = URL(filePath: urlString, relativeTo: serviceURL)
+					let newFileURL = URL(filePath: urlString, directoryHint: .notDirectory, relativeTo: serviceURL)
 					return mediaAssetItem.configure(fileURL: newFileURL)
 				}
 		}

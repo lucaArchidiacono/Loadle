@@ -13,9 +13,8 @@ import SwiftUI
 
 struct DownloadView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
-    @Environment(DownloadService.self) private var downloadService: DownloadService
 
-    @EnvironmentObject private var preferences: UserPreferences
+	@EnvironmentObject private var preferences: UserPreferences
 //    @EnvironmentObject private var theme: Theme
 
     @Environment(Router.self) private var router: Router
@@ -35,9 +34,9 @@ struct DownloadView: View {
             errorView
         }
         .toolbar {
-            CancelToolbar(placement: .topBarLeading) {
+			DoneToolbar(placement: .topBarTrailing) {
                 dismiss()
-            }
+			}
         }
 //        .applyTheme(theme)
         .navigationBarTitle(L10n.download)
@@ -64,7 +63,7 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-//            .background(theme.primaryBackgroundColor)
+			.background(Color.secondaryBackground)
             .cornerRadius(8)
 //            .foregroundColor(theme.tintColor)
 
@@ -94,21 +93,21 @@ struct DownloadView: View {
     @ViewBuilder
     private var downloadItemsSection: some View {
         Section {
-			ForEach(downloadService.store.downloads, id: \.id) { download in
+			ForEach(viewModel.downloads, id: \.id) { download in
                 DownloadItemSectionView(
 					title: download.metadata.title ?? download.remoteURL.absoluteString,
                     state: download.state,
 					iconProvider: download.metadata.iconProvider,
                     onCancel: {
-						downloadService.cancel(item: download)
+						viewModel.cancel(item: download)
                     },
                     onResume: {
-                        downloadService.resume(item: download)
+						viewModel.resume(item: download)
                     }
                 )
                 .swipeActions(edge: .trailing) {
                     Button(role: .destructive,
-                           action: { downloadService.delete(item: download) },
+                           action: { viewModel.delete(item: download) },
                            label: { Image(systemName: "trash") })
                 }
             }
@@ -126,6 +125,5 @@ struct DownloadView: View {
     DownloadView()
 //        .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
-        .environment(DownloadService.shared)
         .environment(Router())
 }

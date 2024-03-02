@@ -40,10 +40,10 @@ public struct AsyncImageProvider<Content>: View where Content: View {
     }
 
     private func loadImage() {
-        guard !isLoading else { return }
+        guard let itemProvider, !isLoading else { return }
         isLoading = true
 
-        _ = itemProvider?.loadTransferable(type: Image.self, completionHandler: { result in
+        _ = itemProvider.loadTransferable(type: Image.self, completionHandler: { result in
             switch result {
             case let .success(image):
                 self.image = image

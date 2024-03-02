@@ -77,8 +77,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView(router: .constant(Router()))
-		.environment(MediaAssetService.shared)
-		.environment(DownloadService.shared)
 //        .environmentObject(Theme.shared)
         .environmentObject(UserPreferences.shared)
 }

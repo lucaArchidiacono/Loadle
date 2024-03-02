@@ -19,9 +19,7 @@ struct LoadleApp: App {
 //	@StateObject private var theme: Theme = .shared
 	@StateObject private var userPreferences: UserPreferences = .shared
 
-	@State private var downloadService: DownloadService = .shared
 	@State private var notificationService: NotificationService = .shared
-	@State private var mediaAssetService: MediaAssetService = .shared
 
 	@State private var router: Router = .init()
 
@@ -30,8 +28,6 @@ struct LoadleApp: App {
             ContentView(router: $router)
 //                .applyTheme(theme)
                 .environment(notificationService)
-                .environment(downloadService)
-                .environment(mediaAssetService)
 //                .environmentObject(theme)
                 .environmentObject(userPreferences)
 				.onChange(of: scenePhase) { _, newValue in

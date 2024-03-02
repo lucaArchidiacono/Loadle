@@ -1,5 +1,5 @@
 //
-//  Preferences.swift
+//  UserPreferences.swift
 //  Loadle
 //
 //  Created by Luca Archidiacono on 05.02.2024.
