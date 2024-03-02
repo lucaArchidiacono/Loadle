@@ -13,8 +13,8 @@ extension View {
     @ViewBuilder
     private func build(_ destination: PathDestination) -> some View {
         switch destination {
-        case .downloadDetail:
-            EmptyView()
+        case .mediaPlayer(let fileURL):
+            MediaPlayerFactory.build(using: fileURL)
         }
     }
 

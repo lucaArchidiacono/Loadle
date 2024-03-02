@@ -11,7 +11,7 @@ import Models
 import SwiftUI
 
 enum PathDestination: Hashable {
-    case downloadDetail
+    case mediaPlayer(fileURL: URL)
 }
 
 enum SheetDestination: Hashable, Identifiable {

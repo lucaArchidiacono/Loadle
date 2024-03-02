@@ -60,7 +60,7 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-			.background(Color.secondaryBackground)
+            .background(Color(UIColor.secondarySystemGroupedBackground))
             .cornerRadius(8)
 
             Button {

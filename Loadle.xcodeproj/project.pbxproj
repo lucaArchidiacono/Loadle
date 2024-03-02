@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C0643EE2B937C6900C3D3D0 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */; };
+		5C0643F02B937CA800C3D3D0 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */; };
+		5C0643F82B937E5D00C3D3D0 /* MediaPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */; };
 		5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1432B86140600F94F79 /* AddToolbar.swift */; };
 		5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1462B86384700F94F79 /* SettingsViewModel.swift */; };
 		5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1492B86530900F94F79 /* DoneToolbar.swift */; };
@@ -77,6 +80,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
+		5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewModel.swift; sourceTree = "<group>"; };
+		5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerFactory.swift; sourceTree = "<group>"; };
 		5C06E1432B86140600F94F79 /* AddToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbar.swift; sourceTree = "<group>"; };
 		5C06E1452B8618CC00F94F79 /* LocalStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalStorage; sourceTree = "<group>"; };
 		5C06E1462B86384700F94F79 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -155,6 +161,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C0643EB2B937C5800C3D3D0 /* VideoPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */,
+				5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */,
+			);
+			path = VideoPlayer;
+			sourceTree = "<group>";
+		};
+		5C0643EC2B937C6000C3D3D0 /* AudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = AudioPlayer;
+			sourceTree = "<group>";
+		};
+		5C0643F62B937E4B00C3D3D0 /* MediaPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				5C0643EC2B937C6000C3D3D0 /* AudioPlayer */,
+				5C0643EB2B937C5800C3D3D0 /* VideoPlayer */,
+				5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */,
+			);
+			path = MediaPlayer;
+			sourceTree = "<group>";
+		};
 		5C06E1482B86529F00F94F79 /* Toolbars */ = {
 			isa = PBXGroup;
 			children = (
@@ -267,6 +299,7 @@
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5C0643F62B937E4B00C3D3D0 /* MediaPlayer */,
 				5CF59DD42B7925470051E49D /* MediaService */,
 				5CF59DCF2B7910BE0051E49D /* Settings */,
 				5C4815502B78D08C00381627 /* Download */,
@@ -470,12 +503,15 @@
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
+				5C0643F02B937CA800C3D3D0 /* VideoPlayerViewModel.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
 				5C06E1702B8F77C400F94F79 /* MediaServiceViewModel.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
 				5C06E14E2B86563800F94F79 /* SelectionButton.swift in Sources */,
 				5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */,
+				5C0643EE2B937C6900C3D3D0 /* VideoPlayerView.swift in Sources */,
 				5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */,
+				5C0643F82B937E5D00C3D3D0 /* MediaPlayerFactory.swift in Sources */,
 				5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */,
 				5CC83DCC2B70EB59005948C1 /* ThemeApplier.swift in Sources */,
 				5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */,
