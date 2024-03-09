@@ -17,12 +17,11 @@ public final class DownloadItemStorage {
 		self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 	}
 
-	public func load(id: DownloadItem.ID) -> DownloadItem? {
-		return context.performAndWait {
-			guard let entity = getEntity(id: id) else { return nil }
+	public func load(_ url: URL) async -> DownloadItem? {
+		return await context.perform {
+			guard let entity = self.getEntity(url: url) else { return nil }
 
-			return DownloadItem(id: entity.id,
-								remoteURL: entity.remoteURL,
+			return DownloadItem(remoteURL: entity.remoteURL,
 								streamURL: entity.streamURL,
 								service: MediaService(rawValue: entity.service)!,
 								state: try! JSONDecoder().decode(DownloadItem.State.self, from: entity.state),
@@ -30,55 +29,53 @@ public final class DownloadItemStorage {
 		}
 	}
 
-	public func loadAll() -> [DownloadItem] {
-		return context.performAndWait {
+	public func loadAll() async -> [DownloadItem] {
+		return await context.perform {
 			let fetchRequest: NSFetchRequest<DownloadItemEntity> = DownloadItemEntity.fetchRequest()
 
 			guard let entities = try? fetchRequest.execute() else { return [] }
 
 			return entities.compactMap { entity in
-				DownloadItem(id: entity.id,
-								remoteURL: entity.remoteURL,
-								streamURL: entity.streamURL,
-								service: MediaService(rawValue: entity.service)!,
-								state: try! JSONDecoder().decode(DownloadItem.State.self, from: entity.state),
-								metadata: entity.metadata)
+				DownloadItem(remoteURL: entity.remoteURL,
+							 streamURL: entity.streamURL,
+							 service: MediaService(rawValue: entity.service)!,
+							 state: try! JSONDecoder().decode(DownloadItem.State.self, from: entity.state),
+							 metadata: entity.metadata)
 			}
 		}
 	}
 
-	public func delete(_ id: DownloadItem.ID) {
-		return context.performAndWait {
-			guard let entity = getEntity(id: id) else { return }
-			context.delete(entity)
-			try? context.save()
+	public func delete(_ url: URL) async {
+		return await context.perform {
+			guard let entity = self.getEntity(url: url) else { return }
+			self.context.delete(entity)
+			try? self.context.save()
 		}
 	}
 
-	public func store(downloadItem: DownloadItem) {
-		return context.performAndWait {
+	public func store(downloadItem: DownloadItem) async {
+		return await context.perform {
 			let downloadItemEntity: DownloadItemEntity
-			if let entity = getEntity(id: downloadItem.id) {
+			if let entity = self.getEntity(url: downloadItem.streamURL) {
 				downloadItemEntity = entity
 			} else {
 				downloadItemEntity = DownloadItemEntity(context: self.context)
 			}
 
-			downloadItemEntity.id = downloadItem.id
 			downloadItemEntity.metadata = downloadItem.metadata
 			downloadItemEntity.remoteURL = downloadItem.remoteURL
 			downloadItemEntity.streamURL = downloadItem.streamURL
 			downloadItemEntity.service = downloadItem.service.rawValue
 			downloadItemEntity.state = try! JSONEncoder().encode(downloadItem.state)
 
-			try? context.save()
+			try? self.context.save()
 		}
 	}
 
-	private func getEntity(id: DownloadItem.ID) -> DownloadItemEntity? {
+	private func getEntity(url: URL) -> DownloadItemEntity? {
 		let fetchRequest: NSFetchRequest<DownloadItemEntity> = DownloadItemEntity.fetchRequest()
 		fetchRequest.fetchLimit = 1
-		fetchRequest.predicate = NSPredicate(format: "id == %@", id.uuidString)
+		fetchRequest.predicate = NSPredicate(format: "streamURL == %@", url.absoluteString)
 
 		return try? fetchRequest.execute().first
 	}

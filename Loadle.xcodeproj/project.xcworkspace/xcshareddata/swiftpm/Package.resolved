@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "swift-async-queue",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dfed/swift-async-queue",
+      "state" : {
+        "revision" : "90c0ac3661a4fae9f7b94f45316046805f5b2478",
+        "version" : "0.5.2"
+      }
+    },
+    {
       "identity" : "swiftgenplugin",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SwiftGen/SwiftGenPlugin",

@@ -9,275 +9,333 @@ import Foundation
 import LinkPresentation
 import Logger
 import Models
-import REST
 import LocalStorage
 
-public final class DownloadService {
-	public enum Error: Swift.Error, CustomStringConvertible {
-		case noValidMediaService(url: URL)
+private struct WrappedDownload {
+	let item: DownloadItem
+	let task: DownloadTask
+}
 
-        public var description: String {
-            let description = "\(type(of: self))."
-            switch self {
-			case let .noValidMediaService(url):
-				return description + "noValidMediaService: " + "No valid `MediaService` found given the url: \(url)"
-            }
-        }
-    }
+private class DownloadTask: NSObject {
+	private enum State: String {
+		case ready
+		case downloading
+		case paused
+		case cancelled
+	}
 
-	public final class DownloadServiceStore {
-		private var downloads: [DownloadItem] = [] {
-			didSet {
-				onUpdate?(downloads)
-			}
+	private let session: URLSession
+	private var downloadTask: URLSessionDownloadTask?
+	private var resumedData: Data?
+	private var state: State = .ready
+
+	var isResumable: Bool {
+		return (state == .ready) || (state == .paused)
+	}
+
+	var isPaused: Bool {
+		return state == .paused
+	}
+
+	public let url: URL
+
+	fileprivate init(downloadTask: URLSessionDownloadTask? = nil, session: URLSession, url: URL) {
+		self.downloadTask = downloadTask
+		self.session = session
+		self.url = url
+
+		super.init()
+	}
+
+	public func resume() {
+		state = .downloading
+
+		if let resumedData = resumedData {
+			downloadTask = session.downloadTask(withResumeData: resumedData)
+		} else {
+			downloadTask = session.downloadTask(with: url)
 		}
-		private var queue = DispatchQueue(label: "Service.Download.Store")
-		fileprivate var onUpdate: (([DownloadItem]) -> Void)? {
-			didSet {
-				onUpdate?(downloads)
+		downloadTask?.resume()
+	}
+
+	public func cancel() {
+		state = .cancelled
+
+		downloadTask?.cancel()
+		cleanup()
+	}
+
+	public func pause() async {
+		state = .paused
+
+		resumedData = await downloadTask?.cancelByProducingResumeData()
+		cleanup()
+	}
+
+	private func cleanup() {
+		downloadTask = nil
+	}
+}
+
+private class URLSessionDownloadDelegateWrapper: NSObject, URLSessionDownloadDelegate {
+	enum State {
+		case cancelled
+		case progress(currentBytes: Int64, totalBytes: Int64)
+		case success(url: URL)
+		case failed(error: Error)
+	}
+
+	var onUpdate: ((URLSessionDownloadTask, State) -> Void)?
+	var onComplete: (() -> Void)?
+
+	public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didWriteData _: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+		onUpdate?(downloadTask, .progress(currentBytes: totalBytesWritten, totalBytes: totalBytesExpectedToWrite))
+	}
+
+	public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+		let newFilename = downloadTask.response?.suggestedFilename ?? UUID().uuidString
+		do {
+			let downloadURL = location
+				.deletingLastPathComponent()
+				.appending(component: newFilename, directoryHint: .notDirectory)
+			if FileManager.default.fileExists(atPath: downloadURL.standardizedFileURL.path(percentEncoded: false)) {
+				try FileManager.default.removeItem(at: downloadURL)
 			}
-		}
-
-		func setup(mediaDownloader: REST.Downloader, completion: @escaping ([REST.Download]) -> Void) {
-			let group = DispatchGroup()
-			queue.async { [weak self] in
-				guard let self else { return }
-				group.enter()
-				mediaDownloader.getAllDownloads { downloadTasks in
-					defer { group.leave() }
-
-					PersistenceController.shared.downloadItem.loadAll()
-						.filter { downloadItem in
-							!downloadTasks.contains(where: { $0.url == downloadItem.streamURL })
-						}
-						.forEach {
-							PersistenceController.shared.downloadItem.delete($0.id)
-						}
-
-					self.downloads = PersistenceController.shared.downloadItem.loadAll()
-
-					completion(downloadTasks)
-				}
-				group.wait()
-			}
-		}
-		func setup(downloadTasks: [REST.Download]) {
-			PersistenceController.shared.downloadItem.loadAll()
-				.filter { downloadItem in
-					!downloadTasks.contains(where: { $0.url == downloadItem.streamURL })
-				}
-				.forEach {
-					PersistenceController.shared.downloadItem.delete($0.id)
-				}
-
-			self.downloads = PersistenceController.shared.downloadItem.loadAll()
-		}
-
-		func addNew(_ downloadItem: DownloadItem) {
-			queue.sync {
-				downloads.append(downloadItem)
-				PersistenceController.shared.downloadItem.store(downloadItem: downloadItem)
-			}
-		}
-
-		func delete(using url: URL) {
-			queue.sync {
-				guard let index = downloads.firstIndex(where: { $0.streamURL == url }) else {
-					log(.warning, "Was not able to find and delete `DownloadItem` with url: \(url)")
-					return
-				}
-
-				let downloadItem = downloads[index]
-				downloads.remove(at: index)
-				PersistenceController.shared.downloadItem.delete(downloadItem.id)
-			}
-		}
-
-		@discardableResult
-		func update(using url: URL, state: DownloadItem.State) -> DownloadItem? {
-			queue.sync {
-				guard let index = downloads.firstIndex(where: { $0.streamURL == url }) else {
-					log(.warning, "Was not able to find and update `DownloadItem` with url: \(url)")
-					return nil
-				}
-
-				let updatedDownloadItem = downloads[index].update(state: state)
-				downloads[index] = updatedDownloadItem
-				PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
-				return updatedDownloadItem
-			}
+			try FileManager.default.moveItem(at: location, to: downloadURL)
+			onUpdate?(downloadTask, .success(url: downloadURL))
+		} catch {
+			onUpdate?(downloadTask, .failed(error: error))
 		}
 	}
 
-	private let store = DownloadServiceStore()
-    private let loader = REST.Loader.shared
-    private let websiteLoader = WebsiteService.shared
-	private let group = DispatchGroup()
-
-	private var backgroundCompletionHandlers: [() -> Void] = []
-	private var queue = DispatchQueue(label: "Service.Download")
-
-    private lazy var mediaDownloader: REST.Downloader = .shared(withDebuggingBackgroundTasks: debuggingBackgroundTasks)
-
-	public var debuggingBackgroundTasks: Bool {
-		#if DEBUG
-			return true
-		#else
-			return false
-		#endif
+	public func urlSession(_: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+		guard let error, let downloadTask = task as? URLSessionDownloadTask else { return }
+		if let urlError = error as NSError?, urlError.code == NSURLErrorCancelled {
+			onUpdate?(downloadTask, .cancelled)
+		} else {
+			onUpdate?(downloadTask, .failed(error: error))
+		}
 	}
 
-    public static let shared = DownloadService()
+	public func urlSession(_: URLSession, downloadTask: URLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
+		onUpdate?(downloadTask, .progress(currentBytes: fileOffset, totalBytes: expectedTotalBytes))
+	}
 
-	public var onUpdate: (([DownloadItem]) -> Void)? {
+	public func urlSessionDidFinishEvents(forBackgroundURLSession _: URLSession) {
+		DispatchQueue.main.async {
+			self.onComplete?()
+		}
+	}
+}
+
+private actor DownloadStore {
+	private let urlSession: URLSession
+	private var store: [URL: WrappedDownload] = [:] {
 		didSet {
-			store.onUpdate = { [weak self] downloads in
-				guard let self else { return }
-				onUpdate?(downloads)
-			}
+			downloadsContinuation?.yield(store.values.map { $0.item })
 		}
 	}
-
-    private init() {
-        mediaDownloader.backgroundCompletionHandler = { [weak self] in
-            self?.backgroundCompletionHandlers.forEach { $0() }
-            self?.backgroundCompletionHandlers = []
-        }
-
-		store.setup(mediaDownloader: mediaDownloader) { [weak self] downloadTasks in
-			guard let self else { return }
-			downloadTasks.forEach { downloadTask in
-				downloadTask.completionHandler = { newState in
-					self.process(url: downloadTask.url, newState: newState)
-				}
-			}
+	private var downloadsContinuation: AsyncStream<[DownloadItem]>.Continuation?
+	public lazy var downloads: AsyncStream<[DownloadItem]> = {
+		AsyncStream(bufferingPolicy: .bufferingNewest(1)) { (continuation: AsyncStream<[DownloadItem]>.Continuation) -> Void in
+			self.downloadsContinuation = continuation
 		}
-    }
+	}()
 
-	public func download(using url: URL, preferences: Preferences, onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
-		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
-			onComplete(.failure(Error.noValidMediaService(url: url)))
+	init(urlSession: URLSession) {
+		self.urlSession = urlSession
+	}
+
+	public func add(using remoteURL: URL, streamURL: URL, mediaService: MediaService, metadata: LPLinkMetadata) async {
+		let downloadItem = DownloadItem(remoteURL: remoteURL, streamURL: streamURL, service: mediaService, metadata: metadata)
+		let downloadTask = DownloadTask(session: urlSession, url: streamURL)
+		let wrappedDownload = WrappedDownload(item: downloadItem, task: downloadTask)
+		store[wrappedDownload.item.streamURL] = WrappedDownload(item: downloadItem, task: downloadTask)
+		await PersistenceController.shared.downloadItem.store(downloadItem: downloadItem)
+		downloadTask.resume()
+	}
+
+	public func delete(using url: URL) async {
+		log(.verbose, "Is deleting Download.")
+		guard let wrappedDownload = store[url] else {
+			log(.warning, "Was not able to find and delete Download with url: \(url)")
+			return
+		}
+		wrappedDownload.task.cancel()
+		store.removeValue(forKey: url)
+		await PersistenceController.shared.downloadItem.delete(wrappedDownload.item.id)
+		log(.verbose, "Deleted Download successfully.")
+	}
+
+	public func cancel(using url: URL) async {
+		log(.verbose, "Is cancelling Download.")
+		guard let wrappedDownload = store[url] else {
+			log(.warning, "Was not able to find and cancel Download with url: \(url)")
 			return
 		}
 
-		queue.async { [weak self] in
-			guard let self else { return }
-			group.enter()
-			MetadataService.shared.fetch(using: url) { result in
-				switch result {
-				case .success(let metadata):
-					self.downloadMedia(using: metadata.url!,
-									   preferences: preferences,
-									   metadata: metadata,
-									   service: mediaService) { result in
-						switch result {
-						case .success:
-							onComplete(.success(()))
-						case .failure(let error):
-							onComplete(.failure(error))
-						}
-						self.group.leave()
-					}
-				case .failure(let error):
-					onComplete(.failure(error))
-					self.group.leave()
-				}
-			}
-			group.wait()
+		guard !wrappedDownload.task.isPaused else { return }
+
+		await wrappedDownload.task.pause()
+		log(.verbose, "Cancelled download successfully.")
+	}
+
+	public func resume(using url: URL) async {
+		log(.verbose, "Is resuming Download.")
+		guard let wrappedDownload = store[url] else {
+			log(.warning, "Was not able to find and resume Download with url: \(url)")
+			return
 		}
-    }
 
-	private func downloadMedia(using url: URL,
-							   preferences: Preferences,
-							   metadata: LPLinkMetadata,
-							   service: MediaService,
-							   onComplete: @escaping (Result<Void, Swift.Error>) -> Void) {
-		let cobaltRequest = CobaltRequest(
-			url: DataTransformer.URL.transform(url, service: service),
-			vCodec: preferences.videoYoutubeCodec,
-			vQuality: preferences.videoDownloadQuality,
-			aFormat: preferences.audioFormat,
-			isAudioOnly: preferences.audioOnly,
-			isNoTTWatermark: preferences.videoTiktokWatermarkDisabled,
-			isTTFullAudio: preferences.audioTiktokFullAudio,
-			isAudioMuted: preferences.audioMute,
-			dubLang: preferences.audioYoutubeTrack == .original ? false : true,
-			disableMetadata: false,
-			twitterGif: preferences.videoTwitterConvertGifsToGif,
-			vimeoDash: preferences.videoVimeoDownloadType == .progressive ? nil : true
-		)
+		guard wrappedDownload.task.isResumable else { return }
 
-		let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
+		wrappedDownload.task.resume()
+		log(.verbose, "Resumed download successfully.")
+	}
 
-		loader.load(using: request) { [weak self] (result: Result<REST.HTTPResponse<POSTCobaltResponse>, REST.HTTPError<POSTCobaltResponse>>) in
-			guard let self else { return }
-			switch result {
-			case let .success(response):
-				let streamURL = response.body.url!
-				let downloadItem = DownloadItem(remoteURL: url, streamURL: streamURL, service: service, metadata: metadata)
-				store.addNew(downloadItem)
+	public func update(using task: URLSessionDownloadTask, newState: URLSessionDownloadDelegateWrapper.State) async {
+		guard let url = task.originalRequest?.url else { return }
+		
+		log(.verbose, "New state \(newState) received for url: \(url)")
 
-				mediaDownloader.download(url: streamURL) { newState in
-					self.process(url: streamURL, newState: newState)
-				}
+		guard let downloadItem = await PersistenceController.shared.downloadItem.load(url) else {
+			log(.warning, "Was not able to find and update `DownloadItem` with url: \(url)")
+			return
+		}
 
-				onComplete(.success(()))
-			case let .failure(error):
-				log(.error, "Failed to fetch media stream URL given the following error: \(error)")
-				onComplete(.failure(error))
+		var currentWrappedDownload: WrappedDownload
+
+		if let wrappedDownload = store[url] {
+			currentWrappedDownload = wrappedDownload
+		} else {
+			let downloadTask = DownloadTask(downloadTask: task, session: urlSession, url: url)
+			currentWrappedDownload = WrappedDownload(item: downloadItem, task: downloadTask)
+			store[url] = currentWrappedDownload
+		}
+
+		switch newState {
+		case let .progress(currentBytes, totalBytes):
+			log(.verbose, "New progress update: (current: \(currentBytes), total: \(totalBytes))")
+			let updatedDownloadItem = currentWrappedDownload.item.update(state: .progress(currentBytes: Double(currentBytes), totalBytes: Double(totalBytes)))
+			
+			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+
+			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+		case let .success(fileURL):
+			log(.info, "Successfully downloaded the media: \(fileURL)")
+			
+			store.removeValue(forKey: url)
+
+			await PersistenceController.shared.downloadItem.delete(url)
+			await MediaAssetService.shared.store(downloadItem: downloadItem, originalFileURL: fileURL)
+		case let .failed(error):
+			log(.error, "The download failed due to the following error: \(error)")
+			let updatedDownloadItem = downloadItem.update(state: .failed)
+
+			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+
+			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+		case .cancelled:
+			log(.warning, "Download has been cancelled with following url: \(url)")
+			let updatedDownloadItem = downloadItem.update(state: .cancelled)
+
+			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+
+			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+		}
+	}
+}
+
+public class DownloadService: NSObject {
+	private static var identifier: String = "io.lucaa.Environment.Service.Download"
+	
+	private let delegate: URLSessionDownloadDelegateWrapper = URLSessionDownloadDelegateWrapper()
+	private let store: DownloadStore
+	private let downloadSession: URLSession
+
+	private var backgroundCompletionHandlers: [() -> Void] = []
+	private var stateContinuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation?
+	private lazy var states: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)> = {
+		AsyncStream(bufferingPolicy: .bufferingNewest(1)) { (continuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation) -> Void in
+			self.delegate.onUpdate = { (task, newState) in
+				continuation.yield((task, newState))
 			}
+			self.stateContinuation = continuation
+		}
+	}()
+
+    public static let shared = DownloadService()
+
+	public override init() {
+		let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
+		config.sessionSendsLaunchEvents = true
+		config.allowsCellularAccess = true
+		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+		self.store = DownloadStore(urlSession: downloadSession)
+
+		super.init()
+
+		Task(priority: .background) {
+			for await (task, newState) in states {
+				await store.update(using: task, newState: newState)
+			}
+		}
+
+		delegate.onComplete = { [weak self] in
+			self?.backgroundCompletionHandlers.forEach { $0() }
+			self?.backgroundCompletionHandlers = []
 		}
 	}
 
-	public func delete(item: DownloadItem) {
-		queue.sync {
-			mediaDownloader.deleteDownload(with: item.streamURL)
-			store.delete(using: item.streamURL)
-		}
-    }
+	public func download(using remoteURL: URL, streamURL: URL, mediaService: MediaService, metadata: LPLinkMetadata) async {
+		await store.add(using: remoteURL, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
+	}
 
-    public func cancel(item: DownloadItem) {
-		queue.sync {
-			mediaDownloader.cancelDownload(with: item.streamURL)
-		}
-    }
+	public func downloads() async -> AsyncStream<[DownloadItem]> {
+		await store.downloads
+	}
 
-    public func resume(item: DownloadItem) {
-		queue.sync {
-			mediaDownloader.resumeDownload(with: item.streamURL)
-		}
-    }
+	private var _deleteTasks: [URL: Task<Void, Never>] = [:]
+	public func delete(using url: URL) {
+		guard _deleteTasks[url] == nil else { return }
 
-    public func addBackgroundCompletionHandler(handler: @escaping () -> Void) {
-        backgroundCompletionHandlers.append(handler)
-    }
-}
-
-// MARK: - Private API
-
-extension DownloadService {
-	private func process(url: URL, newState: REST.Downloader.ResultState) {
-		queue.async { [weak self] in
-			guard let self else { return }
-
-			switch newState {
-			case .pending: break
-			case let .progress(currentBytes, totalBytes):
-				self.store.update(using: url, state: .progress(currentBytes: currentBytes, totalBytes: totalBytes))
-			case let .success(fileURL):
-				log(.info, "Successfully downloaded the media: \(fileURL)")
-				guard let updatedDownloadItem = self.store.update(using: url, state: .completed) else { return }
-				MediaAssetService.shared.store(downloadItem: updatedDownloadItem, originalFileURL: fileURL)
-				self.queue.asyncAfter(deadline: .now() + 1.0) {
-					self.store.delete(using: url)
-				}
-			case let .failed(error):
-				log(.error, "The download failed due to the following error: \(error)")
-				self.store.update(using: url, state: .failed)
-			case .cancelled:
-				log(.warning, "Download with has been cancelled with following url: \(url)")
-				self.store.update(using: url, state: .cancelled)
+		Task(priority: .userInitiated) {
+			_deleteTasks[url] = Task {
+				await store.delete(using: url)
 			}
+
+			await _deleteTasks[url]?.value
+			_deleteTasks[url] = nil
 		}
+	}
+
+	private var _cancelTasks: [URL: Task<Void, Never>] = [:]
+	public func cancel(using url: URL) {
+		guard _cancelTasks[url] == nil else { return }
+
+		Task(priority: .userInitiated) {
+			_cancelTasks[url] = Task {
+				await store.cancel(using: url)
+			}
+			await _cancelTasks[url]?.value
+			_cancelTasks[url] = nil
+		}
+	}
+
+	private var _resumeTasks: [URL: Task<Void, Never>] = [:]
+	public func resume(using url: URL) {
+		guard _resumeTasks[url] == nil else { return }
+
+		Task(priority: .userInitiated) {
+			_resumeTasks[url] = Task {
+				await store.resume(using: url)
+			}
+			await _resumeTasks[url]?.value
+			_resumeTasks[url] = nil
+		}
+	}
+
+	public func addBackgroundCompletionHandler(completion: @escaping () -> Void) {
+		backgroundCompletionHandlers.append(completion)
 	}
 }

@@ -8,10 +8,10 @@
 import Foundation
 
 extension REST {
-    static func transform<T>(_ request: REST.HTTPRequest) -> Result<URLRequest, REST.HTTPError<T>> {
+    static func transform(_ request: REST.HTTPRequest) throws -> URLRequest {
         guard let url = request.url else {
             // we couldn't construct a proper URL out of the request's URLComponents
-            return .failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil))
+            throw REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)
         }
 
         // construct the URLRequest
@@ -32,12 +32,12 @@ extension REST {
             // attempt to retrieve the body data
             do {
                 urlRequest.httpBodyStream = try request.body.encode()
-                return .success(urlRequest)
+				return urlRequest
             } catch {
                 // something went wrong creating the body; stop and report back
-                return .failure(REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil))
+                throw REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)
             }
         }
-        return .success(urlRequest)
+		return urlRequest
     }
 }

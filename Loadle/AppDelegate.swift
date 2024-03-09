@@ -19,7 +19,7 @@ class AppDelegate: NSObject, UIApplicationDelegate{
     }
 
     func application(_: UIApplication, handleEventsForBackgroundURLSession _: String, completionHandler: @escaping () -> Void) {
-        DownloadService.shared.addBackgroundCompletionHandler(handler: completionHandler)
+        DownloadService.shared.addBackgroundCompletionHandler(completion: completionHandler)
 		DownloadService.shared.addBackgroundCompletionHandler {
             NotificationService.shared.dispatchNotification(
                 identifier: Constants.Notifications.download,

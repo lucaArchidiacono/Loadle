@@ -8,21 +8,21 @@
 import Foundation
 
 public extension REST {
-    struct HTTPResponse<T> {
+    struct HTTPResponse {
         public let request: HTTPRequest
         private let response: HTTPURLResponse
-        public let body: T
+        private let body: Data
 
-        init(request: HTTPRequest, response: HTTPURLResponse, body: T) {
+        init(request: HTTPRequest, response: HTTPURLResponse, body: Data) {
             self.request = request
             self.response = response
             self.body = body
         }
 
-        public var message: String {
-            HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
-        }
-
+        public var message: String { HTTPURLResponse.localizedString(forStatusCode: response.statusCode) }
         public var headers: [AnyHashable: Any] { response.allHeaderFields }
+		public var data: Data { body }
+
+		public func decode<T: Decodable>() throws -> T { try JSONDecoder().decode(T.self, from: body) }
     }
 }

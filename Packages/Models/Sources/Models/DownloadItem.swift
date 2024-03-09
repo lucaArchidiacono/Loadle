@@ -9,7 +9,7 @@ import Foundation
 import LinkPresentation
 import SwiftUI
 
-public struct DownloadItem: Identifiable, Codable {
+public struct DownloadItem: Hashable, Identifiable, Codable {
     public enum State: Codable, Equatable {
         case pending
         case progress(currentBytes: Double, totalBytes: Double)
@@ -18,7 +18,7 @@ public struct DownloadItem: Identifiable, Codable {
         case failed
     }
 
-    public let id: UUID
+	public var id: URL { streamURL }
     public let remoteURL: URL
     public let streamURL: URL
     public let state: State
@@ -35,7 +35,6 @@ public struct DownloadItem: Identifiable, Codable {
 	}
 
 	public init(remoteURL: URL, streamURL: URL, service: MediaService, metadata: LPLinkMetadata) {
-		self.id = UUID()
 		self.state = .pending
         self.remoteURL = remoteURL
 		self.service = service
@@ -43,8 +42,7 @@ public struct DownloadItem: Identifiable, Codable {
 		self.metadata = metadata
     }
 
-	public init(id: UUID, remoteURL: URL, streamURL: URL, service: MediaService, state: State, metadata: LPLinkMetadata) {
-        self.id = id
+	public init(remoteURL: URL, streamURL: URL, service: MediaService, state: State, metadata: LPLinkMetadata) {
         self.state = state
         self.remoteURL = remoteURL
 		self.streamURL = streamURL
@@ -54,7 +52,6 @@ public struct DownloadItem: Identifiable, Codable {
 
 	public init(from decoder: Decoder) throws {
 		let container = try decoder.container(keyedBy: CodingKeys.self)
-		self.id = try container.decode(UUID.self, forKey: .id)
 		self.remoteURL = try container.decode(URL.self, forKey: .remoteURL)
 		self.streamURL = try container.decode(URL.self, forKey: .streamURL)
 		self.state = try container.decode(State.self, forKey: .state)
@@ -66,7 +63,6 @@ public struct DownloadItem: Identifiable, Codable {
 
 	public func encode(to encoder: Encoder) throws {
 		var container = encoder.container(keyedBy: CodingKeys.self)
-		try container.encode(id, forKey: .id)
 		try container.encode(remoteURL, forKey: .remoteURL)
 		try container.encode(streamURL, forKey: .streamURL)
 		try container.encode(state, forKey: .state)
@@ -77,11 +73,14 @@ public struct DownloadItem: Identifiable, Codable {
 	}
 
     public func update(state: State) -> Self {
-        return Self(id: id,
-					remoteURL: remoteURL, 
+        return Self(remoteURL: remoteURL,
 					streamURL: streamURL,
 					service: service,
                     state: state,
 					metadata: metadata)
     }
+
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(id)
+	}
 }

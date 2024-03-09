@@ -18,9 +18,9 @@ public final class MediaAssetStorage {
 		self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 	}
 
-	public func load(id: MediaAssetItem.ID) -> MediaAssetItem? {
-		return context.performAndWait {
-			guard let entity = getEntity(id: id) else { return nil }
+	public func load(id: MediaAssetItem.ID) async -> MediaAssetItem? {
+		return await context.perform {
+			guard let entity = self.getEntity(id: id) else { return nil }
 
 			return MediaAssetItem(id: entity.id,
 								  remoteURL: entity.remoteURL,
@@ -31,9 +31,9 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	public func load(fileURL: URL) -> MediaAssetItem? {
-		return context.performAndWait {
-			guard let entity = getEntity(fileURL: fileURL) else { return nil }
+	public func load(fileURL: URL) async -> MediaAssetItem? {
+		return await context.perform {
+			guard let entity = self.getEntity(fileURL: fileURL) else { return nil }
 
 			return MediaAssetItem(id: entity.id,
 								  remoteURL: entity.remoteURL,
@@ -44,8 +44,8 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	public func loadAll(using service: MediaService) -> [MediaAssetItem] {
-		return context.performAndWait {
+	public func loadAll(using service: MediaService) async -> [MediaAssetItem] {
+		return await context.perform {
 			let fetchRequest: NSFetchRequest<MediaAssetEntity> = MediaAssetEntity.fetchRequest()
 
 			fetchRequest.predicate = NSPredicate(format: "service == %@", service.rawValue)
@@ -64,18 +64,18 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	public func delete(_ id: DownloadItem.ID) {
-		return context.performAndWait {
-			guard let entity = getEntity(id: id) else { return }
-			context.delete(entity)
-			try? context.save()
+	public func delete(_ id: MediaAssetItem.ID) async {
+		return await context.perform {
+			guard let entity = self.getEntity(id: id) else { return }
+			self.context.delete(entity)
+			try? self.context.save()
 		}
 	}
 
-	public func store(mediaAssetItem: MediaAssetItem) {
-		return context.performAndWait {
+	public func store(mediaAssetItem: MediaAssetItem) async {
+		return await context.perform {
 			let mediaAssetItemEntity: MediaAssetEntity
-			if let entity = getEntity(id: mediaAssetItem.id) {
+			if let entity = self.getEntity(id: mediaAssetItem.id) {
 				mediaAssetItemEntity = entity
 			} else {
 				mediaAssetItemEntity = MediaAssetEntity(context: self.context)
@@ -88,7 +88,7 @@ public final class MediaAssetStorage {
 			mediaAssetItemEntity.metadata = mediaAssetItem.metadata
 			mediaAssetItemEntity.createdAt = mediaAssetItem.createdAt
 
-			try? context.save()
+			try? self.context.save()
 		}
 	}
 

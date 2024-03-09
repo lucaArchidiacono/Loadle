@@ -12,11 +12,14 @@ import Environments
 @Observable
 @MainActor
 final class MediaServiceViewModel {
-	var mediaAssetItems = [MediaAssetItem]()
-	let mediaService: MediaService
+	public let mediaService: MediaService
+	public var mediaAssetItems = [MediaAssetItem]()
 
 	init(mediaService: MediaService) {
 		self.mediaService = mediaService
-        self.mediaAssetItems = MediaAssetService.shared.loadAllAssets(for: mediaService)
+	}
+
+	public func fetch() async {
+		self.mediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
 	}
 }

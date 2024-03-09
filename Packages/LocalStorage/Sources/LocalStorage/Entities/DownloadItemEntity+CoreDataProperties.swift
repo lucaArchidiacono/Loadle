@@ -16,7 +16,6 @@ extension DownloadItemEntity: Identifiable {
         return NSFetchRequest<DownloadItemEntity>(entityName: "DownloadItemEntity")
     }
 
-    @NSManaged public var id: UUID
     @NSManaged public var remoteURL: URL
     @NSManaged public var streamURL: URL
     @NSManaged public var state: Data

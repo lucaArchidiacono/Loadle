@@ -11,28 +11,32 @@ import Generator
 import Logger
 import Models
 import SwiftUI
+import REST
 
 @MainActor
 @Observable
 final class DownloadViewModel {
     public var errorDetails: ErrorDetails?
-	public var downloads: [DownloadItem] = []
+	public var audioOnly: Bool = false
+	public var downloadItems: [DownloadItem] = []
 
-    public var isLoading: Bool = false
-    public var audioOnly: Bool = false
-
+	@ObservationIgnored
+	private let loader: REST.Loader = .shared
+	@ObservationIgnored
     private let downloadService: DownloadService = .shared
+	@ObservationIgnored
+	private let metadataService: MetadataService = .shared
 
-    init() {
-		downloadService.onUpdate = { [weak self] downloads in
-			guard let self else { return }
-			Task { @MainActor in
-				self.downloads = downloads
+
+	init() {
+		Task { @MainActor in
+			for await downloadItems in await downloadService.downloads() {
+				self.downloadItems = downloadItems
 			}
 		}
 	}
 
-    func startDownload(using url: String, preferences: UserPreferences, router: Router) {
+    func startDownload(using url: String, router: Router) {
         guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
             errorDetails = ErrorDetails(
                 title: L10n.invalidUrlTitle,
@@ -42,50 +46,61 @@ final class DownloadViewModel {
             return
         }
 
-        guard !isLoading else { return }
-        isLoading = true
-		let preferences = Preferences(audioOnly: audioOnly,
-									  filenameStyle: preferences.filenameStyle,
-									  videoDownloadQuality: preferences.videoDownloadQuality,
-									  videoYoutubeCodec: preferences.videoYoutubeCodec,
-									  videoVimeoDownloadType: preferences.videoVimeoDownloadType,
-									  videoTiktokWatermarkDisabled: preferences.videoTiktokWatermarkDisabled,
-									  videoTwitterConvertGifsToGif: preferences.videoTwitterConvertGifsToGif,
-									  audioFormat: preferences.audioFormat,
-									  audioYoutubeTrack: preferences.audioYoutubeTrack,
-									  audioMute: preferences.audioMute,
-									  audioTiktokFullAudio: preferences.audioTiktokFullAudio)
-        downloadService.download(using: url, preferences: preferences) { [weak self] result in
-            guard let self else { return }
-            self.isLoading = false
-            switch result {
-            case .success:
-                log(.info, "Successfully launched a download!")
-            case let .failure(error):
-				if let downloadServiceError = error as? DownloadService.Error {
-					switch downloadServiceError {
-					case .noValidMediaService:
-						errorDetails = ErrorDetails(title: L10n.invalidUrlTitle,
-													description: L10n.mediaServicesTitle,
-													actions: [.primary(title: L10n.ok)])
-					}
-				} else {
-					errorDetails = buildGenericErrorDetails(using: error, router: router)
+		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
+			errorDetails = ErrorDetails(
+				title: L10n.invalidUrlTitle,
+				description: L10n.mediaServicesTitle,
+				actions: [.primary(title: L10n.ok)])
+			return
+		}
+
+		Task {
+			do {
+				let metadata = try await metadataService.fetch(using: url)
+
+				guard let url = metadata.url else {
+					log(.error, "Was not able to fetch url from metadata!")
+					return
 				}
-            }
-        }
+
+				/// We need to first fetch the new url from the metada.
+				/// Reason for it has to do with the fact that URL's coming from iMessage or copying using third party apps (such as the in house Reddit App), provides an URL which is not recognised by the Cobalt API.
+				/// While using the URL and passing it to the MetaDataService, we should get the original URL (one which is visible by using the normal desktop browser).
+				let cobaltRequest = DataTransformer.Request.transform(
+					url: url,
+					mediaService: mediaService,
+					videoYoutubeCodec: UserPreferences.shared.videoYoutubeCodec,
+					videoDownloadQuality: UserPreferences.shared.videoDownloadQuality,
+					audioFormat: UserPreferences.shared.audioFormat,
+					audioOnly: audioOnly,
+					videoTiktokWatermarkDisabled: UserPreferences.shared.videoTiktokWatermarkDisabled,
+					audioTiktokFullAudio: UserPreferences.shared.audioTiktokFullAudio,
+					audioMute: UserPreferences.shared.audioMute,
+					audioYoutubeTrack: UserPreferences.shared.audioYoutubeTrack,
+					videoTwitterConvertGifsToGif: UserPreferences.shared.videoTwitterConvertGifsToGif,
+					videoVimeoDownloadType: UserPreferences.shared.videoVimeoDownloadType)
+				let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
+
+				let response = try await loader.load(using: request)
+				let cobaltResponse: POSTCobaltResponse = try response.decode()
+				let streamURL = cobaltResponse.url!
+				await downloadService.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
+			} catch {
+				log(.error, error)
+			}
+		}
     }
 
 	func cancel(item: DownloadItem) {
-		downloadService.cancel(item: item)
+		downloadService.cancel(using: item.streamURL)
 	}
 
 	func delete(item: DownloadItem) {
-		downloadService.delete(item: item)
+		downloadService.delete(using: item.streamURL)
 	}
 
 	func resume(item: DownloadItem) {
-		downloadService.resume(item: item)
+		downloadService.resume(using: item.streamURL)
 	}
 }
 

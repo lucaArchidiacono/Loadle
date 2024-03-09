@@ -41,6 +41,9 @@ struct MediaServiceView: View {
 		.toolbarBackground(.hidden)
         .scrollContentBackground(.hidden)
 		.listStyle(.inset)
+		.task {
+			await viewModel.fetch()
+		}
 	}
 
 	func mediaSection(mediaAssetItem: MediaAssetItem) -> some View {

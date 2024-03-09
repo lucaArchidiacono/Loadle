@@ -451,6 +451,7 @@
 			mainGroup = 5C5BB9472B5E63D300ABB76C;
 			packageReferences = (
 				5CB9237F2B73CBB90032B49C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
+				5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */,
 			);
 			productRefGroup = 5C5BB9512B5E63D300ABB76C /* Products */;
 			projectDirPath = "";
@@ -848,6 +849,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dfed/swift-async-queue";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.2;
+			};
+		};
 		5CB9237F2B73CBB90032B49C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer.git";

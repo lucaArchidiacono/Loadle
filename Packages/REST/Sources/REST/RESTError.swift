@@ -8,7 +8,7 @@
 import Foundation
 
 public extension REST {
-    struct HTTPError<T>: Error {
+    struct HTTPError: Error {
         /// The high-level classification of this error
         public let code: Code
 
@@ -16,7 +16,7 @@ public extension REST {
         public let request: REST.HTTPRequest
 
         /// Any HTTPResponse (partial or otherwise) that we might have
-        public let response: REST.HTTPResponse<T>?
+        public let response: REST.HTTPResponse?
 
         /// If we have more information about the error that caused this, stash it here
         public let underlyingError: Error?

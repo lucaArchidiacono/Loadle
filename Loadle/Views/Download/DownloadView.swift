@@ -14,9 +14,9 @@ import SwiftUI
 struct DownloadView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
 
-	@EnvironmentObject private var preferences: UserPreferences
-
     @Environment(Router.self) private var router: Router
+
+	@EnvironmentObject private var preferences: UserPreferences
 
     @State private var url: String = ""
     @FocusState private var isFocused: Bool
@@ -37,7 +37,6 @@ struct DownloadView: View {
                 dismiss()
 			}
         }
-//        .applyTheme(theme)
         .navigationBarTitle(L10n.download)
     }
 
@@ -64,7 +63,7 @@ struct DownloadView: View {
             .cornerRadius(8)
 
             Button {
-                viewModel.startDownload(using: url, preferences: preferences, router: router)
+				viewModel.startDownload(using: url, router: router)
                 isFocused = false
             } label: {
                 Text(L10n.downloadButtonTitle)
@@ -88,7 +87,7 @@ struct DownloadView: View {
     @ViewBuilder
     private var downloadItemsSection: some View {
         Section {
-			ForEach(viewModel.downloads, id: \.id) { download in
+			ForEach(viewModel.downloadItems, id: \.id) { download in
                 DownloadItemSectionView(
 					title: download.metadata.title ?? download.remoteURL.absoluteString,
                     state: download.state,
