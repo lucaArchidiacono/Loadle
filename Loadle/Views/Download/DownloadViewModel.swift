@@ -30,9 +30,11 @@ final class DownloadViewModel {
 
 
 	init() {
-		Task { @MainActor in
+		Task {
 			for await downloadItems in await downloadService.downloads() {
-				self.downloadItems = downloadItems
+				await MainActor.run {
+					self.downloadItems = downloadItems
+				}
 			}
 		}
 	}
