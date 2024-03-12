@@ -37,9 +37,6 @@ struct LoadleApp: App {
 		switch scenePhase {
 		case .background:
 			log(.verbose, "App is in background.")
-			#if DEBUG
-				exit(0)
-			#endif
 		case .inactive:
 			log(.verbose, "App is inactive.")
 		case .active:
