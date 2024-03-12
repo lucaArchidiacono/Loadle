@@ -137,7 +137,7 @@ private actor DownloadStore {
 	}
 	private var downloadsContinuation: AsyncStream<[DownloadItem]>.Continuation?
 	public lazy var downloads: AsyncStream<[DownloadItem]> = {
-		AsyncStream(bufferingPolicy: .bufferingNewest(1)) { (continuation: AsyncStream<[DownloadItem]>.Continuation) -> Void in
+		AsyncStream { (continuation: AsyncStream<[DownloadItem]>.Continuation) -> Void in
 			self.downloadsContinuation = continuation
 		}
 	}()
