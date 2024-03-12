@@ -19,6 +19,7 @@ final class DownloadViewModel {
     public var errorDetails: ErrorDetails?
 	public var audioOnly: Bool = false
 	public var downloadItems: [DownloadItem] = []
+	public var isLoading: Bool = false
 
 	@ObservationIgnored
 	private let loader: REST.Loader = .shared
@@ -37,6 +38,8 @@ final class DownloadViewModel {
 	}
 
     func startDownload(using url: String) {
+		guard !isLoading else { return }
+
         guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
             errorDetails = ErrorDetails(
                 title: L10n.invalidUrlTitle,
@@ -56,6 +59,8 @@ final class DownloadViewModel {
 
 		Task {
 			do {
+				isLoading = true
+
 				let metadata = try await metadataService.fetch(using: url)
 
 				guard let url = metadata.url else {
@@ -88,6 +93,7 @@ final class DownloadViewModel {
 			} catch {
 				log(.error, error)
 			}
+			isLoading = false
 		}
     }
 

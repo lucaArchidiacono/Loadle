@@ -66,11 +66,19 @@ struct DownloadView: View {
 				viewModel.startDownload(using: url)
                 isFocused = false
             } label: {
-                Text(L10n.downloadButtonTitle)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
+				Group {
+					if viewModel.isLoading {
+						ProgressView()
+					} else {
+						Text(L10n.downloadButtonTitle)
+					}
+				}							
+				.frame(height: 30)
+				.frame(maxWidth: .infinity)
+				.padding(.vertical, 10)
             }
             .buttonStyle(.borderedProminent)
+			.disabled(viewModel.isLoading)
 
             HStack {
                 Spacer()
