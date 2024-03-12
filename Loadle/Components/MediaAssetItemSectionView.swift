@@ -13,9 +13,10 @@ import Logger
 import SwiftUI
 
 struct MediaAssetItemSectionView: View {
-	let mediaAssetItem: MediaAssetItem
+	@State private var duration: String?
 
-	@State var duration: String?
+	let mediaAssetItem: MediaAssetItem
+	let onTap: () -> Void
 
 	var body: some View {
 		Section {
@@ -82,6 +83,9 @@ struct MediaAssetItemSectionView: View {
 			} catch {
 				log(.error, error)
 			}
+		}
+		.onTapGesture {
+			onTap()
 		}
 	}
 }

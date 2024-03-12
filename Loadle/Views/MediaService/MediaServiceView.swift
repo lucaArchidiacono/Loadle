@@ -33,17 +33,16 @@ struct MediaServiceView: View {
 	var content: some View {
 		List {
 			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
-				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem)
-					.onTapGesture {
-						#if os(visionOS)
-						openWindow(value: mediaAssetItem.fileURL)
-						#else
-						router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
-						#endif
-					}
-					.contextMenu {
-						ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
-					}
+				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
+					#if os(visionOS)
+					openWindow(value: mediaAssetItem.fileURL)
+					#else
+					router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+					#endif
+				}
+				.contextMenu {
+					ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
+				}
 			}
 		}
 		.toolbarBackground(.hidden)
