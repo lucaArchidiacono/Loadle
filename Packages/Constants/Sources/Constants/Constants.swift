@@ -11,7 +11,7 @@ public enum Constants {
     }
 
     public enum URLRegex: String, CaseIterable {
-        case bilibili = #"(?:https?:\/\/)?(?:www\.)?bilibili\.com\/"#
+        case bilibili = #"(?:https?:\/\/)?(?:www\.)?bilibili\.(?:com|tv)\/"#
         case instagram = #"(?:https?:\/\/)?(?:www\.)?instagram\.com\/"#
         case okVideo = #"(?:https?:\/\/)?(?:www\.)?ok\.ru\/"#
         case pinterest = #"(?:https?:\/\/)?(?:www\.)?pinterest\.(?:com|co\.uk)\/"#
