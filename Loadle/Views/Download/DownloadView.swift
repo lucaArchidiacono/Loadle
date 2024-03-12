@@ -14,8 +14,6 @@ import SwiftUI
 struct DownloadView: View {
     @Environment(\.dismiss) private var dismiss: DismissAction
 
-    @Environment(Router.self) private var router: Router
-
 	@EnvironmentObject private var preferences: UserPreferences
 
     @State private var url: String = ""
@@ -61,11 +59,11 @@ struct DownloadView: View {
                     .focused($isFocused)
             }
             .padding()
-            .background(Color(UIColor.secondarySystemGroupedBackground))
+            .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(8)
 
             Button {
-				viewModel.startDownload(using: url, router: router)
+				viewModel.startDownload(using: url)
                 isFocused = false
             } label: {
                 Text(L10n.downloadButtonTitle)
@@ -119,5 +117,4 @@ struct DownloadView: View {
 #Preview {
     DownloadView()
         .environmentObject(UserPreferences.shared)
-        .environment(Router())
 }

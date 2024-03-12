@@ -12,6 +12,7 @@ import SwiftUI
 import Fundamentals
 
 struct MediaServiceView: View {
+	@Environment(\.openWindow) private var openWindow
     @EnvironmentObject private var preferences: UserPreferences
 
     @Environment(Router.self) private var router: Router
@@ -34,7 +35,11 @@ struct MediaServiceView: View {
 			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem)
 					.onTapGesture {
+						#if os(visionOS)
+						openWindow(value: mediaAssetItem.fileURL)
+						#else
 						router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+						#endif
 					}
 					.contextMenu {
 						ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)

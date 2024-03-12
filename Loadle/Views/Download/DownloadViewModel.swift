@@ -36,7 +36,7 @@ final class DownloadViewModel {
 		}
 	}
 
-    func startDownload(using url: String, router: Router) {
+    func startDownload(using url: String) {
         guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
             errorDetails = ErrorDetails(
                 title: L10n.invalidUrlTitle,
@@ -105,7 +105,7 @@ final class DownloadViewModel {
 }
 
 extension DownloadViewModel {
-    private func buildGenericErrorDetails(using _: Error, router _: Router) -> ErrorDetails {
+    private func buildGenericErrorDetails(using _: Error) -> ErrorDetails {
         return ErrorDetails(
             title: L10n.somethingWentWrongTitle,
             description: L10n.somethingWentWrongDescription,

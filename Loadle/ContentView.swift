@@ -21,9 +21,18 @@ struct ContentView: View {
     @State private var selectedDestination: Destination?
 
     @Binding var router: Router
+	@Binding var currentSize: CGSize
 
     var body: some View {
-        sidebarView
+		GeometryReader { geometry in
+			sidebarView
+				.onAppear {
+					currentSize = geometry.size
+				}
+				.onChange(of: geometry.size) { oldValue, newValue in
+					currentSize = newValue
+				}
+		}
     }
 
     @ViewBuilder
@@ -40,7 +49,11 @@ struct ContentView: View {
                     router.presented = .settings
                 }
                 AddToolbar(placement: .topBarTrailing) {
-                    router.presented = .download
+					#if os(visionOS)
+					openWindow(id: "Download")
+					#else
+					router.presented = .download
+					#endif
                 }
             }
             .withPath()
@@ -72,6 +85,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(router: .constant(Router()))
+	ContentView(router: .constant(Router()), currentSize: .constant(.zero))
         .environmentObject(UserPreferences.shared)
 }

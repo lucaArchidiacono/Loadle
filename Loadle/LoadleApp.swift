@@ -22,15 +22,31 @@ struct LoadleApp: App {
 	@State private var notificationService: NotificationService = .shared
 
 	@State private var router: Router = .init()
+	@State private var currentSize: CGSize = .zero
 
     var body: some Scene {
         WindowGroup {
-            ContentView(router: $router)
+            ContentView(router: $router, currentSize: $currentSize)
                 .environmentObject(userPreferences)
 				.onChange(of: scenePhase) { _, newValue in
 					handleScenePhase(scenePhase: newValue)
 				}
         }
+
+		#if os(visionOS)
+		WindowGroup (id: "Download"){
+			DownloadDestination()
+				.environment(router)
+				.environmentObject(userPreferences)
+		}
+		.defaultSize(CGSize(width: 30, height: currentSize.height))
+
+		WindowGroup(for: URL.self) { $fileURL in
+			MediaPlayerFactory.build(using: fileURL!)
+				.environment(router)
+				.environmentObject(userPreferences)
+		}
+		#endif
     }
 
 	func handleScenePhase(scenePhase: ScenePhase) {
