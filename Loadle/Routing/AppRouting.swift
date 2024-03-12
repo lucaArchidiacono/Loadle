@@ -13,9 +13,9 @@ extension View {
     @ViewBuilder
     private func build(_ destination: PathDestination) -> some View {
         switch destination {
-        case .mediaPlayer(let fileURL):
-            MediaPlayerFactory.build(using: fileURL)
-        }
+		default:
+			EmptyView()
+		}
     }
 
     @ViewBuilder
@@ -27,6 +27,8 @@ extension View {
             SettingsDestination()
         case let .mail(emailData, result):
             MailComposerView(emailData: emailData, result: result)
+		case let .mediaPlayer(fileURL):
+			MediaPlayerFactory.build(using: fileURL)
         }
     }
 

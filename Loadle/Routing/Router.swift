@@ -10,19 +10,20 @@ import MessageUI
 import Models
 import SwiftUI
 
-enum PathDestination: Hashable {
-    case mediaPlayer(fileURL: URL)
-}
+enum PathDestination: Hashable {}
 
 enum SheetDestination: Hashable, Identifiable {
     case settings
     case download
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
+    case mediaPlayer(fileURL: URL)
 
     var id: String {
         switch self {
         case .download:
             return "download"
+		case .mediaPlayer(let fileURL):
+			return "mediaPlayer \(fileURL)"
         case .settings:
             return "settings"
         case .mail:

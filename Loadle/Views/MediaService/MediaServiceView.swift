@@ -70,7 +70,7 @@ struct MediaServiceView: View {
 		}
 		.frame(height: 100)
         .onTapGesture {
-            router.path.append(.mediaPlayer(fileURL: mediaAssetItem.fileURL))
+			router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
         }
 	}
 }
