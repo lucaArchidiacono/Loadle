@@ -32,7 +32,10 @@ struct MediaServiceView: View {
 	var content: some View {
 		List {
 			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
-				mediaSection(mediaAssetItem: mediaAssetItem)
+				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem)
+					.onTapGesture {
+						router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+					}
 					.contextMenu {
 						ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
 					}
@@ -44,33 +47,5 @@ struct MediaServiceView: View {
 		.task {
 			await viewModel.fetch()
 		}
-	}
-
-	func mediaSection(mediaAssetItem: MediaAssetItem) -> some View {
-		Section {
-			VStack {
-				HStack {
-					VStack {
-						AsyncImageProvider(itemProvider: mediaAssetItem.metadata.iconProvider, placeholder: Image(systemName: "bookmark.fill")) { image in
-							image
-								.resizable()
-								.aspectRatio(contentMode: .fit)
-								.frame(width: 20, height: 20)
-						}
-						Spacer()
-					}
-
-					VStack {
-						Text(mediaAssetItem.metadata.title!)
-						Spacer()
-					}
-				}
-                Text(mediaAssetItem.remoteURL.absoluteString)
-			}
-		}
-		.frame(height: 100)
-        .onTapGesture {
-			router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
-        }
 	}
 }

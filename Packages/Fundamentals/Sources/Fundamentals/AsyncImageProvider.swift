@@ -43,10 +43,12 @@ public struct AsyncImageProvider<Content>: View where Content: View {
         guard let itemProvider, !isLoading else { return }
         isLoading = true
 
-        _ = itemProvider.loadTransferable(type: Image.self, completionHandler: { result in
+		_ = itemProvider.loadTransferable(type: Data.self, completionHandler: { result in
             switch result {
-            case let .success(image):
-                self.image = image
+            case let .success(data):
+				if let uiImage = UIImage(data: data) {
+					self.image = Image(uiImage: uiImage)
+				}
             case .failure: break
             }
             isLoading = false

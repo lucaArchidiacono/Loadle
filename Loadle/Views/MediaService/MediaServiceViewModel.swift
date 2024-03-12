@@ -8,6 +8,8 @@
 import Foundation
 import Models
 import Environments
+import AVFoundation
+import Logger
 
 @Observable
 @MainActor

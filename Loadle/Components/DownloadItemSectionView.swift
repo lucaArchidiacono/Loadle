@@ -34,6 +34,7 @@ struct DownloadItemSectionView: View {
 
 				Text(title)
                     .font(.headline)
+					.frame(height: 20)
             }
             HStack {
                 progressBar
