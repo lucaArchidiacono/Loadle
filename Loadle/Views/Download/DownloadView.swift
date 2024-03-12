@@ -46,7 +46,9 @@ struct DownloadView: View {
             downloadSection
             downloadItemsSection
         }
+		#if !os(visionOS)
         .scrollDismissesKeyboard(.immediately)
+		#endif
         .scrollContentBackground(.hidden)
     }
 
