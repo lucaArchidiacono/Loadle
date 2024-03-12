@@ -275,9 +275,9 @@ public class DownloadService: NSObject {
 
 		super.init()
 
-		Task(priority: .background) {
-			for await (task, newState) in states {
-				await store.update(using: task, newState: newState)
+		Task.detached(priority: .background) {
+			for await (task, newState) in self.states {
+				await self.store.update(using: task, newState: newState)
 			}
 		}
 
