@@ -269,7 +269,7 @@ public class DownloadService: NSObject {
 		let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
 		config.sessionSendsLaunchEvents = true
 		config.allowsCellularAccess = true
-		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: .main)
+		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
 		self.store = DownloadStore(urlSession: downloadSession)
 
 		super.init()
