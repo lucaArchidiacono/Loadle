@@ -147,7 +147,7 @@ private actor DownloadStore {
 	}
 
 	public func delete(using url: URL) async {
-		log(.verbose, "Is deleting Download.")
+		log(.info, "Is deleting Download.")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and delete Download with url: \(url)")
 			return
@@ -155,11 +155,11 @@ private actor DownloadStore {
 		wrappedDownload.task.cancel()
 		store.removeValue(forKey: url)
 		await PersistenceController.shared.downloadItem.delete(wrappedDownload.item.id)
-		log(.verbose, "Deleted Download successfully.")
+		log(.info, "Deleted Download successfully.")
 	}
 
 	public func cancel(using url: URL) async {
-		log(.verbose, "Is cancelling Download.")
+		log(.info, "Is cancelling Download.")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and cancel Download with url: \(url)")
 			return
@@ -168,11 +168,11 @@ private actor DownloadStore {
 		guard !wrappedDownload.task.isPaused else { return }
 
 		await wrappedDownload.task.pause()
-		log(.verbose, "Cancelled download successfully.")
+		log(.info, "Cancelled download successfully.")
 	}
 
 	public func resume(using url: URL) async {
-		log(.verbose, "Is resuming Download.")
+		log(.info, "Is resuming Download.")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and resume Download with url: \(url)")
 			return
@@ -181,7 +181,7 @@ private actor DownloadStore {
 		guard wrappedDownload.task.isResumable else { return }
 
 		wrappedDownload.task.resume()
-		log(.verbose, "Resumed download successfully.")
+		log(.info, "Resumed download successfully.")
 	}
 
 	public func update(using task: URLSessionDownloadTask, newState: URLSessionDownloadDelegateWrapper.State) async -> [DownloadItem] {

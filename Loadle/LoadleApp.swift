@@ -52,11 +52,11 @@ struct LoadleApp: App {
 	func handleScenePhase(scenePhase: ScenePhase) {
 		switch scenePhase {
 		case .background:
-			log(.verbose, "App is in background.")
+			log(.info, "App is in background.")
 		case .inactive:
-			log(.verbose, "App is inactive.")
+			log(.info, "App is inactive.")
 		case .active:
-			log(.verbose, "App is active.")
+			log(.info, "App is active.")
 		@unknown default:
 			fatalError()
 		}
