@@ -84,6 +84,7 @@ struct MediaAssetItemSectionView: View {
 				log(.error, error)
 			}
 		}
+		.contentShape(Rectangle())
 		.onTapGesture {
 			onTap()
 		}
