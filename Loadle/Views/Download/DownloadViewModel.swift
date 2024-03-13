@@ -12,6 +12,7 @@ import Logger
 import Models
 import SwiftUI
 import REST
+import Combine
 
 @MainActor
 @Observable
@@ -22,21 +23,29 @@ final class DownloadViewModel {
 	public var isLoading: Bool = false
 
 	@ObservationIgnored
-	private let loader: REST.Loader = .shared
+	private var observationTask: Task<Void, Never>?
 	@ObservationIgnored
-    private let downloadService: DownloadService = .shared
+	private var downloadTasks: [Task<Void, Never>] = []
 	@ObservationIgnored
-	private let metadataService: MetadataService = .shared
-
+	private var subscriptions: Set<AnyCancellable> = Set()
 
 	init() {
-		Task {
-			for await downloadItems in await downloadService.downloads() {
-				await MainActor.run {
-					self.downloadItems = downloadItems
-				}
+		self.observationTask = Task { [weak self] in
+			for await downloadItems in DownloadService.shared.downloadsStream {
+				self?.downloadItems = downloadItems
 			}
 		}
+//		DownloadService.shared.downloads
+//			.receive(on: RunLoop.main)
+//			.sink { [weak self] downloads in
+//				self?.downloadItems = downloads
+//			}
+//			.store(in: &subscriptions)
+	}
+
+	deinit {
+		observationTask?.cancel()
+		downloadTasks.forEach { $0.cancel() }
 	}
 
     func startDownload(using url: String) {
@@ -59,11 +68,13 @@ final class DownloadViewModel {
 			return
 		}
 
-		Task {
-			do {
-				isLoading = true
+		let downloadTask = Task { [weak self] in
+			guard let self else { return }
 
-				let metadata = try await metadataService.fetch(using: url)
+			do {
+				self.isLoading = true
+
+				let metadata = try await MetadataService.shared.fetch(using: url)
 
 				guard let url = metadata.url else {
 					log(.error, "Was not able to fetch url from metadata!")
@@ -88,27 +99,28 @@ final class DownloadViewModel {
 					videoVimeoDownloadType: UserPreferences.shared.videoVimeoDownloadType)
 				let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
 
-				let response = try await loader.load(using: request)
+				let response = try await REST.Loader.shared.load(using: request)
 				let cobaltResponse: POSTCobaltResponse = try response.decode()
 				let streamURL = cobaltResponse.url!
-				await downloadService.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
+				await DownloadService.shared.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
 			} catch {
 				log(.error, error)
 			}
-			isLoading = false
+			self.isLoading = false
 		}
+		downloadTasks.append(downloadTask)
     }
 
 	func cancel(item: DownloadItem) {
-		downloadService.cancel(using: item.streamURL)
+		DownloadService.shared.cancel(using: item.streamURL)
 	}
 
 	func delete(item: DownloadItem) {
-		downloadService.delete(using: item.streamURL)
+		DownloadService.shared.delete(using: item.streamURL)
 	}
 
 	func resume(item: DownloadItem) {
-		downloadService.resume(using: item.streamURL)
+		DownloadService.shared.resume(using: item.streamURL)
 	}
 }
 

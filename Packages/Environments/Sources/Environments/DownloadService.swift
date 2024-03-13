@@ -10,6 +10,7 @@ import LinkPresentation
 import Logger
 import Models
 import LocalStorage
+import Combine
 
 private struct WrappedDownload {
 	let item: DownloadItem
@@ -130,17 +131,7 @@ private class URLSessionDownloadDelegateWrapper: NSObject, URLSessionDownloadDel
 
 private actor DownloadStore {
 	private let urlSession: URLSession
-	private var store: [URL: WrappedDownload] = [:] {
-		didSet {
-			downloadsContinuation?.yield(store.values.map { $0.item })
-		}
-	}
-	private var downloadsContinuation: AsyncStream<[DownloadItem]>.Continuation?
-	public lazy var downloads: AsyncStream<[DownloadItem]> = {
-		AsyncStream { (continuation: AsyncStream<[DownloadItem]>.Continuation) -> Void in
-			self.downloadsContinuation = continuation
-		}
-	}()
+	private var store: [URL: WrappedDownload] = [:]
 
 	init(urlSession: URLSession) {
 		self.urlSession = urlSession
@@ -193,14 +184,14 @@ private actor DownloadStore {
 		log(.verbose, "Resumed download successfully.")
 	}
 
-	public func update(using task: URLSessionDownloadTask, newState: URLSessionDownloadDelegateWrapper.State) async {
-		guard let url = task.originalRequest?.url else { return }
-		
+	public func update(using task: URLSessionDownloadTask, newState: URLSessionDownloadDelegateWrapper.State) async -> [DownloadItem] {
+		guard let url = task.originalRequest?.url else { return [] }
+
 		log(.verbose, "New state \(newState) received for url: \(url)")
 
 		guard let downloadItem = await PersistenceController.shared.downloadItem.load(url) else {
 			log(.warning, "Was not able to find and update `DownloadItem` with url: \(url)")
-			return
+			return []
 		}
 
 		var currentWrappedDownload: WrappedDownload
@@ -243,6 +234,7 @@ private actor DownloadStore {
 
 			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
 		}
+		return store.values.map { $0.item }
 	}
 }
 
@@ -254,9 +246,16 @@ public class DownloadService: NSObject {
 	private let downloadSession: URLSession
 
 	private var backgroundCompletionHandlers: [() -> Void] = []
+
+	private var downloadContinuations: [UUID: AsyncStream<[DownloadItem]>.Continuation] = [:]
+
+	private var stateTask: Task<Void, Never>?
 	private var stateContinuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation?
 	private lazy var states: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)> = {
 		AsyncStream(bufferingPolicy: .bufferingNewest(1)) { (continuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation) -> Void in
+			continuation.onTermination = { @Sendable _ in
+				self.stateContinuation = nil
+			}
 			self.delegate.onUpdate = { (task, newState) in
 				continuation.yield((task, newState))
 			}
@@ -270,14 +269,17 @@ public class DownloadService: NSObject {
 		let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
 		config.sessionSendsLaunchEvents = true
 		config.allowsCellularAccess = true
-		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: .main)
 		self.store = DownloadStore(urlSession: downloadSession)
 
 		super.init()
 
-		Task.detached(priority: .background) {
+		self.stateTask = Task.detached(priority: .background) { [weak self] in
+			guard let self else { return }
 			for await (task, newState) in self.states {
-				await self.store.update(using: task, newState: newState)
+				let downloadItems = await self.store.update(using: task, newState: newState)
+				downloadsSubject.send(downloadItems)
+				downloadContinuations.values.forEach { $0.yield(downloadItems) }
 			}
 		}
 
@@ -287,12 +289,27 @@ public class DownloadService: NSObject {
 		}
 	}
 
+	deinit {
+		stateTask?.cancel()
+	}
+
 	public func download(using remoteURL: URL, streamURL: URL, mediaService: MediaService, metadata: LPLinkMetadata) async {
 		await store.add(using: remoteURL, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
 	}
 
-	public func downloads() async -> AsyncStream<[DownloadItem]> {
-		await store.downloads
+	/// Sends a stream of updates based on current downloads using `Combine`'s `PassthroughSubject`.
+	public var downloadsSubject: PassthroughSubject<[DownloadItem], Never> = PassthroughSubject()
+	/// Sends a stream of updates based on current downloads using `AsyncStream`.
+	/// Please keep in mind. When using this, also manually cancel your task.
+	/// Since this is a never ending stream, you need to manually cancel the Task which is consuming this AsyncStream.
+	public var downloadsStream: AsyncStream<[DownloadItem]> {
+		let id = UUID()
+		return AsyncStream { continuation in
+			continuation.onTermination = { @Sendable _ in
+				self.downloadContinuations[id] = nil
+			}
+			self.downloadContinuations[id] = continuation
+		}
 	}
 
 	private var _deleteTasks: [URL: Task<Void, Never>] = [:]
