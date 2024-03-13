@@ -252,7 +252,7 @@ public class DownloadService: NSObject {
 	private var stateTask: Task<Void, Never>?
 	private var stateContinuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation?
 	private lazy var states: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)> = {
-		AsyncStream(bufferingPolicy: .bufferingNewest(1)) { (continuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation) -> Void in
+		AsyncStream { (continuation: AsyncStream<(URLSessionDownloadTask, URLSessionDownloadDelegateWrapper.State)>.Continuation) -> Void in
 			continuation.onTermination = { @Sendable _ in
 				self.stateContinuation = nil
 			}
@@ -304,7 +304,7 @@ public class DownloadService: NSObject {
 	/// Since this is a never ending stream, you need to manually cancel the Task which is consuming this AsyncStream.
 	public var downloadsStream: AsyncStream<[DownloadItem]> {
 		let id = UUID()
-		return AsyncStream { continuation in
+		return AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
 			continuation.onTermination = { @Sendable _ in
 				self.downloadContinuations[id] = nil
 			}
