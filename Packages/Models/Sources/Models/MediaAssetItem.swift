@@ -15,6 +15,7 @@ public struct MediaAssetItem: Identifiable, Codable {
     public let service: MediaService
 	public let metadata: LPLinkMetadata
 	public let createdAt: Date
+	public let title: String
 
 	enum CodingKeys: CodingKey {
 		case id
@@ -23,15 +24,17 @@ public struct MediaAssetItem: Identifiable, Codable {
 		case service
 		case createdAt
 		case metadata
+		case title
 	}
 
-	public init(id: UUID, remoteURL: URL, fileURL: URL, service: MediaService, metadata: LPLinkMetadata, createdAt: Date) {
+	public init(id: UUID, remoteURL: URL, fileURL: URL, service: MediaService, metadata: LPLinkMetadata, createdAt: Date, title: String) {
 		self.id = id
 		self.remoteURL = remoteURL
 		self.fileURL = fileURL
 		self.service = service
 		self.metadata = metadata
 		self.createdAt = createdAt
+		self.title = title
 	}
 
 	public init(from decoder: Decoder) throws {
@@ -45,6 +48,7 @@ public struct MediaAssetItem: Identifiable, Codable {
 		self.metadata = try NSKeyedUnarchiver.unarchivedObject(ofClass: LPLinkMetadata.self, from: metadata)!
 
 		self.createdAt = try container.decode(Date.self, forKey: .createdAt)
+		self.title = try container.decode(String.self, forKey: .title)
 	}
 
 	public func encode(to encoder: Encoder) throws {
@@ -58,6 +62,7 @@ public struct MediaAssetItem: Identifiable, Codable {
 		try container.encode(encodedMetadata, forKey: .metadata)
 
 		try container.encode(createdAt, forKey: .createdAt)
+		try container.encode(title, forKey: .title)
 	}
 
 	public func configure(fileURL: URL) -> Self {
@@ -66,6 +71,7 @@ public struct MediaAssetItem: Identifiable, Codable {
 				  fileURL: fileURL,
 				  service: service,
 				  metadata: metadata,
-				  createdAt: createdAt)
+				  createdAt: createdAt,
+				  title: title)
 	}
 }

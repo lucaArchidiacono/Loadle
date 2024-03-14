@@ -61,7 +61,8 @@ public final class MediaAssetService {
 					fileURL: relativeFileURL,
 					service: downloadItem.service,
 					metadata: downloadItem.metadata,
-					createdAt: .now)
+					createdAt: .now,
+					title: downloadItem.metadata.title!)
 
 				await PersistenceController.shared.mediaAsset.store(mediaAssetItem: mediaAssetItem)
 				log(.info, "Successfully stored \(mediaAssetItem) into CoreData DB.")

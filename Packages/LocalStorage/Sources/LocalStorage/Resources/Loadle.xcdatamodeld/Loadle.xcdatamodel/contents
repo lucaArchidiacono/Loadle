@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22522" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22757" systemVersion="23D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="DownloadItemEntity" representedClassName="DownloadItemEntity" syncable="YES">
         <attribute name="metadata" attributeType="Transformable" valueTransformerName="LPLinkMetadataTransformer"/>
         <attribute name="remoteURL" attributeType="URI"/>
@@ -19,6 +19,10 @@
         <attribute name="metadata" attributeType="Transformable" valueTransformerName="LPLinkMetadataTransformer"/>
         <attribute name="remoteURL" attributeType="URI"/>
         <attribute name="service" attributeType="String"/>
+        <attribute name="title" attributeType="String"/>
+        <fetchIndex name="byTitleIndex">
+            <fetchIndexElement property="title" type="Binary" order="ascending"/>
+        </fetchIndex>
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="id"/>

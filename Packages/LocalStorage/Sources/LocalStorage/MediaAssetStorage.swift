@@ -18,6 +18,26 @@ public final class MediaAssetStorage {
 		self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 	}
 
+	public func searchFor(title: String) async -> [MediaAssetItem] {
+		return await context.perform {
+			let fetchRequest: NSFetchRequest<MediaAssetEntity> = MediaAssetEntity.fetchRequest()
+			fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", title)
+
+			guard let entities = try? fetchRequest.execute() else { return [] }
+
+			return entities
+				.map { entity in
+					MediaAssetItem(id: entity.id,
+								   remoteURL: entity.remoteURL,
+								   fileURL: entity.fileURL,
+								   service: MediaService(rawValue: entity.service)!,
+								   metadata: entity.metadata,
+								   createdAt: entity.createdAt,
+								   title: entity.title)
+				}
+		}
+	}
+
 	public func load(id: MediaAssetItem.ID) async -> MediaAssetItem? {
 		return await context.perform {
 			guard let entity = self.getEntity(id: id) else { return nil }
@@ -27,7 +47,8 @@ public final class MediaAssetStorage {
 								  fileURL: entity.fileURL,
 								  service: MediaService(rawValue: entity.service)!,
 								  metadata: entity.metadata,
-								  createdAt: entity.createdAt)
+								  createdAt: entity.createdAt,
+								  title: entity.title)
 		}
 	}
 
@@ -40,7 +61,8 @@ public final class MediaAssetStorage {
 								  fileURL: entity.fileURL,
 								  service: MediaService(rawValue: entity.service)!,
 								  metadata: entity.metadata,
-								  createdAt: entity.createdAt)
+								  createdAt: entity.createdAt,
+								  title: entity.title)
 		}
 	}
 
@@ -59,7 +81,8 @@ public final class MediaAssetStorage {
 							   fileURL: entity.fileURL,
 							   service: MediaService(rawValue: entity.service)!,
 							   metadata: entity.metadata,
-							   createdAt: entity.createdAt)
+							   createdAt: entity.createdAt,
+							   title: entity.title)
 			}
 		}
 	}
@@ -87,6 +110,7 @@ public final class MediaAssetStorage {
 			mediaAssetItemEntity.service = mediaAssetItem.service.rawValue
 			mediaAssetItemEntity.metadata = mediaAssetItem.metadata
 			mediaAssetItemEntity.createdAt = mediaAssetItem.createdAt
+			mediaAssetItemEntity.title = mediaAssetItem.title
 
 			try? self.context.save()
 		}
