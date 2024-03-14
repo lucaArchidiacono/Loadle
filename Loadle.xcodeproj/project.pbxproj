@@ -33,6 +33,7 @@
 		5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2B2B73EA9100C34933 /* Router.swift */; };
 		5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */; };
 		5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6591812BA2EA2900619CB9 /* ContentViewModel.swift */; };
+		5C6591892BA35F9000619CB9 /* WelcomeSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 5C6591882BA35F9000619CB9 /* WelcomeSheet */; };
 		5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6CF9F32BA03F10005C7F42 /* MediaAssetItemSectionView.swift */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */; };
@@ -47,7 +48,6 @@
 		5CCA9A3B2B7CB826000307C1 /* Environments in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A3A2B7CB826000307C1 /* Environments */; };
 		5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A3E2B7CC2A9000307C1 /* Models */; };
 		5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCA2B790D660051E49D /* SettingsDestination.swift */; };
-		5CF59DCD2B7910440051E49D /* OnboardingDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */; };
 		5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */; };
 		5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */; };
 		5CF59DD62B7925550051E49D /* MediaServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD52B7925550051E49D /* MediaServiceView.swift */; };
@@ -128,7 +128,6 @@
 		5CCA9A3C2B7CB8C1000307C1 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Models; sourceTree = "<group>"; };
 		5CCA9A3D2B7CBA16000307C1 /* Generator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Generator; sourceTree = "<group>"; };
 		5CF59DCA2B790D660051E49D /* SettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDestination.swift; sourceTree = "<group>"; };
-		5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDestination.swift; sourceTree = "<group>"; };
 		5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbar.swift; sourceTree = "<group>"; };
 		5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceDestination.swift; sourceTree = "<group>"; };
 		5CF59DD52B7925550051E49D /* MediaServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceView.swift; sourceTree = "<group>"; };
@@ -151,6 +150,7 @@
 				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
+				5C6591892BA35F9000619CB9 /* WelcomeSheet in Frameworks */,
 				5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -340,7 +340,6 @@
 			children = (
 				5C4815582B78D8A200381627 /* DownloadDestination.swift */,
 				5CF59DCA2B790D660051E49D /* SettingsDestination.swift */,
-				5CF59DCC2B7910440051E49D /* OnboardingDestination.swift */,
 				5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */,
 				5CF59DD82B7956990051E49D /* Destination.swift */,
 			);
@@ -402,6 +401,7 @@
 				5CCA9A3A2B7CB826000307C1 /* Environments */,
 				5CCA9A3E2B7CC2A9000307C1 /* Models */,
 				5C06E16D2B8E8E5200F94F79 /* LocalStorage */,
+				5C6591882BA35F9000619CB9 /* WelcomeSheet */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -458,6 +458,7 @@
 			packageReferences = (
 				5CB9237F2B73CBB90032B49C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */,
+				5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */,
 			);
 			productRefGroup = 5C5BB9512B5E63D300ABB76C /* Products */;
 			projectDirPath = "";
@@ -502,7 +503,6 @@
 				5CF59DD92B7956990051E49D /* Destination.swift in Sources */,
 				5CB923522B716B730032B49C /* SettingsView.swift in Sources */,
 				5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */,
-				5CF59DCD2B7910440051E49D /* OnboardingDestination.swift in Sources */,
 				5CF59DD62B7925550051E49D /* MediaServiceView.swift in Sources */,
 				5C4815542B78D09E00381627 /* DownloadViewModel.swift in Sources */,
 				5C06E14C2B86539400F94F79 /* CancelToolbar.swift in Sources */,
@@ -867,6 +867,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MAJKFL/Welcome-Sheet";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dfed/swift-async-queue";
@@ -893,6 +901,11 @@
 		5C5BB96B2B5E658C00ABB76C /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
+		};
+		5C6591882BA35F9000619CB9 /* WelcomeSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */;
+			productName = WelcomeSheet;
 		};
 		5CB923802B73CBB90032B49C /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;

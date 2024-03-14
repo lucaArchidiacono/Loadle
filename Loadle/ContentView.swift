@@ -10,8 +10,10 @@ import Generator
 import Logger
 import Models
 import SwiftUI
+import WelcomeSheet
 
 struct ContentView: View {
+	@Environment(\.colorScheme) var colorScheme
 	@Environment(\.scenePhase) var scenePhase
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -24,6 +26,28 @@ struct ContentView: View {
     @Binding var router: Router
 	@Binding var currentSize: CGSize
 
+	private var onboardingPages: [WelcomeSheetPage] {
+		[
+			WelcomeSheetPage(title: "Welcome to Loadle",
+							 rows: [
+								WelcomeSheetPageRow(image: Image(systemName: "square.and.arrow.down.fill"),
+													accentColor: .accentColor,
+													title: L10n.onboardingDownloadTitle,
+													content: L10n.onboardingDownloadDescription),
+
+								WelcomeSheetPageRow(image: Image(systemName: "lock.fill"),
+													accentColor: .accentColor,
+													title: L10n.onboardingPrivacyPolicyTitle,
+													content: L10n.onboardingPrivacyPolicyDescription),
+
+								WelcomeSheetPageRow(image: Image(systemName: "popcorn.fill"),
+													accentColor: .accentColor,
+													title: L10n.onboardingSupportedServicesTitle,
+													content: L10n.onboardingSupportedServicesDescription),
+							 ])
+		]
+	}
+
     var body: some View {
 		GeometryReader { geometry in
 			sidebarView
@@ -34,6 +58,7 @@ struct ContentView: View {
 					currentSize = newValue
 				}
 		}
+		.welcomeSheet(isPresented: $preferences.showOnboarding, preferredColorScheme: colorScheme, pages: onboardingPages)
     }
 
     @ViewBuilder

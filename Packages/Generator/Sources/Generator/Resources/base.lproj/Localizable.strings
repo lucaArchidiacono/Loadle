@@ -60,6 +60,15 @@
 
 "download_audio_only" = "Audio only";
 
+// Onboarding
+"onboarding_title" = "Welcome to Loadle";
+"onboarding_download_title" = "Download them All";
+"onboarding_download_description" = "Say goodbye to ads, trackers, and other elements. Just paste a share link, and you're all set to enjoy hassle-free downloading!";
+"onboarding_supported_services_title" = "Supported Services";
+"onboarding_supported_services_description" = "Discover the diverse range of platforms supported by Loadle for seamless content downloading:\n•Bilibili.com & Bilibili.tv\n•Dailymotion videos\n•Instagram reels, posts & stories\n•OK video\n•Pinterest videos & stories\n•Reddit videos & GIFs\n•Rutube videos\n•SoundCloud\n•Streamable.com\n•TikTok videos, photos & audio\n•Tumblr video & audio\n•Twitch clips\n•Twitter videos & voice\n•Vimeo\n•Vine archive\n•VK video & clips\n•YouTube videos, shorts & music";
+"onboarding_privacy_policy_title" = "Privacy Policy";
+"onboarding_privacy_policy_description" = "Your privacy matters. Your data won't be collected or stored. What you download is your business, not ours or anyone else's.";
+
 // Notifications
 /// Notifications Download
 "notification_download_title" = "🚀 Everything is ready!";
