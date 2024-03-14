@@ -7,16 +7,31 @@
 
 import Foundation
 import LocalStorage
+import Environments
 import Models
 
 @MainActor
 @Observable
 final class ContentViewModel {
-	var mediaAssetsCount: [MediaService: Int] = [:]
+	var searchText: String = ""
+	var filteredMediaAssetItems: [MediaAssetItem] = []
+	var mediaAssetItemIndex: [MediaService: Int] = [:]
 
 	func fetchAll() {
 		Task {
-			mediaAssetsCount = await PersistenceController.shared.mediaAsset.countMediaAssetsByService()
+			mediaAssetItemIndex = await MediaAssetService.shared.loadCountIndex()
+		}
+	}
+
+	@ObservationIgnored
+	private var searchTask: Task<Void, Never>?
+	func search() {
+		if let searchTask {
+			searchTask.cancel()
+		}
+
+		searchTask = Task {
+			filteredMediaAssetItems = await MediaAssetService.shared.searchFor(title: searchText)
 		}
 	}
 }

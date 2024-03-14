@@ -39,30 +39,10 @@ struct ContentView: View {
     @ViewBuilder
     var sidebarView: some View {
         NavigationSplitView {
-            List(selection: $selectedDestination) {
-                servicesSection
-            }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .navigationTitle(L10n.appTitle)
-            .toolbar {
-                SettingsToolbar(placement: .topBarLeading) {
-                    router.presented = .settings
-                }
-                AddToolbar(placement: .topBarTrailing) {
-					#if os(visionOS)
-					openWindow(id: "Download")
-					#else
-					router.presented = .download
-					#endif
-                }
-            }
-            .withPath()
-			.withSheetDestinations(destination: $router.presented, onDismiss: {
-				viewModel.fetchAll()
-			})
-			.withCoverDestinations(destination: $router.covered) {
-				viewModel.fetchAll()
+			if !viewModel.searchText.isEmpty {
+				mediaAssetItemSearchList
+			} else {
+				mediaServiceList
 			}
         } detail: {
             if let selectedDestination {
@@ -75,14 +55,71 @@ struct ContentView: View {
                 EmptyView()
             }
         }
+		.searchable(text: $viewModel.searchText)
+		.onChange(of: viewModel.searchText, initial: false) {
+			viewModel.search()
+		}
     }
+
+	@ViewBuilder
+	var mediaAssetItemSearchList: some View {
+		List {
+			ForEach(viewModel.filteredMediaAssetItems) { mediaAssetItem in
+				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
+					#if os(visionOS)
+					openWindow(value: mediaAssetItem.fileURL)
+					#else
+					router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+					#endif
+				}
+				.contextMenu {
+					ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
+				}
+			}
+		}
+		.toolbarBackground(.hidden)
+		.scrollContentBackground(.hidden)
+		.listStyle(.inset)
+		.withPath()
+		.withSheetDestinations(destination: $router.presented)
+		.withCoverDestinations(destination: $router.covered)
+	}
+
+	@ViewBuilder
+	var mediaServiceList: some View {
+		List(selection: $selectedDestination) {
+			servicesSection
+		}
+		.listStyle(.insetGrouped)
+		.scrollContentBackground(.hidden)
+		.navigationTitle(L10n.appTitle)
+		.toolbar {
+			SettingsToolbar(placement: .topBarLeading) {
+				router.presented = .settings
+			}
+			AddToolbar(placement: .topBarTrailing) {
+				#if os(visionOS)
+				openWindow(id: "Download")
+				#else
+				router.presented = .download
+				#endif
+			}
+		}
+		.withPath()
+		.withSheetDestinations(destination: $router.presented, onDismiss: {
+			viewModel.fetchAll()
+		})
+		.withCoverDestinations(destination: $router.covered) {
+			viewModel.fetchAll()
+		}
+	}
 
     @ViewBuilder
     var servicesSection: some View {
         Section(L10n.mediaServicesTitle) {
             ForEach(MediaService.allCases) { service in
                 NavigationLink(value: Destination.media(service: service)) {
-					service.label(count: viewModel.mediaAssetsCount[service])
+					service.label(count: viewModel.mediaAssetItemIndex[service])
                 }
             }
         }

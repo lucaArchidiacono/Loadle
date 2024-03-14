@@ -75,14 +75,27 @@ public final class MediaAssetService {
 		}
 	}
 
+	public func loadCountIndex() async -> [MediaService: Int] {
+		await PersistenceController.shared.mediaAsset
+			.countMediaAssetsByService()
+	}
+
 	public func loadAllAssets(for service: MediaService) async -> [MediaAssetItem] {
 		await PersistenceController.shared.mediaAsset
 			.loadAll(using: service)
-			.compactMap { mediaAssetItem -> MediaAssetItem? in
-				let urlString = mediaAssetItem.fileURL.path
-				guard let serviceURL = try? Self.loadBaseURL(service: mediaAssetItem.service) else { return nil }
-				let newFileURL = URL(filePath: urlString, directoryHint: .notDirectory, relativeTo: serviceURL)
-				return mediaAssetItem.configure(fileURL: newFileURL)
-			}
+			.compactMap(Self.transform(_:))
+	}
+
+	public func searchFor(title: String) async -> [MediaAssetItem] {
+		await PersistenceController.shared.mediaAsset
+			.searchFor(title: title)
+			.compactMap(Self.transform(_:))
+	}
+
+	private static func transform(_ data: MediaAssetItem) -> MediaAssetItem? {
+		let urlString = data.fileURL.path
+		guard let serviceURL = try? Self.loadBaseURL(service: data.service) else { return nil }
+		let newFileURL = URL(filePath: urlString, directoryHint: .notDirectory, relativeTo: serviceURL)
+		return data.configure(fileURL: newFileURL)
 	}
 }
