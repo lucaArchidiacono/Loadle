@@ -18,7 +18,8 @@ struct ContentView: View {
 
     @EnvironmentObject private var preferences: UserPreferences
 
-    @State private var selectedDestination: Destination?
+    @State private var selectedDestination: Destination? = nil
+	@State private var viewModel: ContentViewModel = ContentViewModel()
 
     @Binding var router: Router
 	@Binding var currentSize: CGSize
@@ -57,8 +58,12 @@ struct ContentView: View {
                 }
             }
             .withPath()
-            .withSheetDestinations(destination: $router.presented)
-            .withCoverDestinations(destination: $router.covered)
+			.withSheetDestinations(destination: $router.presented, onDismiss: {
+				viewModel.fetchAll()
+			})
+			.withCoverDestinations(destination: $router.covered) {
+				viewModel.fetchAll()
+			}
         } detail: {
             if let selectedDestination {
                 switch selectedDestination {
@@ -77,10 +82,13 @@ struct ContentView: View {
         Section(L10n.mediaServicesTitle) {
             ForEach(MediaService.allCases) { service in
                 NavigationLink(value: Destination.media(service: service)) {
-                    service.label
+					service.label(count: viewModel.mediaAssetsCount[service])
                 }
             }
         }
+		.onAppear {
+			viewModel.fetchAll()
+		}
     }
 }
 

@@ -76,10 +76,21 @@ public enum MediaService: String, Hashable, Identifiable, CaseIterable, Codable 
         }
     }
 
-    @ViewBuilder
-    public var label: some View {
-        Label { text } icon: { icon }
-    }
+	@ViewBuilder
+	public func label(count: Int?) -> some View {
+		Label {
+			HStack {
+				text
+				Spacer()
+				if let count {
+					Text("\(count)")
+				}
+			}
+		} icon: {
+			icon
+		}
+
+	}
 
     private var icon: some View {
         Self.color(for: self)

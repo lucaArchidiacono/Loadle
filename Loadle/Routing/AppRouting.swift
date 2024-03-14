@@ -38,14 +38,14 @@ extension View {
         }
     }
 
-    func withSheetDestinations(destination: Binding<SheetDestination?>) -> some View {
-        sheet(item: destination) { destination in
+	func withSheetDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
+        sheet(item: destination, onDismiss: onDismiss) { destination in
             build(destination)
         }
     }
 
-    func withCoverDestinations(destination: Binding<SheetDestination?>) -> some View {
-        fullScreenCover(item: destination) { destination in
+	func withCoverDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
+        fullScreenCover(item: destination, onDismiss: onDismiss) { destination in
             build(destination)
         }
     }

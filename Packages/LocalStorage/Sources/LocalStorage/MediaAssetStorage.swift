@@ -18,6 +18,36 @@ public final class MediaAssetStorage {
 		self.context.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 	}
 
+	public func countMediaAssetsByService() async -> [MediaService: Int] {
+		return await context.perform {
+			var counts: [MediaService: Int] = [:]
+
+			let fetchRequest = NSFetchRequest<NSDictionary>(entityName: "MediaAssetEntity")
+			fetchRequest.resultType = .dictionaryResultType
+
+			// Specify the properties to fetch (service and count)
+			let expressionDescription = NSExpressionDescription()
+			expressionDescription.name = "count"
+			expressionDescription.expression = NSExpression(forFunction: "count:", arguments: [NSExpression(forKeyPath: "service")])
+			expressionDescription.expressionResultType = .integer64AttributeType
+
+			fetchRequest.propertiesToFetch = ["service", expressionDescription]
+			fetchRequest.propertiesToGroupBy = ["service"]
+
+			guard let results = try? fetchRequest.execute() else { return [:] }
+
+			for result in results {
+				if let serviceString = result["service"] as? String,
+				   let service = MediaService(rawValue: serviceString),
+				   let count = result["count"] as? Int {
+					counts[service] = count
+				}
+			}
+
+			return counts
+		}
+	}
+
 	public func searchFor(title: String) async -> [MediaAssetItem] {
 		return await context.perform {
 			let fetchRequest: NSFetchRequest<MediaAssetEntity> = MediaAssetEntity.fetchRequest()
