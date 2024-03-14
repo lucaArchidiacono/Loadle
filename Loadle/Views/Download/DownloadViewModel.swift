@@ -21,6 +21,7 @@ final class DownloadViewModel {
 	public var audioOnly: Bool = false
 	public var downloadItems: [DownloadItem] = []
 	public var isLoading: Bool = false
+	public var url: String = ""
 
 	@ObservationIgnored
 	private var observationTask: Task<Void, Never>?

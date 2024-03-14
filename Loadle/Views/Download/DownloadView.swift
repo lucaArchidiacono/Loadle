@@ -9,15 +9,19 @@ import Environments
 import Foundation
 import Generator
 import Logger
+import UIKit
 import SwiftUI
 
 struct DownloadView: View {
+	enum FocusedField {
+		case url
+	}
+
     @Environment(\.dismiss) private var dismiss: DismissAction
 
 	@EnvironmentObject private var preferences: UserPreferences
 
-    @State private var url: String = ""
-    @FocusState private var isFocused: Bool
+	@FocusState private var focusedField: FocusedField?
 
     @State private var viewModel = DownloadViewModel()
 
@@ -44,6 +48,9 @@ struct DownloadView: View {
             downloadSection
             downloadItemsSection
         }
+		.onAppear {
+			focusedField = .url
+		}
 		#if !os(visionOS)
         .scrollDismissesKeyboard(.immediately)
 		#endif
@@ -54,17 +61,25 @@ struct DownloadView: View {
     private var downloadSection: some View {
         Section {
             HStack {
-                Image(systemName: "link")
-                TextField(L10n.pasteLink, text: $url)
-                    .focused($isFocused)
+				Group {
+					Button("", systemImage: "link") {
+						if let pasteBoard = UIPasteboard.general.string {
+							viewModel.url = pasteBoard
+						}
+					}
+					.frame(width: 30)
+					TextField(L10n.pasteLink, text: $viewModel.url)
+						.focused($focusedField, equals: .url)
+				}
+				.frame(height: 30)
             }
             .padding()
             .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(8)
 
             Button {
-				viewModel.startDownload(using: url)
-                isFocused = false
+				viewModel.startDownload(using: viewModel.url)
+                focusedField = nil
             } label: {
 				Group {
 					if viewModel.isLoading {
