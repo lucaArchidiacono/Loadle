@@ -16,12 +16,24 @@ import Logger
 final class MediaServiceViewModel {
 	public let mediaService: MediaService
 	public var mediaAssetItems = [MediaAssetItem]()
+	public var filteredMediaAssetItems = [MediaAssetItem]()
+	public var searchText: String = ""
 
 	init(mediaService: MediaService) {
 		self.mediaService = mediaService
 	}
 
-	public func fetch() async {
-		self.mediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
+	public func fetch() {
+		Task {
+			self.mediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
+		}
+	}
+
+	func search() {
+		if searchText.isEmpty {
+			filteredMediaAssetItems = mediaAssetItems
+		} else {
+			filteredMediaAssetItems = mediaAssetItems.filter { $0.title.lowercased().contains(searchText.lowercased()) }
+		}
 	}
 }

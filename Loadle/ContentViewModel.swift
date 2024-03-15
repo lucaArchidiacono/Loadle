@@ -13,11 +13,11 @@ import Models
 @MainActor
 @Observable
 final class ContentViewModel {
-	var searchText: String = ""
-	var filteredMediaAssetItems: [MediaAssetItem] = []
-	var mediaAssetItemIndex: [MediaService: Int] = [:]
+	public var searchText: String = ""
+	public var filteredMediaAssetItems: [MediaAssetItem] = []
+	public var mediaAssetItemIndex: [MediaService: Int] = [:]
 
-	func fetchAll() {
+	func fetchMediaAssetIndex() {
 		Task {
 			mediaAssetItemIndex = await MediaAssetService.shared.loadCountIndex()
 		}

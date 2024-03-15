@@ -132,10 +132,10 @@ struct ContentView: View {
 		}
 		.withPath()
 		.withSheetDestinations(destination: $router.presented, onDismiss: {
-			viewModel.fetchAll()
+			viewModel.fetchMediaAssetIndex()
 		})
 		.withCoverDestinations(destination: $router.covered) {
-			viewModel.fetchAll()
+			viewModel.fetchMediaAssetIndex()
 		}
 	}
 
@@ -149,7 +149,7 @@ struct ContentView: View {
             }
         }
 		.onAppear {
-			viewModel.fetchAll()
+			viewModel.fetchMediaAssetIndex()
 		}
     }
 }

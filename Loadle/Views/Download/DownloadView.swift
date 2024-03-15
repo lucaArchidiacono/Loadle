@@ -61,19 +61,13 @@ struct DownloadView: View {
     private var downloadSection: some View {
         Section {
             HStack {
-				Group {
-					Button("", systemImage: "link") {
-						if let pasteBoard = UIPasteboard.general.string {
-							viewModel.url = pasteBoard
-						}
-					}
+				Image(systemName: "link")
+					.aspectRatio(contentMode: .fit)
 					.frame(width: 30)
-					TextField(L10n.pasteLink, text: $viewModel.url)
-						.focused($focusedField, equals: .url)
-				}
-				.frame(height: 30)
+				TextField(L10n.pasteLink, text: $viewModel.url)
+					.focused($focusedField, equals: .url)
             }
-            .padding()
+			.padding(.vertical)
             .background(Color(UIColor.secondarySystemBackground))
             .cornerRadius(8)
 

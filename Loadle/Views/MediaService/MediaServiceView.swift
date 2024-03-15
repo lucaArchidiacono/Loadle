@@ -28,11 +28,17 @@ struct MediaServiceView: View {
 			content
 		}
 		.navigationTitle(viewModel.mediaService.title)
+		.onAppear {
+			viewModel.fetch()
+		}
+		.onChange(of: viewModel.searchText, initial: false) {
+			viewModel.search()
+		}
     }
 
 	var content: some View {
 		List {
-			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
+			ForEach(viewModel.searchText.isEmpty ? viewModel.mediaAssetItems : viewModel.filteredMediaAssetItems ) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
 					#if os(visionOS)
 					openWindow(value: mediaAssetItem.fileURL)
@@ -45,11 +51,9 @@ struct MediaServiceView: View {
 				}
 			}
 		}
+		.searchable(text: $viewModel.searchText)
 		.toolbarBackground(.hidden)
         .scrollContentBackground(.hidden)
 		.listStyle(.inset)
-		.task {
-			await viewModel.fetch()
-		}
 	}
 }
