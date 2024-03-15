@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5C018FD42BA494F300836328 /* OnboardingDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C018FD32BA494F300836328 /* OnboardingDestination.swift */; };
+		5C018FD72BA4951200836328 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C018FD62BA4951200836328 /* OnboardingView.swift */; };
 		5C0643EE2B937C6900C3D3D0 /* MediaPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643ED2B937C6900C3D3D0 /* MediaPlayerView.swift */; };
 		5C0643F02B937CA800C3D3D0 /* MediaPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643EF2B937CA800C3D3D0 /* MediaPlayerViewModel.swift */; };
 		5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1432B86140600F94F79 /* AddToolbar.swift */; };
@@ -80,6 +82,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		5C018FD32BA494F300836328 /* OnboardingDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingDestination.swift; sourceTree = "<group>"; };
+		5C018FD62BA4951200836328 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5C0643ED2B937C6900C3D3D0 /* MediaPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerView.swift; sourceTree = "<group>"; };
 		5C0643EF2B937CA800C3D3D0 /* MediaPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerViewModel.swift; sourceTree = "<group>"; };
 		5C06E1432B86140600F94F79 /* AddToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbar.swift; sourceTree = "<group>"; };
@@ -161,6 +165,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5C018FD52BA4950900836328 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				5C018FD62BA4951200836328 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		5C0643F62B937E4B00C3D3D0 /* MediaPlayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,6 +295,7 @@
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5C018FD52BA4950900836328 /* Onboarding */,
 				5C0643F62B937E4B00C3D3D0 /* MediaPlayer */,
 				5CF59DD42B7925470051E49D /* MediaService */,
 				5CF59DCF2B7910BE0051E49D /* Settings */,
@@ -321,6 +334,7 @@
 				5CF59DCA2B790D660051E49D /* SettingsDestination.swift */,
 				5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */,
 				5CF59DD82B7956990051E49D /* Destination.swift */,
+				5C018FD32BA494F300836328 /* OnboardingDestination.swift */,
 			);
 			path = Destinations;
 			sourceTree = "<group>";
@@ -488,9 +502,11 @@
 				5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */,
+				5C018FD72BA4951200836328 /* OnboardingView.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
 				5C0643F02B937CA800C3D3D0 /* MediaPlayerViewModel.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
+				5C018FD42BA494F300836328 /* OnboardingDestination.swift in Sources */,
 				5C06E1702B8F77C400F94F79 /* MediaServiceViewModel.swift in Sources */,
 				5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,

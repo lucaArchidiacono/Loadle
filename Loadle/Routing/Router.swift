@@ -17,9 +17,12 @@ enum SheetDestination: Hashable, Identifiable {
     case download
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
     case mediaPlayer(mediaAssetItem: MediaAssetItem)
+	case onboarding
 
     var id: String {
         switch self {
+		case .onboarding:
+			return "onboarding"
         case .download:
             return "download"
 		case .mediaPlayer(let mediaAssetItem):
@@ -47,6 +50,8 @@ final class Router {
     public var presented: SheetDestination?
     public var covered: SheetDestination?
 
+	public weak var parent: Router?
+
     public func navigate(_ to: PathDestination) {
         path.append(to)
     }
@@ -58,4 +63,17 @@ final class Router {
     public func popLast(_ k: Int) {
         path.removeLast(k)
     }
+
+	public func pop() {
+		path.removeLast(1)
+	}
+
+	public func dismiss() {
+		guard let parent = parent else {
+			presented = nil
+			covered = nil
+			return
+		}
+		parent.dismiss()
+	}
 }

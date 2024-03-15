@@ -12,6 +12,7 @@ import SwiftUI
 
 struct MediaServiceDestination: View {
     @EnvironmentObject private var preferences: UserPreferences
+	@Environment(Router.self) private var parentRouter: Router
     @State private var router = Router()
 
     let mediaService: MediaService
@@ -23,6 +24,9 @@ struct MediaServiceDestination: View {
                 .withCoverDestinations(destination: $router.covered)
                 .withSheetDestinations(destination: $router.presented)
         }
+		.onAppear {
+			router.parent = parentRouter
+		}
         .environment(router)
         .environmentObject(preferences)
     }

@@ -21,6 +21,8 @@ extension View {
     @ViewBuilder
     private func build(_ destination: SheetDestination) -> some View {
         switch destination {
+		case .onboarding:
+			OnboardingDestination()
         case .download:
             DownloadDestination()
         case .settings:

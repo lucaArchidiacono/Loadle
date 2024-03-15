@@ -35,6 +35,12 @@ struct ContentView: View {
 					currentSize = newValue
 				}
 		}
+		.onAppear {
+			if preferences.showOnboarding {
+				router.presented = .onboarding
+			}
+		}
+		.environment(router)
     }
 
     @ViewBuilder
