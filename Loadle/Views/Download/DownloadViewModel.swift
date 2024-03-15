@@ -107,10 +107,24 @@ final class DownloadViewModel {
 				let response = try await REST.Loader.shared.load(using: request)
 				let cobaltResponse: POSTCobaltResponse = try response.decode()
 
-				// If cotnains picker, then download everything
+				// If contains picker, then download everything
+				if let streamURL = cobaltResponse.url {
+					await DownloadService.shared.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
+				} else {
+					await withTaskGroup(of: Void.self) { group in
+						if let audioStream = cobaltResponse.audio {
+							group.addTask {
+								await DownloadService.shared.download(using: url, streamURL: audioStream, mediaService: mediaService, metadata: metadata)
+							}
+						}
 
-				let streamURL = cobaltResponse.url!
-				await DownloadService.shared.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
+						for picker in cobaltResponse.picker {
+							group.addTask {
+								await DownloadService.shared.download(using: url, streamURL: picker.url, mediaService: mediaService, metadata: metadata)
+							}
+						}
+					}
+				}
 			} catch {
 				log(.error, error)
 				errorDetails = .default

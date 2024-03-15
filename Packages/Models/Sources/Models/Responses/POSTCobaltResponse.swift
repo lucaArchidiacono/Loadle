@@ -13,7 +13,7 @@ public struct POSTCobaltResponse: Decodable {
     public let url: URL?
     public let pickerType: String?
     public let picker: [POSTCobaltPickerItemResponse]
-    public let audio: String?
+    public let audio: URL?
 
     enum CodingKeys: CodingKey {
         case status
@@ -31,7 +31,12 @@ public struct POSTCobaltResponse: Decodable {
         url = try container.decodeIfPresent(URL.self, forKey: .url)
         pickerType = try container.decodeIfPresent(String.self, forKey: .pickerType)
         picker = try container.decodeIfPresent([POSTCobaltResponse.POSTCobaltPickerItemResponse].self, forKey: .picker) ?? []
-        audio = try container.decodeIfPresent(String.self, forKey: .audio)
+		
+		do {
+			audio = try container.decodeIfPresent(URL.self, forKey: .audio)
+		} catch {
+			audio = nil
+		}
     }
 
     public enum POSTCobaltStatusResponse: String, Decodable {
@@ -53,8 +58,6 @@ public struct POSTCobaltResponse: Decodable {
     }
 
     public struct POSTCobaltPickerItemResponse: Decodable {
-        let type: String
-        let url: URL
-        let thumb: String
+        public let url: URL
     }
 }
