@@ -10,7 +10,9 @@ import MessageUI
 import Models
 import SwiftUI
 
-enum PathDestination: Hashable {}
+enum PathDestination: Hashable {
+	case mediaPlayer(mediaAssetItem: MediaAssetItem)
+}
 
 enum SheetDestination: Hashable, Identifiable {
     case settings

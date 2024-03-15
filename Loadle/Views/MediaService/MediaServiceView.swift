@@ -46,7 +46,7 @@ struct MediaServiceView: View {
 					#if os(visionOS)
 					openWindow(value: mediaAssetItem)
 					#else
-					router.covered = .mediaPlayer(mediaAssetItem: mediaAssetItem)
+					router.path.append(.mediaPlayer(mediaAssetItem: mediaAssetItem))
 					#endif
 				}
 				.contextMenu {

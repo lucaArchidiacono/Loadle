@@ -19,8 +19,7 @@ struct MediaPlayerView: View {
     }
     
     var body: some View {
-//		VideoPlayer(player: viewModel.player)
-		EmptyView()
+		VideoPlayer(player: viewModel.player)
     }
 }
 

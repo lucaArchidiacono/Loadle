@@ -13,8 +13,8 @@ extension View {
     @ViewBuilder
     private func build(_ destination: PathDestination) -> some View {
         switch destination {
-		default:
-			EmptyView()
+		case .mediaPlayer(let mediaAssetItem):
+			MediaPlayerView(mediaAssetItem: mediaAssetItem)
 		}
     }
 
