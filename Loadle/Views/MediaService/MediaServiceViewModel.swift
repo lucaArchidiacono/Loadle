@@ -23,8 +23,14 @@ final class MediaServiceViewModel {
 		self.mediaService = mediaService
 	}
 
+	@ObservationIgnored
+	private var fetchTask: Task<Void, Never>?
 	public func fetch() {
-		Task {
+		if let fetchTask {
+			fetchTask.cancel()
+		}
+		fetchTask = Task { [weak self] in
+			guard let self else { return }
 			self.mediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
 		}
 	}

@@ -57,9 +57,8 @@ public final class MediaAssetStorage {
 
 			return entities
 				.map { entity in
-					MediaAssetItem(id: entity.id,
-								   remoteURL: entity.remoteURL,
-								   fileURL: entity.fileURL,
+					MediaAssetItem(remoteURL: entity.remoteURL,
+								   fileURLs: entity.fileURLs,
 								   service: MediaService(rawValue: entity.service)!,
 								   metadata: entity.metadata,
 								   createdAt: entity.createdAt,
@@ -68,13 +67,12 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	public func load(id: MediaAssetItem.ID) async -> MediaAssetItem? {
+	public func load(remoteURL: URL) async -> MediaAssetItem? {
 		return await context.perform {
-			guard let entity = self.getEntity(id: id) else { return nil }
+			guard let entity = self.getEntity(remoteURL: remoteURL) else { return nil }
 
-			return MediaAssetItem(id: entity.id,
-								  remoteURL: entity.remoteURL,
-								  fileURL: entity.fileURL,
+			return MediaAssetItem(remoteURL: entity.remoteURL,
+								  fileURLs: entity.fileURLs,
 								  service: MediaService(rawValue: entity.service)!,
 								  metadata: entity.metadata,
 								  createdAt: entity.createdAt,
@@ -86,9 +84,8 @@ public final class MediaAssetStorage {
 		return await context.perform {
 			guard let entity = self.getEntity(fileURL: fileURL) else { return nil }
 
-			return MediaAssetItem(id: entity.id,
-								  remoteURL: entity.remoteURL,
-								  fileURL: entity.fileURL,
+			return MediaAssetItem(remoteURL: entity.remoteURL,
+								  fileURLs: entity.fileURLs,
 								  service: MediaService(rawValue: entity.service)!,
 								  metadata: entity.metadata,
 								  createdAt: entity.createdAt,
@@ -106,9 +103,8 @@ public final class MediaAssetStorage {
 			guard let entities = try? fetchRequest.execute() else { return [] }
 
 			return entities.compactMap { entity in
-				MediaAssetItem(id: entity.id,
-							   remoteURL: entity.remoteURL,
-							   fileURL: entity.fileURL,
+				MediaAssetItem(remoteURL: entity.remoteURL,
+							   fileURLs: entity.fileURLs,
 							   service: MediaService(rawValue: entity.service)!,
 							   metadata: entity.metadata,
 							   createdAt: entity.createdAt,
@@ -117,9 +113,9 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	public func delete(_ id: MediaAssetItem.ID) async {
+	public func delete(_ remoteURL: URL) async {
 		return await context.perform {
-			guard let entity = self.getEntity(id: id) else { return }
+			guard let entity = self.getEntity(remoteURL: remoteURL) else { return }
 			self.context.delete(entity)
 			try? self.context.save()
 		}
@@ -128,15 +124,14 @@ public final class MediaAssetStorage {
 	public func store(mediaAssetItem: MediaAssetItem) async {
 		return await context.perform {
 			let mediaAssetItemEntity: MediaAssetEntity
-			if let entity = self.getEntity(id: mediaAssetItem.id) {
+			if let entity = self.getEntity(remoteURL: mediaAssetItem.remoteURL) {
 				mediaAssetItemEntity = entity
 			} else {
 				mediaAssetItemEntity = MediaAssetEntity(context: self.context)
 			}
 
-			mediaAssetItemEntity.id = mediaAssetItem.id
 			mediaAssetItemEntity.remoteURL = mediaAssetItem.remoteURL
-			mediaAssetItemEntity.fileURL = mediaAssetItem.fileURL
+			mediaAssetItemEntity.fileURLs = mediaAssetItem.fileURLs
 			mediaAssetItemEntity.service = mediaAssetItem.service.rawValue
 			mediaAssetItemEntity.metadata = mediaAssetItem.metadata
 			mediaAssetItemEntity.createdAt = mediaAssetItem.createdAt
@@ -146,10 +141,10 @@ public final class MediaAssetStorage {
 		}
 	}
 
-	private func getEntity(id: MediaAssetItem.ID) -> MediaAssetEntity? {
+	private func getEntity(remoteURL: URL) -> MediaAssetEntity? {
 		let fetchRequest: NSFetchRequest<MediaAssetEntity> = MediaAssetEntity.fetchRequest()
 		fetchRequest.fetchLimit = 1
-		fetchRequest.predicate = NSPredicate(format: "id == %@", id.uuidString)
+		fetchRequest.predicate = NSPredicate(format: "remoteURL == %@", remoteURL.absoluteString)
 
 		return try? fetchRequest.execute().first
 	}

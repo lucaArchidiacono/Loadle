@@ -27,8 +27,8 @@ extension View {
             SettingsDestination()
         case let .mail(emailData, result):
             MailComposerView(emailData: emailData, result: result)
-		case let .mediaPlayer(fileURL):
-			MediaPlayerFactory.build(using: fileURL)
+		case let .mediaPlayer(mediaAssetItem):
+			MediaPlayerView(mediaAssetItem: mediaAssetItem)
         }
     }
 

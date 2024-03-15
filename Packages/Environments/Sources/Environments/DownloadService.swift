@@ -316,13 +316,14 @@ public class DownloadService: NSObject {
 	public func delete(using url: URL) {
 		guard _deleteTasks[url] == nil else { return }
 
-		Task(priority: .userInitiated) {
-			_deleteTasks[url] = Task {
-				await store.delete(using: url)
+		Task(priority: .userInitiated) { [weak self] in
+			guard let self else { return }
+			self._deleteTasks[url] = Task {
+				await self.store.delete(using: url)
 			}
 
-			await _deleteTasks[url]?.value
-			_deleteTasks[url] = nil
+			await self._deleteTasks[url]?.value
+			self._deleteTasks[url] = nil
 		}
 	}
 
@@ -330,12 +331,13 @@ public class DownloadService: NSObject {
 	public func cancel(using url: URL) {
 		guard _cancelTasks[url] == nil else { return }
 
-		Task(priority: .userInitiated) {
-			_cancelTasks[url] = Task {
-				await store.cancel(using: url)
+		Task(priority: .userInitiated) { [weak self] in
+			guard let self else { return }
+			self._cancelTasks[url] = Task {
+				await self.store.cancel(using: url)
 			}
-			await _cancelTasks[url]?.value
-			_cancelTasks[url] = nil
+			await self._cancelTasks[url]?.value
+			self._cancelTasks[url] = nil
 		}
 	}
 
@@ -343,16 +345,49 @@ public class DownloadService: NSObject {
 	public func resume(using url: URL) {
 		guard _resumeTasks[url] == nil else { return }
 
-		Task(priority: .userInitiated) {
-			_resumeTasks[url] = Task {
-				await store.resume(using: url)
+		Task(priority: .userInitiated) { [weak self] in
+			guard let self else { return }
+			self._resumeTasks[url] = Task {
+				await self.store.resume(using: url)
 			}
-			await _resumeTasks[url]?.value
-			_resumeTasks[url] = nil
+			await self._resumeTasks[url]?.value
+			self._resumeTasks[url] = nil
 		}
 	}
 
 	public func addBackgroundCompletionHandler(completion: @escaping () -> Void) {
 		backgroundCompletionHandlers.append(completion)
+	}
+}
+
+import SwiftUI
+public extension View {
+	@MainActor
+	func onCompletedDownload(_ onCompletion: @escaping () -> Void) -> some View {
+		modifier(DownloadServiceViewModifier(onCompletion: onCompletion))
+	}
+}
+
+@MainActor
+struct DownloadServiceViewModifier: ViewModifier {
+	@State private var currentDownloadCount: Int = 0
+
+	private let onCompletion: () -> Void
+
+	init(onCompletion: @escaping () -> Void) {
+		self.onCompletion = onCompletion
+	}
+
+	func body(content: Content) -> some View {
+		content
+			.task {
+				for await downloadItems in DownloadService.shared.downloadsStream {
+					if currentDownloadCount > 0 && downloadItems.count == 0 {
+						onCompletion()
+					} else {
+						currentDownloadCount = downloadItems.count
+					}
+				}
+			}
 	}
 }

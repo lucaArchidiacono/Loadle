@@ -16,9 +16,8 @@ extension MediaAssetEntity: Identifiable {
         return NSFetchRequest<MediaAssetEntity>(entityName: "MediaAssetEntity")
     }
 
-    @NSManaged var id: UUID
     @NSManaged var remoteURL: URL
-    @NSManaged var fileURL: URL
+    @NSManaged var fileURLs: [URL]
     @NSManaged var service: String
 	@NSManaged var title: String
     @NSManaged var metadata: LPLinkMetadata

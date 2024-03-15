@@ -55,8 +55,8 @@ struct MediaAssetItemSectionView: View {
 								.lineLimit(1)
 								.truncationMode(.tail)
 						}
-						Text("•")
 						if let duration {
+							Text("•")
 							Text(duration)
 						}
 					}
@@ -68,7 +68,8 @@ struct MediaAssetItemSectionView: View {
 		}
 		.frame(height: 100)
 		.task {
-			let asset = AVURLAsset(url: mediaAssetItem.fileURL.absoluteURL)
+			guard let url = mediaAssetItem.fileURLs.first?.absoluteURL else { return }
+			let asset = AVURLAsset(url: url)
 
 			do {
 				let assetDuration = try await asset.load(.duration)

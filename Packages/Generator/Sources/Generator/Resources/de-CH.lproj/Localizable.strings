@@ -89,6 +89,10 @@
 "invalid_url_wrong_description" = "It seems like your URL is not valid. Please check for invalid characters.";
 "invalid_url_wrong_service_description" = "It seems like your URL does not match with one of the supported media services.";
 
+/// Error Details URL not reachable
+"not_reachable_url_title" = "URL not reachable";
+"not_reachable_url_description" = "It seems like Loadle is not able to access your provided URL.";
+
 // Theme Settings View
 "settings_theme_title" = "Theme Selector";
 

@@ -64,7 +64,7 @@ final class DownloadViewModel {
 		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
 			errorDetails = ErrorDetails(
 				title: L10n.invalidUrlTitle,
-				description: L10n.mediaServicesTitle,
+				description: L10n.invalidUrlWrongServiceDescription,
 				actions: [.primary(title: L10n.ok)])
 			return
 		}
@@ -79,6 +79,10 @@ final class DownloadViewModel {
 
 				guard let url = metadata.url else {
 					log(.error, "Was not able to fetch url from metadata!")
+					errorDetails = ErrorDetails(
+						title: L10n.notReachableUrlTitle,
+						description: L10n.notReachableUrlDescription, 
+						actions: [.primary(title: L10n.ok)])
 					return
 				}
 
@@ -102,10 +106,14 @@ final class DownloadViewModel {
 
 				let response = try await REST.Loader.shared.load(using: request)
 				let cobaltResponse: POSTCobaltResponse = try response.decode()
+
+				// If cotnains picker, then download everything
+
 				let streamURL = cobaltResponse.url!
 				await DownloadService.shared.download(using: url, streamURL: streamURL, mediaService: mediaService, metadata: metadata)
 			} catch {
 				log(.error, error)
+				errorDetails = .default
 			}
 			self.isLoading = false
 		}
@@ -123,14 +131,4 @@ final class DownloadViewModel {
 	func resume(item: DownloadItem) {
 		DownloadService.shared.resume(using: item.streamURL)
 	}
-}
-
-extension DownloadViewModel {
-    private func buildGenericErrorDetails(using _: Error) -> ErrorDetails {
-        return ErrorDetails(
-            title: L10n.somethingWentWrongTitle,
-            description: L10n.somethingWentWrongDescription,
-            actions: [.primary(title: L10n.ok)]
-        )
-    }
 }

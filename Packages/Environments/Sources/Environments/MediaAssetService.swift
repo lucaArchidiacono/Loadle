@@ -46,27 +46,39 @@ public final class MediaAssetService {
 				return
 			}
 
-			if FileManager.default.fileExists(atPath: fileURL.standardizedFileURL.path(percentEncoded: false)),
-			   await PersistenceController.shared.mediaAsset.load(fileURL: relativeFileURL) != nil {
-				log(.warning, "File already exists. Will replace at: \(fileURL) with item at: \(originalFileURL)")
-				try FileManager.default.removeItem(at: fileURL)
-				try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+			let existingMediaAsset = await PersistenceController.shared.mediaAsset.load(remoteURL: downloadItem.remoteURL)
+
+			if let existingMediaAsset {
+				if FileManager.default.fileExists(atPath: fileURL.standardizedFileURL.path(percentEncoded: false)) {
+					log(.warning, "File already exists. Will replace at: \(fileURL) with item at: \(originalFileURL)")
+					try FileManager.default.removeItem(at: fileURL)
+					try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+				} else {
+					log(.info, "File does not exist yet. Will move at: \(originalFileURL) to: \(fileURL)")
+					try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+
+					let newFileURLs = existingMediaAsset.fileURLs + [relativeFileURL]
+					let newMediaAsset = existingMediaAsset.configure(fileURLs: newFileURLs)
+
+					await PersistenceController.shared.mediaAsset.store(mediaAssetItem: newMediaAsset)
+					log(.info, "Successfully stored \(newMediaAsset) into CoreData DB.")
+				}
 			} else {
 				log(.info, "File does not exist yet. Will move at: \(originalFileURL) to: \(fileURL)")
 				try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
 
-				let mediaAssetItem = MediaAssetItem(
-					id: UUID(),
+				let newMediaAsset = MediaAssetItem(
 					remoteURL: downloadItem.remoteURL,
-					fileURL: relativeFileURL,
+					fileURLs: [relativeFileURL],
 					service: downloadItem.service,
 					metadata: downloadItem.metadata,
 					createdAt: .now,
 					title: downloadItem.metadata.title!)
 
-				await PersistenceController.shared.mediaAsset.store(mediaAssetItem: mediaAssetItem)
-				log(.info, "Successfully stored \(mediaAssetItem) into CoreData DB.")
+				await PersistenceController.shared.mediaAsset.store(mediaAssetItem: newMediaAsset)
+				log(.info, "Successfully stored \(newMediaAsset) into CoreData DB.")
 			}
+
 
 			try? FileManager.default.removeItem(at: originalFileURL)
 
@@ -93,9 +105,10 @@ public final class MediaAssetService {
 	}
 
 	private static func transform(_ data: MediaAssetItem) -> MediaAssetItem? {
-		let urlString = data.fileURL.path
 		guard let serviceURL = try? Self.loadBaseURL(service: data.service) else { return nil }
-		let newFileURL = URL(filePath: urlString, directoryHint: .notDirectory, relativeTo: serviceURL)
-		return data.configure(fileURL: newFileURL)
+		let newFileURLs = data
+			.fileURLs
+			.map { URL(filePath: $0.path, directoryHint: .notDirectory, relativeTo: serviceURL) }
+		return data.configure(fileURLs: newFileURLs)
 	}
 }

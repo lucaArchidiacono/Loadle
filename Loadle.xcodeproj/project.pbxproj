@@ -7,9 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5C0643EE2B937C6900C3D3D0 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */; };
-		5C0643F02B937CA800C3D3D0 /* VideoPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */; };
-		5C0643F82B937E5D00C3D3D0 /* MediaPlayerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */; };
+		5C0643EE2B937C6900C3D3D0 /* MediaPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643ED2B937C6900C3D3D0 /* MediaPlayerView.swift */; };
+		5C0643F02B937CA800C3D3D0 /* MediaPlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C0643EF2B937CA800C3D3D0 /* MediaPlayerViewModel.swift */; };
 		5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1432B86140600F94F79 /* AddToolbar.swift */; };
 		5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1462B86384700F94F79 /* SettingsViewModel.swift */; };
 		5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E1492B86530900F94F79 /* DoneToolbar.swift */; };
@@ -33,7 +32,6 @@
 		5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2B2B73EA9100C34933 /* Router.swift */; };
 		5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5C7D2D2B73EB0B00C34933 /* AppRouting.swift */; };
 		5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6591812BA2EA2900619CB9 /* ContentViewModel.swift */; };
-		5C6591892BA35F9000619CB9 /* WelcomeSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 5C6591882BA35F9000619CB9 /* WelcomeSheet */; };
 		5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6CF9F32BA03F10005C7F42 /* MediaAssetItemSectionView.swift */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */; };
@@ -82,9 +80,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
-		5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewModel.swift; sourceTree = "<group>"; };
-		5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerFactory.swift; sourceTree = "<group>"; };
+		5C0643ED2B937C6900C3D3D0 /* MediaPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerView.swift; sourceTree = "<group>"; };
+		5C0643EF2B937CA800C3D3D0 /* MediaPlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerViewModel.swift; sourceTree = "<group>"; };
 		5C06E1432B86140600F94F79 /* AddToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToolbar.swift; sourceTree = "<group>"; };
 		5C06E1452B8618CC00F94F79 /* LocalStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LocalStorage; sourceTree = "<group>"; };
 		5C06E1462B86384700F94F79 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -150,7 +147,6 @@
 				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
-				5C6591892BA35F9000619CB9 /* WelcomeSheet in Frameworks */,
 				5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,28 +161,11 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5C0643EB2B937C5800C3D3D0 /* VideoPlayer */ = {
-			isa = PBXGroup;
-			children = (
-				5C0643ED2B937C6900C3D3D0 /* VideoPlayerView.swift */,
-				5C0643EF2B937CA800C3D3D0 /* VideoPlayerViewModel.swift */,
-			);
-			path = VideoPlayer;
-			sourceTree = "<group>";
-		};
-		5C0643EC2B937C6000C3D3D0 /* AudioPlayer */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = AudioPlayer;
-			sourceTree = "<group>";
-		};
 		5C0643F62B937E4B00C3D3D0 /* MediaPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				5C0643EC2B937C6000C3D3D0 /* AudioPlayer */,
-				5C0643EB2B937C5800C3D3D0 /* VideoPlayer */,
-				5C0643F72B937E5D00C3D3D0 /* MediaPlayerFactory.swift */,
+				5C0643ED2B937C6900C3D3D0 /* MediaPlayerView.swift */,
+				5C0643EF2B937CA800C3D3D0 /* MediaPlayerViewModel.swift */,
 			);
 			path = MediaPlayer;
 			sourceTree = "<group>";
@@ -401,7 +380,6 @@
 				5CCA9A3A2B7CB826000307C1 /* Environments */,
 				5CCA9A3E2B7CC2A9000307C1 /* Models */,
 				5C06E16D2B8E8E5200F94F79 /* LocalStorage */,
-				5C6591882BA35F9000619CB9 /* WelcomeSheet */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -511,16 +489,15 @@
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
-				5C0643F02B937CA800C3D3D0 /* VideoPlayerViewModel.swift in Sources */,
+				5C0643F02B937CA800C3D3D0 /* MediaPlayerViewModel.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
 				5C06E1702B8F77C400F94F79 /* MediaServiceViewModel.swift in Sources */,
 				5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
 				5C06E14E2B86563800F94F79 /* SelectionButton.swift in Sources */,
 				5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */,
-				5C0643EE2B937C6900C3D3D0 /* VideoPlayerView.swift in Sources */,
+				5C0643EE2B937C6900C3D3D0 /* MediaPlayerView.swift in Sources */,
 				5C5BB9562B5E63D300ABB76C /* ContentView.swift in Sources */,
-				5C0643F82B937E5D00C3D3D0 /* MediaPlayerFactory.swift in Sources */,
 				5C5BB9582B5E63D300ABB76C /* Item.swift in Sources */,
 				5CC83DCC2B70EB59005948C1 /* ThemeApplier.swift in Sources */,
 				5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */,
@@ -901,11 +878,6 @@
 		5C5BB96B2B5E658C00ABB76C /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
-		};
-		5C6591882BA35F9000619CB9 /* WelcomeSheet */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */;
-			productName = WelcomeSheet;
 		};
 		5CB923802B73CBB90032B49C /* Shimmer */ = {
 			isa = XCSwiftPackageProductDependency;

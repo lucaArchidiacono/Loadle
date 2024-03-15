@@ -14,8 +14,7 @@
     </entity>
     <entity name="MediaAssetEntity" representedClassName="MediaAssetEntity" syncable="YES">
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="fileURL" attributeType="URI"/>
-        <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="fileURLs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName" customClassName="[URL]"/>
         <attribute name="metadata" attributeType="Transformable" valueTransformerName="LPLinkMetadataTransformer"/>
         <attribute name="remoteURL" attributeType="URI"/>
         <attribute name="service" attributeType="String"/>
@@ -25,10 +24,7 @@
         </fetchIndex>
         <uniquenessConstraints>
             <uniquenessConstraint>
-                <constraint value="id"/>
-            </uniquenessConstraint>
-            <uniquenessConstraint>
-                <constraint value="fileURL"/>
+                <constraint value="remoteURL"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>

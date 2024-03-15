@@ -34,6 +34,9 @@ struct MediaServiceView: View {
 		.onChange(of: viewModel.searchText, initial: false) {
 			viewModel.search()
 		}
+		.onCompletedDownload {
+			viewModel.fetch()
+		}
     }
 
 	var content: some View {
@@ -41,13 +44,13 @@ struct MediaServiceView: View {
 			ForEach(viewModel.searchText.isEmpty ? viewModel.mediaAssetItems : viewModel.filteredMediaAssetItems ) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
 					#if os(visionOS)
-					openWindow(value: mediaAssetItem.fileURL)
+					openWindow(value: mediaAssetItem)
 					#else
-					router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+					router.covered = .mediaPlayer(mediaAssetItem: mediaAssetItem)
 					#endif
 				}
 				.contextMenu {
-					ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
+					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })
 				}
 			}
 		}

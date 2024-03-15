@@ -10,7 +10,6 @@ import Generator
 import Logger
 import Models
 import SwiftUI
-import WelcomeSheet
 
 struct ContentView: View {
 	@Environment(\.colorScheme) var colorScheme
@@ -26,28 +25,6 @@ struct ContentView: View {
     @Binding var router: Router
 	@Binding var currentSize: CGSize
 
-	private var onboardingPages: [WelcomeSheetPage] {
-		[
-			WelcomeSheetPage(title: "Welcome to Loadle",
-							 rows: [
-								WelcomeSheetPageRow(image: Image(systemName: "square.and.arrow.down.fill"),
-													accentColor: .accentColor,
-													title: L10n.onboardingDownloadTitle,
-													content: L10n.onboardingDownloadDescription),
-
-								WelcomeSheetPageRow(image: Image(systemName: "lock.fill"),
-													accentColor: .accentColor,
-													title: L10n.onboardingPrivacyPolicyTitle,
-													content: L10n.onboardingPrivacyPolicyDescription),
-
-								WelcomeSheetPageRow(image: Image(systemName: "popcorn.fill"),
-													accentColor: .accentColor,
-													title: L10n.onboardingSupportedServicesTitle,
-													content: L10n.onboardingSupportedServicesDescription),
-							 ])
-		]
-	}
-
     var body: some View {
 		GeometryReader { geometry in
 			sidebarView
@@ -58,18 +35,26 @@ struct ContentView: View {
 					currentSize = newValue
 				}
 		}
-		.welcomeSheet(isPresented: $preferences.showOnboarding, preferredColorScheme: colorScheme, pages: onboardingPages)
     }
 
     @ViewBuilder
     var sidebarView: some View {
         NavigationSplitView {
-			if !viewModel.searchText.isEmpty {
-				mediaAssetItemSearchList
-			} else {
-				mediaServiceList
+			Group {
+				if !viewModel.searchText.isEmpty {
+					searchList
+				} else {
+					defaultList
+				}
 			}
-        } detail: {
+			.withPath()
+			.withSheetDestinations(destination: $router.presented)
+			.withCoverDestinations(destination: $router.covered)
+			.searchable(text: $viewModel.searchText)
+			.onChange(of: viewModel.searchText, initial: false) {
+				viewModel.search()
+			}
+		} detail: {
             if let selectedDestination {
                 switch selectedDestination {
                 case let .media(mediaService):
@@ -80,38 +65,31 @@ struct ContentView: View {
                 EmptyView()
             }
         }
-		.searchable(text: $viewModel.searchText)
-		.onChange(of: viewModel.searchText, initial: false) {
-			viewModel.search()
-		}
     }
 
 	@ViewBuilder
-	var mediaAssetItemSearchList: some View {
+	var searchList: some View {
 		List {
 			ForEach(viewModel.filteredMediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
 					#if os(visionOS)
-					openWindow(value: mediaAssetItem.fileURL)
+					openWindow(value: mediaAssetItem)
 					#else
-					router.covered = .mediaPlayer(fileURL: mediaAssetItem.fileURL)
+					router.covered = .mediaPlayer(mediaAssetItem: mediaAssetItem)
 					#endif
 				}
 				.contextMenu {
-					ShareLink(item: mediaAssetItem.fileURL.standardizedFileURL)
+					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })
 				}
 			}
 		}
 		.toolbarBackground(.hidden)
 		.scrollContentBackground(.hidden)
 		.listStyle(.inset)
-		.withPath()
-		.withSheetDestinations(destination: $router.presented)
-		.withCoverDestinations(destination: $router.covered)
 	}
 
 	@ViewBuilder
-	var mediaServiceList: some View {
+	var defaultList: some View {
 		List(selection: $selectedDestination) {
 			servicesSection
 		}
@@ -130,11 +108,10 @@ struct ContentView: View {
 				#endif
 			}
 		}
-		.withPath()
-		.withSheetDestinations(destination: $router.presented, onDismiss: {
+		.onAppear {
 			viewModel.fetchMediaAssetIndex()
-		})
-		.withCoverDestinations(destination: $router.covered) {
+		}
+		.onCompletedDownload {
 			viewModel.fetchMediaAssetIndex()
 		}
 	}
@@ -148,9 +125,6 @@ struct ContentView: View {
                 }
             }
         }
-		.onAppear {
-			viewModel.fetchMediaAssetIndex()
-		}
     }
 }
 

@@ -8,6 +8,7 @@
 import Environments
 import REST
 import Logger
+import Models
 import SwiftUI
 
 @main
@@ -41,8 +42,8 @@ struct LoadleApp: App {
 		}
 		.defaultSize(CGSize(width: 30, height: currentSize.height))
 
-		WindowGroup(for: URL.self) { $fileURL in
-			MediaPlayerFactory.build(using: fileURL!)
+		WindowGroup(for: MediaAssetItem.self) { mediaAssetItem in
+			MediaPlayerView(mediaAssetItem: mediaAssetItem.wrappedValue!)
 				.environment(router)
 				.environmentObject(userPreferences)
 		}

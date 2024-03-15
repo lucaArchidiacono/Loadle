@@ -17,9 +17,16 @@ final class ContentViewModel {
 	public var filteredMediaAssetItems: [MediaAssetItem] = []
 	public var mediaAssetItemIndex: [MediaService: Int] = [:]
 
+	@ObservationIgnored
+	private var fetchIndexTask: Task<Void, Never>?
 	func fetchMediaAssetIndex() {
-		Task {
-			mediaAssetItemIndex = await MediaAssetService.shared.loadCountIndex()
+		if let fetchIndexTask {
+			fetchIndexTask.cancel()
+		}
+
+		fetchIndexTask = Task { [weak self] in
+			guard let self else { return }
+			self.mediaAssetItemIndex = await MediaAssetService.shared.loadCountIndex()
 		}
 	}
 
@@ -30,8 +37,9 @@ final class ContentViewModel {
 			searchTask.cancel()
 		}
 
-		searchTask = Task {
-			filteredMediaAssetItems = await MediaAssetService.shared.searchFor(title: searchText)
+		searchTask = Task { [weak self] in
+			guard let self else { return }
+			self.filteredMediaAssetItems = await MediaAssetService.shared.searchFor(title: searchText)
 		}
 	}
 }

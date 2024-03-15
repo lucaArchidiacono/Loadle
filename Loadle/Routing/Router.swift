@@ -16,14 +16,14 @@ enum SheetDestination: Hashable, Identifiable {
     case settings
     case download
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
-    case mediaPlayer(fileURL: URL)
+    case mediaPlayer(mediaAssetItem: MediaAssetItem)
 
     var id: String {
         switch self {
         case .download:
             return "download"
-		case .mediaPlayer(let fileURL):
-			return "mediaPlayer \(fileURL)"
+		case .mediaPlayer(let mediaAssetItem):
+			return "mediaPlayer \(mediaAssetItem)"
         case .settings:
             return "settings"
         case .mail:
