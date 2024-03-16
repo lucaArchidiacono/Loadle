@@ -12,9 +12,11 @@ import SwiftUI
 extension View {
     @ViewBuilder
     private func build(_ destination: PathDestination) -> some View {
-        switch destination {
-		case .mediaPlayer(let mediaAssetItem):
-			MediaPlayerView(mediaAssetItem: mediaAssetItem)
+		switch destination {
+		case .mediaPlayer:
+			MediaPlayerView()
+		case .empty:
+			EmptyView()
 		}
     }
 
@@ -29,8 +31,6 @@ extension View {
             SettingsDestination()
         case let .mail(emailData, result):
             MailComposerView(emailData: emailData, result: result)
-		case let .mediaPlayer(mediaAssetItem):
-			MediaPlayerView(mediaAssetItem: mediaAssetItem)
         }
     }
 

@@ -15,9 +15,13 @@ import Logger
 @MainActor
 final class MediaServiceViewModel {
 	public let mediaService: MediaService
-	public var mediaAssetItems = [MediaAssetItem]()
-	public var filteredMediaAssetItems = [MediaAssetItem]()
 	public var searchText: String = ""
+	public var mediaAssetItems: [MediaAssetItem] {
+		if !searchText.isEmpty { return filteredMediaAssetItems }
+		else { return fetchedMediaAssetItems }
+	}
+	private var fetchedMediaAssetItems = [MediaAssetItem]()
+	private var filteredMediaAssetItems = [MediaAssetItem]()
 
 	init(mediaService: MediaService) {
 		self.mediaService = mediaService
@@ -31,7 +35,7 @@ final class MediaServiceViewModel {
 		}
 		fetchTask = Task { [weak self] in
 			guard let self else { return }
-			self.mediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
+			self.fetchedMediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
 		}
 	}
 

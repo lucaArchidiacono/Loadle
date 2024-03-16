@@ -84,7 +84,7 @@ public enum MediaService: String, Hashable, Identifiable, CaseIterable, Codable 
 				Spacer()
 				if let count {
 					Text("\(count)")
-						.fontWeight(.ultraLight)
+						.fontWeight(.light)
 				}
 			}
 		} icon: {

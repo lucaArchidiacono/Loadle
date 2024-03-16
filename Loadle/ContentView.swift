@@ -16,6 +16,7 @@ struct ContentView: View {
 	@Environment(\.scenePhase) var scenePhase
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+	@Environment(PlaylistService.self) private var playlistService
 
     @EnvironmentObject private var preferences: UserPreferences
 
@@ -78,11 +79,13 @@ struct ContentView: View {
 		List {
 			ForEach(viewModel.filteredMediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
-					#if os(visionOS)
-					openWindow(value: mediaAssetItem)
-					#else
-					router.covered = .mediaPlayer(mediaAssetItem: mediaAssetItem)
-					#endif
+						playlistService.select(mediaAssetItem, playlist: viewModel.filteredMediaAssetItems)
+
+						#if os(visionOS)
+						openWindow(id: "MediaPlayer")
+						#else
+						router.path.append(.mediaPlayer)
+						#endif
 				}
 				.contextMenu {
 					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })

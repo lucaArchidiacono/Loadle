@@ -11,14 +11,14 @@ import Models
 import SwiftUI
 
 enum PathDestination: Hashable {
-	case mediaPlayer(mediaAssetItem: MediaAssetItem)
+    case mediaPlayer
+	case empty
 }
 
 enum SheetDestination: Hashable, Identifiable {
     case settings
     case download
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
-    case mediaPlayer(mediaAssetItem: MediaAssetItem)
 	case onboarding
 
     var id: String {
@@ -27,8 +27,6 @@ enum SheetDestination: Hashable, Identifiable {
 			return "onboarding"
         case .download:
             return "download"
-		case .mediaPlayer(let mediaAssetItem):
-			return "mediaPlayer \(mediaAssetItem)"
         case .settings:
             return "settings"
         case .mail:

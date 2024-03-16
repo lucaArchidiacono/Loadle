@@ -47,15 +47,7 @@ public extension URL {
     var containsMovie: Bool {
         let mimeType = self.mimeType()
         if let type = UTType(mimeType: mimeType) {
-            return type.conforms(to: .movie) // ex. .mp4-movies
-        }
-        return false
-    }
-
-    var containsVideo: Bool {
-        let mimeType = self.mimeType()
-        if let type = UTType(mimeType: mimeType) {
-            return type.conforms(to: .video)
+			return type.conforms(to: .movie) || type.conforms(to: .video) // ex. .mp4-movies
         }
         return false
     }

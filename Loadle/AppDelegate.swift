@@ -10,7 +10,6 @@ import Environments
 import Foundation
 import Generator
 import Logger
-
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate{

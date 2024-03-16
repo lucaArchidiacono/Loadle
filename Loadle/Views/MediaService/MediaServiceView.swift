@@ -16,6 +16,7 @@ struct MediaServiceView: View {
     @EnvironmentObject private var preferences: UserPreferences
 
     @Environment(Router.self) private var router: Router
+	@Environment(PlaylistService.self) private var playlistService: PlaylistService
 
 	@State private var viewModel: MediaServiceViewModel
 
@@ -27,12 +28,10 @@ struct MediaServiceView: View {
 		ZStack {
 			content
 		}
+		.toolbarBackground(.automatic, for: .navigationBar)
 		.navigationTitle(viewModel.mediaService.title)
 		.onAppear {
 			viewModel.fetch()
-		}
-		.onChange(of: viewModel.searchText, initial: false) {
-			viewModel.search()
 		}
 		.onCompletedDownload {
 			viewModel.fetch()
@@ -41,13 +40,15 @@ struct MediaServiceView: View {
 
 	var content: some View {
 		List {
-			ForEach(viewModel.searchText.isEmpty ? viewModel.mediaAssetItems : viewModel.filteredMediaAssetItems ) { mediaAssetItem in
+			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
-					#if os(visionOS)
-					openWindow(value: mediaAssetItem)
-					#else
-					router.path.append(.mediaPlayer(mediaAssetItem: mediaAssetItem))
-					#endif
+						playlistService.select(mediaAssetItem, playlist: viewModel.mediaAssetItems)
+
+						#if 	os(visionOS)
+						openWindow(id: "MediaPlayer")
+						#else
+						router.path.append(.mediaPlayer)
+						#endif
 				}
 				.contextMenu {
 					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })
@@ -55,6 +56,9 @@ struct MediaServiceView: View {
 			}
 		}
 		.searchable(text: $viewModel.searchText)
+		.onChange(of: viewModel.searchText, initial: false) {
+			viewModel.search()
+		}
 		.toolbarBackground(.hidden)
         .scrollContentBackground(.hidden)
 		.listStyle(.inset)
