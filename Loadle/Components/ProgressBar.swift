@@ -7,7 +7,6 @@
 
 import Environments
 import Foundation
-import Shimmer
 import SwiftUI
 
 struct ProgressBar: View {
