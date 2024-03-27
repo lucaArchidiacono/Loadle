@@ -40,12 +40,6 @@
 		5CA1BADD2BB453C100A7CA15 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADC2BB453C100A7CA15 /* NukeExtensions */; };
 		5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADE2BB453C100A7CA15 /* NukeUI */; };
 		5CA1BAE12BB453C100A7CA15 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE02BB453C100A7CA15 /* NukeVideo */; };
-		5CA1BAE32BB4573500A7CA15 /* Environments in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE22BB4573500A7CA15 /* Environments */; };
-		5CA1BAE52BB4574700A7CA15 /* REST in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE42BB4574700A7CA15 /* REST */; };
-		5CA1BAE72BB457A800A7CA15 /* Logger in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE62BB457A800A7CA15 /* Logger */; };
-		5CA1BAE92BB4582400A7CA15 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE82BB4582400A7CA15 /* Models */; };
-		5CA1BAEB2BB45AE700A7CA15 /* Generator in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAEA2BB45AE700A7CA15 /* Generator */; };
-		5CA1BAED2BB465F600A7CA15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5CA1BAEC2BB465F600A7CA15 /* Assets.xcassets */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */; };
 		5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923592B7170310032B49C /* ProgressBar.swift */; };
@@ -63,20 +57,7 @@
 		5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */; };
 		5CF59DD62B7925550051E49D /* MediaServiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD52B7925550051E49D /* MediaServiceView.swift */; };
 		5CF59DD92B7956990051E49D /* Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD82B7956990051E49D /* Destination.swift */; };
-		5CF59DE12B7971000051E49D /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DE02B7971000051E49D /* ShareViewController.swift */; };
-		5CF59DE82B7971000051E49D /* LoadleShareExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5CF59DDE2B7971000051E49D /* LoadleShareExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		5CF59DF02B7A411A0051E49D /* ShareViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DEF2B7A411A0051E49D /* ShareViewModel.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		5CF59DE62B7971000051E49D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 5C5BB9482B5E63D300ABB76C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 5CF59DDD2B7971000051E49D;
-			remoteInfo = LoadleShareExtension;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		5CF59DE92B7971000051E49D /* Embed Foundation Extensions */ = {
@@ -85,7 +66,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				5CF59DE82B7971000051E49D /* LoadleShareExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -146,7 +126,6 @@
 		5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceDestination.swift; sourceTree = "<group>"; };
 		5CF59DD52B7925550051E49D /* MediaServiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceView.swift; sourceTree = "<group>"; };
 		5CF59DD82B7956990051E49D /* Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Destination.swift; sourceTree = "<group>"; };
-		5CF59DDE2B7971000051E49D /* LoadleShareExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LoadleShareExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CF59DE02B7971000051E49D /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		5CF59DE52B7971000051E49D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5CF59DEF2B7A411A0051E49D /* ShareViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewModel.swift; sourceTree = "<group>"; };
@@ -169,18 +148,6 @@
 				5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */,
 				5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */,
 				5CA1BADD2BB453C100A7CA15 /* NukeExtensions in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5CF59DDB2B7971000051E49D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5CA1BAE72BB457A800A7CA15 /* Logger in Frameworks */,
-				5CA1BAE52BB4574700A7CA15 /* REST in Frameworks */,
-				5CA1BAE92BB4582400A7CA15 /* Models in Frameworks */,
-				5CA1BAEB2BB45AE700A7CA15 /* Generator in Frameworks */,
-				5CA1BAE32BB4573500A7CA15 /* Environments in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				5C5BB9502B5E63D300ABB76C /* Loadle.app */,
-				5CF59DDE2B7971000051E49D /* LoadleShareExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -406,7 +372,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				5CF59DE72B7971000051E49D /* PBXTargetDependency */,
 			);
 			name = Loadle;
 			packageProductDependencies = (
@@ -427,30 +392,6 @@
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
 			productType = "com.apple.product-type.application";
 		};
-		5CF59DDD2B7971000051E49D /* LoadleShareExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 5CF59DEC2B7971000051E49D /* Build configuration list for PBXNativeTarget "LoadleShareExtension" */;
-			buildPhases = (
-				5CF59DDA2B7971000051E49D /* Sources */,
-				5CF59DDB2B7971000051E49D /* Frameworks */,
-				5CF59DDC2B7971000051E49D /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = LoadleShareExtension;
-			packageProductDependencies = (
-				5CA1BAE22BB4573500A7CA15 /* Environments */,
-				5CA1BAE42BB4574700A7CA15 /* REST */,
-				5CA1BAE62BB457A800A7CA15 /* Logger */,
-				5CA1BAE82BB4582400A7CA15 /* Models */,
-				5CA1BAEA2BB45AE700A7CA15 /* Generator */,
-			);
-			productName = LoadleShareExtension;
-			productReference = 5CF59DDE2B7971000051E49D /* LoadleShareExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -462,9 +403,6 @@
 				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					5C5BB94F2B5E63D300ABB76C = {
-						CreatedOnToolsVersion = 15.2;
-					};
-					5CF59DDD2B7971000051E49D = {
 						CreatedOnToolsVersion = 15.2;
 					};
 				};
@@ -494,7 +432,6 @@
 			projectRoot = "";
 			targets = (
 				5C5BB94F2B5E63D300ABB76C /* Loadle */,
-				5CF59DDD2B7971000051E49D /* LoadleShareExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -507,14 +444,6 @@
 				5C5BB95E2B5E63D400ABB76C /* Preview Assets.xcassets in Resources */,
 				5CB923732B72D6CE0032B49C /* InfoPlist.strings in Resources */,
 				5C5BB95A2B5E63D400ABB76C /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		5CF59DDC2B7971000051E49D /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5CA1BAED2BB465F600A7CA15 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -563,24 +492,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5CF59DDA2B7971000051E49D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5CF59DF02B7A411A0051E49D /* ShareViewModel.swift in Sources */,
-				5CF59DE12B7971000051E49D /* ShareViewController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		5CF59DE72B7971000051E49D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 5CF59DDD2B7971000051E49D /* LoadleShareExtension */;
-			targetProxy = 5CF59DE62B7971000051E49D /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		5CB923712B72D6CE0032B49C /* InfoPlist.strings */ = {
@@ -801,71 +713,6 @@
 			};
 			name = Release;
 		};
-		5CF59DEA2B7971000051E49D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27QQ4H5V76;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = LoadleShareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LoadleShareExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.lucaa.Loadle.LoadleShareExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-			};
-			name = Debug;
-		};
-		5CF59DEB2B7971000051E49D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 27QQ4H5V76;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = LoadleShareExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = LoadleShareExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.2;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = io.lucaa.Loadle.LoadleShareExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -883,15 +730,6 @@
 			buildConfigurations = (
 				5C5BB9632B5E63D400ABB76C /* Debug */,
 				5C5BB9642B5E63D400ABB76C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		5CF59DEC2B7971000051E49D /* Build configuration list for PBXNativeTarget "LoadleShareExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				5CF59DEA2B7971000051E49D /* Debug */,
-				5CF59DEB2B7971000051E49D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -969,26 +807,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */;
 			productName = NukeVideo;
-		};
-		5CA1BAE22BB4573500A7CA15 /* Environments */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Environments;
-		};
-		5CA1BAE42BB4574700A7CA15 /* REST */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = REST;
-		};
-		5CA1BAE62BB457A800A7CA15 /* Logger */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Logger;
-		};
-		5CA1BAE82BB4582400A7CA15 /* Models */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Models;
-		};
-		5CA1BAEA2BB45AE700A7CA15 /* Generator */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Generator;
 		};
 		5CC83DA92B6FD995005948C1 /* Fundamentals */ = {
 			isa = XCSwiftPackageProductDependency;
