@@ -36,11 +36,14 @@
 		5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6591812BA2EA2900619CB9 /* ContentViewModel.swift */; };
 		5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6CF9F32BA03F10005C7F42 /* MediaAssetItemSectionView.swift */; };
 		5C74C0C62BADE3CC0040C471 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C74C0C52BADE3CC0040C471 /* AVPlayerView.swift */; };
+		5CA1BADB2BB453C100A7CA15 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADA2BB453C100A7CA15 /* Nuke */; };
+		5CA1BADD2BB453C100A7CA15 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADC2BB453C100A7CA15 /* NukeExtensions */; };
+		5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADE2BB453C100A7CA15 /* NukeUI */; };
+		5CA1BAE12BB453C100A7CA15 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BAE02BB453C100A7CA15 /* NukeVideo */; };
 		5CB923522B716B730032B49C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923512B716B730032B49C /* SettingsView.swift */; };
 		5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */; };
 		5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CB923592B7170310032B49C /* ProgressBar.swift */; };
 		5CB923732B72D6CE0032B49C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5CB923712B72D6CE0032B49C /* InfoPlist.strings */; };
-		5CB923812B73CBB90032B49C /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 5CB923802B73CBB90032B49C /* Shimmer */; };
 		5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DA92B6FD995005948C1 /* Fundamentals */; };
 		5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */ = {isa = PBXBuildFile; productRef = 5CC83DAC2B6FDBD7005948C1 /* REST */; };
 		5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */; };
@@ -147,15 +150,18 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5CA1BADB2BB453C100A7CA15 /* Nuke in Frameworks */,
 				5CF4D5C52BA8D4E80000F754 /* Zip in Frameworks */,
 				5CCA9A3B2B7CB826000307C1 /* Environments in Frameworks */,
-				5CB923812B73CBB90032B49C /* Shimmer in Frameworks */,
 				5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */,
 				5CCA9A322B7C9B05000307C1 /* Constants in Frameworks */,
 				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
+				5CA1BAE12BB453C100A7CA15 /* NukeVideo in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
+				5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */,
 				5C5BB96C2B5E658C00ABB76C /* Logger in Frameworks */,
+				5CA1BADD2BB453C100A7CA15 /* NukeExtensions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,12 +400,15 @@
 				5C5BB96B2B5E658C00ABB76C /* Logger */,
 				5CC83DA92B6FD995005948C1 /* Fundamentals */,
 				5CC83DAC2B6FDBD7005948C1 /* REST */,
-				5CB923802B73CBB90032B49C /* Shimmer */,
 				5CCA9A312B7C9B05000307C1 /* Constants */,
 				5CCA9A3A2B7CB826000307C1 /* Environments */,
 				5CCA9A3E2B7CC2A9000307C1 /* Models */,
 				5C06E16D2B8E8E5200F94F79 /* LocalStorage */,
 				5CF4D5C42BA8D4E80000F754 /* Zip */,
+				5CA1BADA2BB453C100A7CA15 /* Nuke */,
+				5CA1BADC2BB453C100A7CA15 /* NukeExtensions */,
+				5CA1BADE2BB453C100A7CA15 /* NukeUI */,
+				5CA1BAE02BB453C100A7CA15 /* NukeVideo */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -458,6 +467,7 @@
 				5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */,
 				5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */,
 				5CF4D5C32BA8D4E80000F754 /* XCRemoteSwiftPackageReference "Zip" */,
+				5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */,
 			);
 			productRefGroup = 5C5BB9512B5E63D300ABB76C /* Products */;
 			projectDirPath = "";
@@ -884,6 +894,14 @@
 				minimumVersion = 0.5.2;
 			};
 		};
+		5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kean/Nuke.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.5.0;
+			};
+		};
 		5CB9237F2B73CBB90032B49C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer.git";
@@ -911,10 +929,25 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Logger;
 		};
-		5CB923802B73CBB90032B49C /* Shimmer */ = {
+		5CA1BADA2BB453C100A7CA15 /* Nuke */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5CB9237F2B73CBB90032B49C /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
-			productName = Shimmer;
+			package = 5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = Nuke;
+		};
+		5CA1BADC2BB453C100A7CA15 /* NukeExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeExtensions;
+		};
+		5CA1BADE2BB453C100A7CA15 /* NukeUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeUI;
+		};
+		5CA1BAE02BB453C100A7CA15 /* NukeVideo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */;
+			productName = NukeVideo;
 		};
 		5CC83DA92B6FD995005948C1 /* Fundamentals */ = {
 			isa = XCSwiftPackageProductDependency;

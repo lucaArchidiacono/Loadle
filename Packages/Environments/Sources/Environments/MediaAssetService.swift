@@ -9,6 +9,7 @@ import Foundation
 import Models
 import Logger
 import LocalStorage
+import UniformTypeIdentifiers
 
 public final class MediaAssetService {
 	public static let shared = MediaAssetService()
@@ -66,14 +67,16 @@ public final class MediaAssetService {
 			} else {
 				log(.info, "File does not exist yet. Will move at: \(originalFileURL) to: \(fileURL)")
 				try FileManager.default.moveItem(at: originalFileURL, to: fileURL)
+				let artwork = try? await downloadItem.metadata.imageProvider?.loadItem(forTypeIdentifier: UTType.image.identifier) as? Data
+				let title = downloadItem.metadata.title!
 
 				let newMediaAsset = MediaAssetItem(
 					remoteURL: downloadItem.remoteURL,
 					fileURLs: [relativeFileURL],
 					service: downloadItem.service,
-					metadata: downloadItem.metadata,
+					artwork: artwork,
 					createdAt: .now,
-					title: downloadItem.metadata.title!)
+					title: title)
 
 				await PersistenceController.shared.mediaAsset.store(mediaAssetItem: newMediaAsset)
 				log(.info, "Successfully stored \(newMediaAsset) into CoreData DB.")

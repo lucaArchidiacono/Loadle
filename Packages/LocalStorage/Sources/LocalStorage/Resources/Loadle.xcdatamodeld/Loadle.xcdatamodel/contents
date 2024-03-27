@@ -13,9 +13,9 @@
         </uniquenessConstraints>
     </entity>
     <entity name="MediaAssetEntity" representedClassName="MediaAssetEntity" syncable="YES">
+        <attribute name="artwork" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="fileURLs" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromDataTransformerName" customClassName="[URL]"/>
-        <attribute name="metadata" attributeType="Transformable" valueTransformerName="LPLinkMetadataTransformer"/>
         <attribute name="remoteURL" attributeType="URI"/>
         <attribute name="service" attributeType="String"/>
         <attribute name="title" attributeType="String"/>

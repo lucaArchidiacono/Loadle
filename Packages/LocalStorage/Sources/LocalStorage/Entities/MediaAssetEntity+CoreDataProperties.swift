@@ -20,6 +20,6 @@ extension MediaAssetEntity: Identifiable {
     @NSManaged var fileURLs: [URL]
     @NSManaged var service: String
 	@NSManaged var title: String
-    @NSManaged var metadata: LPLinkMetadata
+    @NSManaged var artwork: Data?
     @NSManaged var createdAt: Date
 }

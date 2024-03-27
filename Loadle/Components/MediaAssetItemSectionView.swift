@@ -11,6 +11,7 @@ import Fundamentals
 import AVFoundation
 import Logger
 import SwiftUI
+import NukeUI
 
 struct MediaAssetItemSectionView: View {
 	@State private var duration: String?
@@ -22,27 +23,42 @@ struct MediaAssetItemSectionView: View {
 		Section {
 			VStack(alignment: .leading) {
 				HStack(alignment: .top) {
-					AsyncImageProvider(itemProvider: mediaAssetItem.metadata.iconProvider, placeholder: Image(systemName: "bookmark.fill")) { image in
-						image
-							.resizable()
-							.aspectRatio(contentMode: .fit)
-							.frame(width: 20)
+					LazyImage(url: URL(string: FavIcon(mediaAssetItem.service.domain)[.m]),
+							  transaction: Transaction(animation: .smooth)) { phase in
+						Group {
+							if let image = phase.image {
+								image.resizable()
+							} else if phase.error != nil {
+								Image(systemName: "bookmark.fill")
+									.resizable()
+							} else {
+								Rectangle()
+									.fill(.clear)
+							}
+						}
+						.scaledToFit()
+						.frame(width: 20, height: 20)
 					}
-					
-					Text(mediaAssetItem.metadata.title!)
+
+					Spacer()
+
+					Text(mediaAssetItem.title)
 						.lineLimit(2)
 						.truncationMode(.tail)
 
 					Spacer()
-					if let imageProvider = mediaAssetItem.metadata.imageProvider {
-						AsyncImageProvider(itemProvider: imageProvider, placeholder: Image(uiImage: UIImage())) { image in
-							image
+					
+					Group {
+						if let artwork = mediaAssetItem.artwork, let uiImage = UIImage(data: artwork) {
+							Image(uiImage: uiImage)
 								.resizable()
 								.aspectRatio(contentMode: .fill)
-								.frame(width: 80, height: 80)
-								.clipShape(RoundedRectangle(cornerRadius: 8))
+						} else {
+							Rectangle()
 						}
 					}
+					.frame(width: 80, height: 80)
+					.clipShape(RoundedRectangle(cornerRadius: 8))
 				}
 				HStack(alignment: .top) {
 					Group {

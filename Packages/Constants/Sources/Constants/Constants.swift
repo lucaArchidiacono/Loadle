@@ -28,4 +28,23 @@ public enum Constants {
         case vkVideos = #"(?:https?:\/\/)?(?:www\.)?vk\.com\/"#
         case youtube = #"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/|youtu\.be\/)"#
     }
+
+	public enum Domain: String, CaseIterable {
+		case bilibili = "bilibili.com"
+		case instagram = "instagram.com"
+		case okVideo = "ok.ru"
+		case pinterest = "pinterest.com"
+		case reddit = "reddit.com"
+		case rutube = "rutube.ru"
+		case soundcloud = "soundcloud.com"
+		case streamable = "streamable.com"
+		case tiktok = "tiktok.com"
+		case tumblr = "tumblr.com"
+		case twitchClips = "clips.twitch.tv"
+		case twitter = "twitter.com"
+		case vimeo = "vimeo.com"
+		case vineArchive = "vine.co"
+		case vkVideos = "vk.com"
+		case youtube = "youtube.com"
+	}
 }

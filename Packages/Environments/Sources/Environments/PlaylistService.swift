@@ -36,7 +36,7 @@ public struct PlayerItemWrapper: Identifiable, Equatable {
     public struct MetaData: Equatable {
         public let mediaType: MPNowPlayingInfoMediaType
         public let title: String
-		public let imageProvider: NSItemProvider?
+		public let artwork: Data?
     }
 }
 
@@ -497,58 +497,38 @@ extension PlaylistService {
         nowPlayingInfo[MPNowPlayingInfoPropertyMediaType] = metadata.mediaType.rawValue
         nowPlayingInfo[MPNowPlayingInfoPropertyIsLiveStream] = false
         nowPlayingInfo[MPMediaItemPropertyTitle] = metadata.title
-		
-		buildArtwork(using: asset, imageProvider: metadata.imageProvider) { artwork in
-			guard let artwork else { return }
-			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: artwork.size, requestHandler: { newSize in artwork.imageWith(newSize: newSize) })
-		}
 
 		nowPlayingInfoCenter.nowPlayingInfo = nowPlayingInfo
+
+		buildArtwork(using: asset, data: metadata.artwork) { artwork in
+			guard let artwork else { return }
+			MPNowPlayingInfoCenter.default().nowPlayingInfo?[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(boundsSize: artwork.size) { newSize in
+				return artwork.imageWith(newSize: newSize)
+			}
+		}
     }
 
-	private func buildArtwork(using asset: AVAsset, imageProvider: NSItemProvider?, completion: @escaping (UIImage?) -> Void) {
-		if let imageProvider = imageProvider {
-			buildArtwork(using: imageProvider) { [weak self] image in
-				guard let image else {
-					self?.buildArtwork(using: asset, completion: completion)
+	private func buildArtwork(using asset: AVAsset, data: Data?, completion: @escaping (UIImage?) -> Void) {
+		if let data = data, let uiImage = UIImage(data: data) {
+			completion(uiImage)
+		} else {
+			let generator = AVAssetImageGenerator(asset: asset)
+			generator.appliesPreferredTrackTransform = true
+			generator.requestedTimeToleranceBefore = .zero
+			generator.requestedTimeToleranceAfter = CMTime(seconds: 2, preferredTimescale: 600)
+			generator.generateCGImageAsynchronously(for: .zero) { cgImage, _, error in
+				if let error {
+					log(.error, "Was not able to create Artwork using AVAssetImageGenerator: \(error)")
+					completion(nil)
 					return
 				}
-				completion(image)
-			}
-		} else {
-			buildArtwork(using: asset, completion: completion)
-		}
-	}
 
-	private func buildArtwork(using imageProvider: NSItemProvider, completion: @escaping (UIImage?) -> Void) {
-		_ = imageProvider.loadTransferable(type: Data.self) { result in
-			switch result {
-			case .success(let data):
-				completion(UIImage(data: data))
-			case .failure(let error):
-				log(.error, "Was not able to load image from ImageProvider for Artwork: \(error)")
-				completion(nil)
-			}
-		}
-	}
-
-	private func buildArtwork(using asset: AVAsset, completion: @escaping (UIImage?) -> Void) {
-		let generator = AVAssetImageGenerator(asset: asset)
-		generator.appliesPreferredTrackTransform = true
-		generator.requestedTimeToleranceBefore = .zero
-		generator.requestedTimeToleranceAfter = CMTime(seconds: 2, preferredTimescale: 600)
-		generator.generateCGImageAsynchronously(for: .zero) { cgImage, _, error in
-			if let error {
-				log(.error, "Was not able to create Artwork using AVAssetImageGenerator: \(error)")
-				completion(nil)
-				return
-			}
-
-			if let cgImage {
-				completion(UIImage(cgImage: cgImage))
-			} else {
-				log(.error, "Was not able to retrieve CGImage using AVAssetImageGenerator")
-				completion(nil)
+				if let cgImage {
+					completion(UIImage(cgImage: cgImage))
+				} else {
+					log(.error, "Was not able to retrieve CGImage using AVAssetImageGenerator")
+					completion(nil)
+				}
 			}
 		}
 	}
@@ -616,9 +596,9 @@ extension PlaylistService {
 		if item.fileURLs.count == 1, let assetURL = item.fileURLs.first {
 			// No Slide Item
 			if assetURL.containsMovie {
-                return transform(using: item.id, assetURL: assetURL, title: item.title, metadata: item.metadata, mediaType: .video)
+                return transform(using: item.id, assetURL: assetURL, title: item.title, artwork: item.artwork, mediaType: .video)
 			} else if assetURL.containsAudio {
-                return transform(using: item.id, assetURL: assetURL, title: item.title, metadata: item.metadata, mediaType: .audio)
+				return transform(using: item.id, assetURL: assetURL, title: item.title, artwork: item.artwork, mediaType: .audio)
 			} else if assetURL.containsImage {
 				guard let singleImage: UIImage = transform(assetURL) else { return nil }
                 return Item(id: item.id, type: .slides([.image(singleImage)]))
@@ -643,13 +623,13 @@ extension PlaylistService {
 		return nil
 	}
 
-    private func transform(using id: URL, assetURL: URL, title: String, metadata: LPLinkMetadata, mediaType: MPNowPlayingInfoMediaType) -> Item? {
+	private func transform(using id: URL, assetURL: URL, title: String, artwork: Data?, mediaType: MPNowPlayingInfoMediaType) -> Item? {
 		let asset = AVAsset(url: assetURL)
 
 		let metadata = PlayerItemWrapper.MetaData(
 			mediaType: mediaType,
 			title: title,
-			imageProvider: metadata.imageProvider)
+			artwork: artwork)
 		let playerItem = PlayerItemWrapper(
 			assetURL: assetURL,
 			playerItem: AVPlayerItem(asset: asset),

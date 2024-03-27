@@ -60,7 +60,7 @@ public final class MediaAssetStorage {
 					MediaAssetItem(remoteURL: entity.remoteURL,
 								   fileURLs: entity.fileURLs,
 								   service: MediaService(rawValue: entity.service)!,
-								   metadata: entity.metadata,
+								   artwork: entity.artwork,
 								   createdAt: entity.createdAt,
 								   title: entity.title)
 				}
@@ -74,7 +74,7 @@ public final class MediaAssetStorage {
 			return MediaAssetItem(remoteURL: entity.remoteURL,
 								  fileURLs: entity.fileURLs,
 								  service: MediaService(rawValue: entity.service)!,
-								  metadata: entity.metadata,
+								  artwork: entity.artwork,
 								  createdAt: entity.createdAt,
 								  title: entity.title)
 		}
@@ -87,7 +87,7 @@ public final class MediaAssetStorage {
 			return MediaAssetItem(remoteURL: entity.remoteURL,
 								  fileURLs: entity.fileURLs,
 								  service: MediaService(rawValue: entity.service)!,
-								  metadata: entity.metadata,
+								  artwork: entity.artwork,
 								  createdAt: entity.createdAt,
 								  title: entity.title)
 		}
@@ -106,7 +106,7 @@ public final class MediaAssetStorage {
 				MediaAssetItem(remoteURL: entity.remoteURL,
 							   fileURLs: entity.fileURLs,
 							   service: MediaService(rawValue: entity.service)!,
-							   metadata: entity.metadata,
+							   artwork: entity.artwork,
 							   createdAt: entity.createdAt,
 							   title: entity.title)
 			}
@@ -133,7 +133,7 @@ public final class MediaAssetStorage {
 			mediaAssetItemEntity.remoteURL = mediaAssetItem.remoteURL
 			mediaAssetItemEntity.fileURLs = mediaAssetItem.fileURLs
 			mediaAssetItemEntity.service = mediaAssetItem.service.rawValue
-			mediaAssetItemEntity.metadata = mediaAssetItem.metadata
+			mediaAssetItemEntity.artwork = mediaAssetItem.artwork
 			mediaAssetItemEntity.createdAt = mediaAssetItem.createdAt
 			mediaAssetItemEntity.title = mediaAssetItem.title
 

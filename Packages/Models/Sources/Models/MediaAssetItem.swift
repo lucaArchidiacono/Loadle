@@ -13,7 +13,7 @@ public struct MediaAssetItem: Hashable, Identifiable, Codable {
 	public let remoteURL: URL
     public let fileURLs: [URL]
     public let service: MediaService
-	public let metadata: LPLinkMetadata
+	public let artwork: Data?
 	public let createdAt: Date
 	public let title: String
 
@@ -22,15 +22,15 @@ public struct MediaAssetItem: Hashable, Identifiable, Codable {
 		case fileURLs
 		case service
 		case createdAt
-		case metadata
+		case artwork
 		case title
 	}
 
-	public init(remoteURL: URL, fileURLs: [URL], service: MediaService, metadata: LPLinkMetadata, createdAt: Date, title: String) {
+	public init(remoteURL: URL, fileURLs: [URL], service: MediaService, artwork: Data?, createdAt: Date, title: String) {
 		self.remoteURL = remoteURL
 		self.fileURLs = fileURLs
 		self.service = service
-		self.metadata = metadata
+		self.artwork = artwork
 		self.createdAt = createdAt
 		self.title = title
 	}
@@ -40,10 +40,7 @@ public struct MediaAssetItem: Hashable, Identifiable, Codable {
 		self.remoteURL = try container.decode(URL.self, forKey: .remoteURL)
 		self.fileURLs = try container.decode([URL].self, forKey: .fileURLs)
 		self.service = try container.decode(MediaService.self, forKey: .service)
-
-		let metadata = try container.decode(Data.self, forKey: .metadata)
-		self.metadata = try NSKeyedUnarchiver.unarchivedObject(ofClass: LPLinkMetadata.self, from: metadata)!
-
+		self.artwork = try container.decode(Data.self, forKey: .artwork)
 		self.createdAt = try container.decode(Date.self, forKey: .createdAt)
 		self.title = try container.decode(String.self, forKey: .title)
 	}
@@ -53,10 +50,7 @@ public struct MediaAssetItem: Hashable, Identifiable, Codable {
 		try container.encode(remoteURL, forKey: .remoteURL)
 		try container.encode(fileURLs, forKey: .fileURLs)
 		try container.encode(service, forKey: .service)
-
-		let encodedMetadata = try NSKeyedArchiver.archivedData(withRootObject: metadata, requiringSecureCoding: true)
-		try container.encode(encodedMetadata, forKey: .metadata)
-
+		try container.encode(artwork, forKey: .artwork)
 		try container.encode(createdAt, forKey: .createdAt)
 		try container.encode(title, forKey: .title)
 	}
@@ -65,7 +59,7 @@ public struct MediaAssetItem: Hashable, Identifiable, Codable {
 		Self.init(remoteURL: remoteURL,
 				  fileURLs: fileURLs,
 				  service: service,
-				  metadata: metadata,
+				  artwork: artwork,
 				  createdAt: createdAt,
 				  title: title)
 	}
