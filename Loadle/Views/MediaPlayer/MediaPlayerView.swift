@@ -122,54 +122,31 @@ struct MediaPlayerView: View {
 	@ViewBuilder
 	var controlsView: some View {
 		ZStack {
-			HStack {
-				if showSkipBackward {
-					Spacer()
-					Button(action: {
-						// Go backward
-						playlistService.skipBackward(by: 10)
-					}) {
-						Image(systemName: "backward.fill")
-							.font(.title)
-					}
-					.padding()
-					.background(Color.black.opacity(0.5))
-					.containerShape(Circle())
-					Spacer()
-					Spacer()
-				}
-				Spacer()
-				if showSkipForward {
-					Spacer()
-					Spacer()
-					Button(action: {
-						// Go forward
-						playlistService.skipForward(by: 10)
-					}) {
-						Image(systemName: "forward.fill")
-							.font(.title)
-					}
-					.padding()
-					.background(Color.black.opacity(0.5))
-					.containerShape(Circle())
-					Spacer()
-				}
-			}
-
-			if showControls && !showSkipForward && !showSkipBackward {
+			if showControls || showSkipBackward || showSkipForward {
 				HStack {
 					Spacer()
 
 					Button(action: {
-						// Go backward
-						playlistService.prev()
+						if showControls {
+							// Go backward
+							playlistService.prev()
+						} else if showSkipBackward {
+							// Skip backward
+							playlistService.skipBackward(by: 10)
+						}
 					}) {
-						Image(systemName: "backward.end.fill")
-							.font(.title)
+						if showControls {
+							Image(systemName: "backward.end.fill")
+								.font(.title)
+						} else if showSkipBackward {
+							Image(systemName: "backward.fill")
+								.font(.title)
+						}
 					}
 					.padding()
 					.background(Color.black.opacity(0.5))
 					.containerShape(Circle())
+					.opacity(showControls || showSkipBackward ? 1 : .leastNonzeroMagnitude)
 
 					Spacer()
 
@@ -183,19 +160,31 @@ struct MediaPlayerView: View {
 					.padding()
 					.background(Color.black.opacity(0.5))
 					.containerShape(Circle())
+					.opacity(showControls ? 1 : .leastNonzeroMagnitude)
 
 					Spacer()
 
 					Button(action: {
-						// Go forward
-						playlistService.next()
+						if showControls {
+							// Go forward
+							playlistService.next()
+						} else if showSkipForward {
+							// Skip forward
+							playlistService.skipForward(by: 10)
+						}
 					}) {
-						Image(systemName: "forward.end.fill")
-							.font(.title)
+						if showControls {
+							Image(systemName: "forward.end.fill")
+								.font(.title)
+						} else if showSkipForward {
+							Image(systemName: "forward.fill")
+								.font(.title)
+						}
 					}
 					.padding()
 					.background(Color.black.opacity(0.5))
 					.containerShape(Circle())
+					.opacity(showControls || showSkipForward ? 1 : .leastNonzeroMagnitude)
 
 					Spacer()
 				}

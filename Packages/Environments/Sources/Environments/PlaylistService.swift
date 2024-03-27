@@ -600,8 +600,6 @@ extension PlaylistService {
 	}
 
 	private func optOut() {
-		subscriptions.removeAll()
-
 		clear()
 
 		do {
