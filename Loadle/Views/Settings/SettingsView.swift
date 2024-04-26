@@ -186,6 +186,20 @@ struct SettingsView: View {
 //        }
 //		.listRowBackground(theme.secondaryBackgroundColor)
 
+		Section(L10n.upcomingFeaturesTitle) {
+			Text(L10n.upcomingFeaturesInAppPlayerTitle)
+				.font(.headline)
+				.listRowSeparator(.hidden)
+			Text(L10n.upcomingFeaturesInAppPlayerMessage)
+				.font(.footnote)
+				.listRowSeparator(.visible)
+			Text(L10n.upcomingFeaturesShareExtensionDownloadTitle)
+				.font(.headline)
+				.listRowSeparator(.hidden)
+			Text(L10n.upcomingFeaturesShareExtensionDownloadMessage)
+				.font(.footnote)
+		}
+
 		Section {
             if MailComposerView.canSendEmail() {
 				Button(

@@ -61,6 +61,13 @@
 
 "download_audio_only" = "Audio only";
 
+// Upcoming Features
+"upcoming_features_title" = "Upcoming Features";
+"upcoming_features_in_app_player_title" = "In-App Video & Audio Player";
+"upcoming_features_in_app_player_message" = "Experience more with the upcoming In-App Video & Audio Player! Seamless playback, immersive experience.";
+"upcoming_features_share_extension_download_title" = "Start a Download via Share Extension";
+"upcoming_features_share_extension_download_message" = "Start a Download immediately! The upcoming feature introduces a share extension, allowing you to start downloads instantly from within various Apps.";
+
 // Onboarding
 "onboarding_title" = "Welcome to Loadle";
 "onboarding_download_title" = "Download them All";
