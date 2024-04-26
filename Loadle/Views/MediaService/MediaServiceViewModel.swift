@@ -20,6 +20,33 @@ final class MediaServiceViewModel {
 		if !searchText.isEmpty { return filteredMediaAssetItems }
 		else { return fetchedMediaAssetItems }
 	}
+	public var selectedMediaAssetItems: Set<MediaAssetItem> {
+		get {
+			access(keyPath: \.selectedMediaAssetItems)
+			return _selectedMediaAssetItems
+		}
+		set {
+			withMutation(keyPath: \.selectedMediaAssetItems) {
+				_selectedMediaAssetItems = newValue
+				_isPresented = !newValue.isEmpty
+			}
+		}
+	}
+	public var isPresented: Bool {
+		get {
+			access(keyPath: \.isPresented)
+			return _isPresented
+		} set {
+			withMutation(keyPath: \.isPresented) {
+				_isPresented = newValue
+				_selectedMediaAssetItems = newValue ? _selectedMediaAssetItems : []
+			}
+		}
+	}
+	public var archives: [URL] = []
+
+	private var _selectedMediaAssetItems = Set<MediaAssetItem>()
+	private var _isPresented: Bool = false
 	private var fetchedMediaAssetItems = [MediaAssetItem]()
 	private var filteredMediaAssetItems = [MediaAssetItem]()
 

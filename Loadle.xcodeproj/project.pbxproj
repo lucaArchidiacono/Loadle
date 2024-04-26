@@ -18,6 +18,7 @@
 		5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5C06E16D2B8E8E5200F94F79 /* LocalStorage */; };
 		5C06E1702B8F77C400F94F79 /* MediaServiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C06E16F2B8F77C400F94F79 /* MediaServiceViewModel.swift */; };
 		5C2E74DA2BDB9C0600322A40 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C2E74D92BDB9C0600322A40 /* ButtonStyles.swift */; };
+		5C2E74DD2BDBA15100322A40 /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = 5C2E74DC2BDBA15100322A40 /* BottomSheet */; };
 		5C35A1CF2BAA112A00F256E8 /* MediaPlayerDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C35A1CE2BAA112A00F256E8 /* MediaPlayerDestination.swift */; };
 		5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C46621D2B7C0D9300779BBE /* AssetItemSectionView.swift */; };
 		5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C4815442B7665C700381627 /* iOSCheckBoxToggleStyle.swift */; };
@@ -143,6 +144,7 @@
 				5CCA9A322B7C9B05000307C1 /* Constants in Frameworks */,
 				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
+				5C2E74DD2BDBA15100322A40 /* BottomSheet in Frameworks */,
 				5CA1BAE12BB453C100A7CA15 /* NukeVideo in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
 				5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */,
@@ -388,6 +390,7 @@
 				5CA1BADC2BB453C100A7CA15 /* NukeExtensions */,
 				5CA1BADE2BB453C100A7CA15 /* NukeUI */,
 				5CA1BAE02BB453C100A7CA15 /* NukeVideo */,
+				5C2E74DC2BDBA15100322A40 /* BottomSheet */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -423,6 +426,7 @@
 				5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */,
 				5CF4D5C32BA8D4E80000F754 /* XCRemoteSwiftPackageReference "Zip" */,
 				5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */,
+				5C2E74DB2BDBA15000322A40 /* XCRemoteSwiftPackageReference "BottomSheet" */,
 			);
 			productRefGroup = 5C5BB9512B5E63D300ABB76C /* Products */;
 			projectDirPath = "";
@@ -733,6 +737,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5C2E74DB2BDBA15000322A40 /* XCRemoteSwiftPackageReference "BottomSheet" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Kaww/BottomSheet";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/MAJKFL/Welcome-Sheet";
@@ -771,6 +783,11 @@
 		5C06E16D2B8E8E5200F94F79 /* LocalStorage */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LocalStorage;
+		};
+		5C2E74DC2BDBA15100322A40 /* BottomSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5C2E74DB2BDBA15000322A40 /* XCRemoteSwiftPackageReference "BottomSheet" */;
+			productName = BottomSheet;
 		};
 		5C5BB96B2B5E658C00ABB76C /* Logger */ = {
 			isa = XCSwiftPackageProductDependency;

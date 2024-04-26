@@ -61,6 +61,10 @@
 
 "download_audio_only" = "Audio only";
 
+"create_zip" = "Create Zip";
+"export" = "Export";
+"archiving" = "Archiving";
+
 // Upcoming Features
 "upcoming_features_title" = "Upcoming Features";
 "upcoming_features_in_app_player_title" = "In-App Video & Audio Player";

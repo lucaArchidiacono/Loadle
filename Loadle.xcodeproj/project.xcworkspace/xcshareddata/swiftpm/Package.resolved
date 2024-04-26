@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "bottomsheet",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Kaww/BottomSheet",
+      "state" : {
+        "branch" : "main",
+        "revision" : "a84d1adf3cab52b6ac0053e28967523588d08b1b"
+      }
+    },
+    {
       "identity" : "nuke",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kean/Nuke.git",
