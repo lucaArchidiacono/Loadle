@@ -21,9 +21,6 @@ protocol OutputStream: AnyObject {
     /// Returns a list of all files which are used as logs.
     func getLogFiles(completion: @escaping ([URL]) -> Void)
 
-    /// Returns the currently logged entires as a list of `Data`.
-    func fetch(completion: @escaping ([Data]) -> Void)
-
     var nextOutputStream: OutputStream? { get set }
 }
 

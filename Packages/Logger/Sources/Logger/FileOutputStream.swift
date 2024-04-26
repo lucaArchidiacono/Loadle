@@ -108,19 +108,11 @@ final class FileOutputStream: OutputStream {
         try? fileHandle.close()
     }
 
-    func fetch(completion: @escaping ([Data]) -> Void) {
+    func fetch(completion: @escaping ([String]) -> Void) {
         queue.async {
             do {
-                let fileLogOutputStreamData = try self._fetch()
-                if let nextOutputStream = self.nextOutputStream {
-                    nextOutputStream.fetch { outputStreamData in
-                        var outputStreamData = outputStreamData
-                        outputStreamData.append(fileLogOutputStreamData)
-                        completion(outputStreamData)
-                    }
-                } else {
-                    completion([fileLogOutputStreamData])
-                }
+                let fileLogOutputStreamString = try self._fetch()
+				completion(fileLogOutputStreamString)
             } catch {
                 os_log(.error, "\(error)")
                 completion([])
@@ -128,11 +120,13 @@ final class FileOutputStream: OutputStream {
         }
     }
 
-    private func _fetch() throws -> Data {
+    private func _fetch() throws -> [String] {
         let fileHandle = try FileHandle(forReadingFrom: logFile)
         let data = fileHandle.readDataToEndOfFile()
         try fileHandle.close()
-        return data
+		return (String(data: data, encoding: .utf8) ?? "")
+			.components(separatedBy: "\n")
+			.dropLast()
     }
 
     func getLogFiles(completion: @escaping (([URL]) -> Void)) {

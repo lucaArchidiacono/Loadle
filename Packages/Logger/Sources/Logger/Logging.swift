@@ -50,17 +50,32 @@ public struct Logging {
     }
 
     private let outputStream: OutputStream
+	private let logOutputStream: LogOutputStream
+	private let fileOutputStream: FileOutputStream?
 
-	public static let (logStream, logContinuation): (AsyncStream<String>, AsyncStream<String>.Continuation) = AsyncStream<String>.makeStream()
+	private let continuation: AsyncStream<String>.Continuation
 
+	public var stream: AsyncStream<String>
     public static let shared: Logging = .init()
 
     private init() {
-        outputStream = LogOutputStream()
+		let (stream, continuation) = AsyncStream<String>.makeStream(bufferingPolicy: .bufferingNewest(1))
 
-        if let fileOutputStream = FileOutputStream() {
-            outputStream.setNext(outputStream: fileOutputStream)
-        }
+		self.stream = stream
+		self.continuation = continuation
+		
+		let logOutputStream = LogOutputStream()
+		self.logOutputStream = logOutputStream
+		
+		let fileOutputStream = FileOutputStream()
+		self.fileOutputStream = fileOutputStream
+		
+		// Setup OutputStream Chain
+		self.outputStream = logOutputStream
+
+		if let fileOutputStream {
+			outputStream.setNext(outputStream: fileOutputStream)
+		}
     }
 
     /// Get a list of all log files as `[URL]`.
@@ -78,13 +93,18 @@ public struct Logging {
 	}
 
     /// Get the data of the current log file.
-    func fetch(completion: @escaping ([Data]) -> Void) {
-        outputStream.fetch(completion: completion)
+    public func fetch(completion: @escaping ([String]) -> Void) {
+		fileOutputStream?.fetch(completion: completion)
     }
 
-	func fetch() async -> [Data] {
+	public func fetch() async -> [String] {
 		await withCheckedContinuation { continuation in
-			outputStream.fetch { data in
+			guard let fileOutputStream else {
+				continuation.resume(returning: [])
+				return
+			}
+			
+			fileOutputStream.fetch { data in
 				continuation.resume(returning: data)
 			}
 		}
@@ -96,7 +116,7 @@ public struct Logging {
         let message = message.map { String(describing: $0) }.joined(separator: " ")
         let logString = "\(Date()) \(level.toSymbol()) \(currentQueueName) \(location) \(message)"
 
-		Self.logContinuation.yield(logString)
+		continuation.yield(logString)
 
         outputStream.write(level: level, logString)
     }

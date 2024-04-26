@@ -25,10 +25,6 @@ final class LogOutputStream: OutputStream {
         nextOutputStream?.write(level: level, message)
     }
 
-    func fetch(completion: @escaping ([Data]) -> Void) {
-        nextOutputStream?.fetch(completion: completion)
-    }
-
     func getLogFiles(completion: @escaping ([URL]) -> Void) {
         nextOutputStream?.getLogFiles(completion: completion)
     }
