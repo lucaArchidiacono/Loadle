@@ -13,7 +13,15 @@ import Models
 @MainActor
 @Observable
 final class ContentViewModel {
+	enum State {
+		case createdArchives
+		case selectedSingleMediaAssetItem
+		case searchingViaText
+		case `default`
+	}
+
 	public var searchText: String = ""
+	public var isSearchingPresented: Bool = false
 	public var filteredMediaAssetItems: [MediaAssetItem] = []
 	public var mediaAssetItemIndex: [MediaService: Int] = [:]
 
@@ -26,24 +34,25 @@ final class ContentViewModel {
 		set {
 			withMutation(keyPath: \.selectedMediaAssetItems) {
 				_selectedMediaAssetItems = newValue
-				_isPresented = !newValue.isEmpty
+				_isArchivingSheetPresented = !newValue.isEmpty
 			}
 		}
 	}
-	public var isPresented: Bool {
+	public var isArchivingSheetPresented: Bool {
 		get {
-			access(keyPath: \.isPresented)
-			return _isPresented
+			access(keyPath: \.isArchivingSheetPresented)
+			return _isArchivingSheetPresented
 		} set {
-			withMutation(keyPath: \.isPresented) {
-				_isPresented = newValue
+			withMutation(keyPath: \.isArchivingSheetPresented) {
+				_isArchivingSheetPresented = newValue
 				_selectedMediaAssetItems = newValue ? _selectedMediaAssetItems : []
 			}
 		}
 	}
+	public var state: State = .default
 
 	private var _selectedMediaAssetItems = Set<MediaAssetItem>()
-	private var _isPresented: Bool = false
+	private var _isArchivingSheetPresented: Bool = false
 
 	@ObservationIgnored
 	private var fetchIndexTask: Task<Void, Never>?
