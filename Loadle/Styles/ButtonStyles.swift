@@ -19,6 +19,12 @@ struct RoundedAndShadowButtonStyle: ButtonStyle {
 		self.shadowRadius = shadowRadius
 	}
 
+	init(cornerRadius: CGFloat, labelPadding: EdgeInsets) {
+		self.cornerRadius = cornerRadius
+		self.labelPadding = labelPadding
+		self.shadowRadius = 0
+	}
+
 	func makeBody(configuration: Configuration) -> some View {
 		configuration.label
 			.foregroundColor(.white)
@@ -28,7 +34,6 @@ struct RoundedAndShadowButtonStyle: ButtonStyle {
 					.foregroundColor(.blue)
 			)
 			.compositingGroup()
-			// Adjust interactive animations based on isPressing
 			.shadow(radius: configuration.isPressed ? 0 : shadowRadius, x: 0, y: configuration.isPressed ? 0 : shadowRadius)
 			.scaleEffect(configuration.isPressed ? 0.95 : 1)
 			.animation(.spring(), value: configuration.isPressed)
@@ -36,7 +41,11 @@ struct RoundedAndShadowButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == RoundedAndShadowButtonStyle {
-	static func roundedAndShadow(cornerRadius: CGFloat, labelPadding: EdgeInsets, shadowRadius: CGFloat = 4) -> RoundedAndShadowButtonStyle {
-		RoundedAndShadowButtonStyle(cornerRadius: cornerRadius, labelPadding: labelPadding, shadowRadius: shadowRadius)
+	static func roundedAndShadow(cornerRadius: CGFloat, labelPadding: EdgeInsets, shadowRadius: CGFloat? = nil) -> RoundedAndShadowButtonStyle {
+		if let shadowRadius {
+			return RoundedAndShadowButtonStyle(cornerRadius: cornerRadius, labelPadding: labelPadding, shadowRadius: shadowRadius)
+		} else {
+			return RoundedAndShadowButtonStyle(cornerRadius: cornerRadius, labelPadding: labelPadding)
+		}
 	}
 }
