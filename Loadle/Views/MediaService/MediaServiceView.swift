@@ -75,10 +75,9 @@ struct MediaServiceView: View {
 			isPresented: $viewModel.isPresented,
 			detents: [.fixed(100), .medium, .ratio(0.75)],
 			shouldScrollExpandSheet: true,
-			largestUndimmedDetent: .medium,
+			largestUndimmedDetent: nil,
 			showGrabber: true,
 			cornerRadius: 20,
-			showsInCompactHeight: false,
 			dismissable: true
 		) {
 			MediaAssetItemActionList(selectedMediaAssetItems: viewModel.selectedMediaAssetItems) { archives in
@@ -130,7 +129,7 @@ private struct MediaAssetItemActionList: View {
 					let dirName = selectedMediaAssetItems[objectIndex].title
 
 					if url.containsImage {
-						partialResult[url] = (dirName, "IMG_\(objectIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
+						partialResult[url] = (dirName, "IMG_\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
 					} else if url.containsMovie {
 						partialResult[url] = (dirName, "MOV_\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
 					} else if url.containsAudio {
@@ -275,12 +274,21 @@ private struct SelectionCell: View {
 				} else {
 					if fileURL.containsMovie {
 						Image(systemName: "movieclapper.fill")
+							.resizable()
+							.padding()
+							.scaledToFill()
 							.background(.fill)
 					} else if fileURL.containsAudio {
 						Image(systemName: "music.note")
+							.resizable()
+							.padding()
+							.scaledToFill()
 							.background(.fill)
 					} else if fileURL.containsImage {
 						Image(systemName: "photo.fill")
+							.resizable()
+							.padding()
+							.scaledToFill()
 							.background(.fill)
 					}
 				}
@@ -295,27 +303,34 @@ private struct SelectionCell: View {
 			onTap()
 		}
 		.task {
-			let asset = AVURLAsset(url: fileURL)
+			if fileURL.containsMovie {
+				let asset = AVURLAsset(url: fileURL)
 
-			do {
-				let generator = AVAssetImageGenerator(asset: asset)
-				generator.appliesPreferredTrackTransform = true
-				generator.requestedTimeToleranceBefore = .zero
-				generator.requestedTimeToleranceAfter = CMTime(seconds: 2, preferredTimescale: 600)
-				
-				artwork = try await withCheckedThrowingContinuation { continuation in
-					generator.generateCGImageAsynchronously(for: .zero) { cgImage, _, error in
-						if let error {
-							continuation.resume(throwing: error)
+				do {
+					let generator = AVAssetImageGenerator(asset: asset)
+					generator.appliesPreferredTrackTransform = true
+					generator.requestedTimeToleranceBefore = .zero
+					generator.requestedTimeToleranceAfter = CMTime(seconds: 2, preferredTimescale: 600)
+
+					artwork = try await withCheckedThrowingContinuation { continuation in
+						generator.generateCGImageAsynchronously(for: .zero) { cgImage, _, error in
+							if let error {
+								continuation.resume(throwing: error)
+								return
+							}
+
+							continuation.resume(returning: UIImage(cgImage: cgImage!))
 							return
 						}
-
-						continuation.resume(returning: UIImage(cgImage: cgImage!))
-						return
 					}
+				} catch {
+					log(.error, error)
 				}
-			} catch {
-				log(.error, error)
+			} else {
+				if fileURL.containsImage {
+					guard let data = try? Data(contentsOf: fileURL) else { return }
+					artwork = UIImage(data: data)
+				}
 			}
 		}
 	}
