@@ -25,6 +25,8 @@ struct DownloadView: View {
 
     @State private var viewModel = DownloadViewModel()
 
+	private var cornerRadius: CGFloat = 8.0
+
     init() {
         UITextField.appearance().clearButtonMode = .whileEditing
     }
@@ -61,15 +63,19 @@ struct DownloadView: View {
     private var downloadSection: some View {
         Section {
             HStack {
-				Image(systemName: "link")
-					.aspectRatio(contentMode: .fit)
-					.frame(width: 30)
-				TextField(L10n.pasteLink, text: $viewModel.url)
-					.focused($focusedField, equals: .url)
-            }
-			.padding(.vertical)
+				Group {
+					Image(systemName: "link")
+						.aspectRatio(contentMode: .fit)
+						.frame(width: 30)
+					TextField(L10n.pasteLink, text: $viewModel.url)
+						.focused($focusedField, equals: .url)
+				}
+				.frame(height: 60)
+			}
+			.padding(.horizontal, 8)
             .background(Color(UIColor.secondarySystemBackground))
-            .cornerRadius(8)
+            .cornerRadius(cornerRadius)
+			.shadow(radius: 4, x: 4, y: 4)
 
             Button {
 				viewModel.startDownload(using: viewModel.url)
@@ -80,13 +86,18 @@ struct DownloadView: View {
 						ProgressView()
 					} else {
 						Text(L10n.downloadButtonTitle)
+							.foregroundStyle(.white)
 					}
-				}							
+				}
 				.frame(height: 30)
 				.frame(maxWidth: .infinity)
-				.padding(.vertical, 10)
             }
-            .buttonStyle(.borderedProminent)
+			.buttonStyle(
+				.roundedAndShadow(
+					cornerRadius: cornerRadius,
+					labelPadding: EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+				)
+			)
 			.disabled(viewModel.isLoading)
 
             HStack {
