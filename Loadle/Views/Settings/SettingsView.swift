@@ -20,12 +20,18 @@ struct SettingsView: View {
         case video
         case audio
         case other
+		#if DEBUG
+		case logs
+		#endif
 
         var rawValue: String {
             switch self {
             case .video: return L10n.video
             case .audio: return L10n.audio
             case .other: return L10n.other
+			#if DEBUG
+			case .logs: return "Logs"
+			#endif
             }
         }
     }
@@ -59,6 +65,10 @@ struct SettingsView: View {
                 audioSegment
             case .other:
                 otherSegment
+			#if DEBUG
+			case .logs:
+				logsSegment
+			#endif
             }
         }
         .toolbar {
@@ -187,15 +197,6 @@ struct SettingsView: View {
 //        }
 //		.listRowBackground(theme.secondaryBackgroundColor)
 
-		#if DEBUG
-		Section("Logs") {
-			List(viewModel.logStreams, id: \.self) { log in
-				Text(log)
-			}
-			.frame(height: 300)
-		}
-		#endif
-
 		Section(L10n.upcomingFeaturesTitle) {
 			Text(L10n.upcomingFeaturesInAppPlayerTitle)
 				.font(.headline)
@@ -235,6 +236,15 @@ struct SettingsView: View {
             }
 		}
     }
+
+	#if DEBUG
+	@ViewBuilder
+	var logsSegment: some View {
+		ForEach(viewModel.logStreams, id: \.self) { log in
+			Text(log)
+		}
+	}
+	#endif
 }
 
 #Preview {
