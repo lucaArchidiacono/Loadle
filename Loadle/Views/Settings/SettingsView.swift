@@ -34,6 +34,7 @@ struct SettingsView: View {
 
     @State private var viewModel: SettingsViewModel = .init()
     @State private var selected: Segment = .video
+	@State private var isLoadingLogs = false
 
     var body: some View {
         List {
@@ -187,11 +188,26 @@ struct SettingsView: View {
 
 		Section {
             if MailComposerView.canSendEmail() {
-                Button(L10n.sendLogFileTitle) {
-                    viewModel.loadLogFiles { emailData in
-                        router.presented = .mail(emailData: emailData)
-                    }
-                }
+				Button(
+					action: {
+						isLoadingLogs = true
+						Task {
+							let emailData = await viewModel.loadLogFiles()
+							isLoadingLogs = false
+							router.presented = .mail(emailData: emailData)
+						}
+					},
+					label: {
+						ZStack {
+							Text(L10n.sendLogFileTitle).opacity(isLoadingLogs ? 0 : 1)
+
+							if isLoadingLogs {
+								ProgressView()
+							}
+						}
+					}
+				)
+				.disabled(isLoadingLogs)
             }
 		}
     }

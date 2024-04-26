@@ -79,13 +79,13 @@ struct ContentView: View {
 		List {
 			ForEach(viewModel.filteredMediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
-						playlistService.select(mediaAssetItem, playlist: viewModel.filteredMediaAssetItems)
-
-						#if os(visionOS)
-						openWindow(id: "MediaPlayer")
-						#else
-						router.path.append(.mediaPlayer)
-						#endif
+//						playlistService.select(mediaAssetItem, playlist: viewModel.filteredMediaAssetItems)
+//
+//						#if os(visionOS)
+//						openWindow(id: "MediaPlayer")
+//						#else
+//						router.path.append(.mediaPlayer)
+//						#endif
 				}
 				.contextMenu {
 					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })

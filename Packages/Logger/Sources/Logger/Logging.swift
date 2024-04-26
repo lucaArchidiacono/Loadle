@@ -64,11 +64,28 @@ public struct Logging {
     public func getLogFiles(completion: @escaping ([URL]) -> Void) {
         outputStream.getLogFiles(completion: completion)
     }
+	
+	/// Get a list of all log files as `[URL]`.
+	public func getLogFiles() async -> [URL] {
+		await withCheckedContinuation { continuation in
+			outputStream.getLogFiles { url in
+				continuation.resume(returning: url)
+			}
+		}
+	}
 
     /// Get the data of the current log file.
     func fetch(completion: @escaping ([Data]) -> Void) {
         outputStream.fetch(completion: completion)
     }
+
+	func fetch() async -> [Data] {
+		await withCheckedContinuation { continuation in
+			outputStream.fetch { data in
+				continuation.resume(returning: data)
+			}
+		}
+	}
 
     func log(_ level: LogLevel, _ message: Any..., file: String, line: Int, function: String) {
         let fileName = URL(fileURLWithPath: file).lastPathComponent

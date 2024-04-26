@@ -42,7 +42,7 @@ struct MediaAssetItemSectionView: View {
 
 					Spacer()
 
-					Text(mediaAssetItem.title)
+					Text(mediaAssetItem.title.trimmingCharacters(in: .whitespaces))
 						.lineLimit(2)
 						.truncationMode(.tail)
 
@@ -102,8 +102,8 @@ struct MediaAssetItemSectionView: View {
 			}
 		}
 		.contentShape(Rectangle())
-		.onTapGesture {
-			onTap()
-		}
+//		.onTapGesture {
+//			onTap()
+//		}
 	}
 }

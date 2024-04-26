@@ -42,13 +42,18 @@ struct MediaServiceView: View {
 		List {
 			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
-						playlistService.select(mediaAssetItem, playlist: viewModel.mediaAssetItems)
-
-						#if 	os(visionOS)
-						openWindow(id: "MediaPlayer")
-						#else
-						router.path.append(.mediaPlayer)
-						#endif
+//						playlistService.select(mediaAssetItem, playlist: viewModel.mediaAssetItems)
+//
+//						#if 	os(visionOS)
+//						openWindow(id: "MediaPlayer")
+//						#else
+//						router.path.append(.mediaPlayer)
+//						#endif
+				}
+				.swipeActions(edge: .trailing) {
+					Button(role: .destructive,
+						   action: { viewModel.delete(item: mediaAssetItem) },
+						   label: { Image(systemName: "trash") })
 				}
 				.contextMenu {
 					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })

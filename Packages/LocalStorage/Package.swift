@@ -16,7 +16,8 @@ let package = Package(
 	dependencies: [
         .package(path: "../Logger"),
         .package(path: "../Fundamentals"),
-		.package(path: "../Models")
+		.package(path: "../Models"),
+		.package(url: "https://github.com/mergesort/Bodega.git", .upToNextMajor(from: "2.1.2"))
 	],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,9 +27,9 @@ let package = Package(
 			dependencies: [
                 .product(name: "Logger", package: "Logger"),
                 .product(name: "Fundamentals", package: "Fundamentals"),
-				.product(name: "Models", package: "Models")
-			],
-            resources: [.process("Resources/Loadle.xcdatamodeld")]
+				.product(name: "Models", package: "Models"),
+				.product(name: "Bodega", package: "Bodega"),
+			]
         ),
         .testTarget(
             name: "LocalStorageTests",

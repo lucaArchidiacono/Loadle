@@ -141,9 +141,16 @@ private actor DownloadStore {
 		let downloadItem = DownloadItem(remoteURL: remoteURL, streamURL: streamURL, service: mediaService, metadata: metadata)
 		let downloadTask = DownloadTask(session: urlSession, url: streamURL)
 		let wrappedDownload = WrappedDownload(item: downloadItem, task: downloadTask)
-		store[wrappedDownload.item.streamURL] = WrappedDownload(item: downloadItem, task: downloadTask)
-		await PersistenceController.shared.downloadItem.store(downloadItem: downloadItem)
-		downloadTask.resume()
+		
+		do {
+			try await Storage.DownloadItem.write(downloadItem)
+			
+			store[wrappedDownload.item.streamURL] = WrappedDownload(item: downloadItem, task: downloadTask)
+
+			downloadTask.resume()
+		} catch {
+			log(.error, error)
+		}
 	}
 
 	public func delete(using url: URL) async {
@@ -152,10 +159,16 @@ private actor DownloadStore {
 			log(.warning, "Was not able to find and delete Download with url: \(url)")
 			return
 		}
-		wrappedDownload.task.cancel()
-		store.removeValue(forKey: url)
-		await PersistenceController.shared.downloadItem.delete(wrappedDownload.item.id)
-		log(.info, "Deleted Download successfully.")
+		do {
+			try await Storage.DownloadItem.delete(wrappedDownload.item.id)
+
+			wrappedDownload.task.cancel()
+			store.removeValue(forKey: url)
+
+			log(.info, "Deleted Download successfully.")
+		} catch {
+			log(.error, "Failed to delete Download successfully.")
+		}
 	}
 
 	public func cancel(using url: URL) async {
@@ -189,7 +202,7 @@ private actor DownloadStore {
 
 		log(.verbose, "New state \(newState) received for url: \(url)")
 
-		guard let downloadItem = await PersistenceController.shared.downloadItem.load(url) else {
+		guard let downloadItem = await Storage.DownloadItem.search(url) else {
 			log(.warning, "Was not able to find and update `DownloadItem` with url: \(url)")
 			return []
 		}
@@ -209,30 +222,42 @@ private actor DownloadStore {
 			log(.verbose, "New progress update: (current: \(currentBytes), total: \(totalBytes))")
 			let updatedDownloadItem = currentWrappedDownload.item.update(state: .progress(currentBytes: Double(currentBytes), totalBytes: Double(totalBytes)))
 			
-			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
-
-			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+			do {
+				try await Storage.DownloadItem.write(updatedDownloadItem)
+				store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+			} catch {
+				log(.error, error)
+			}
 		case let .success(fileURL):
 			log(.info, "Successfully downloaded the media: \(fileURL)")
 			
-			store.removeValue(forKey: url)
-
-			await PersistenceController.shared.downloadItem.delete(url)
-			await MediaAssetService.shared.store(downloadItem: downloadItem, originalFileURL: fileURL)
+			do {
+				try await Storage.DownloadItem.delete(url)
+				store.removeValue(forKey: url)
+				await MediaAssetService.shared.store(downloadItem: downloadItem, originalFileURL: fileURL)
+			} catch {
+				log(.error, error)
+			}
 		case let .failed(error):
 			log(.error, "The download failed due to the following error: \(error)")
 			let updatedDownloadItem = downloadItem.update(state: .failed)
-
-			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
-
-			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+			
+			do {
+				try await Storage.DownloadItem.write(downloadItem)
+				store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+			} catch {
+				log(.error, error)
+			}
 		case .cancelled:
 			log(.warning, "Download has been cancelled with following url: \(url)")
 			let updatedDownloadItem = downloadItem.update(state: .cancelled)
 
-			store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
-
-			await PersistenceController.shared.downloadItem.store(downloadItem: updatedDownloadItem)
+			do {
+				try await Storage.DownloadItem.write(downloadItem)
+				store[url] = WrappedDownload(item: updatedDownloadItem, task: currentWrappedDownload.task)
+			} catch {
+				log(.error, error)
+			}
 		}
 		return store.values.map { $0.item }
 	}

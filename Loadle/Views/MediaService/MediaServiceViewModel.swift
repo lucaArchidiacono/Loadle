@@ -46,4 +46,11 @@ final class MediaServiceViewModel {
 			filteredMediaAssetItems = mediaAssetItems.filter { $0.title.lowercased().contains(searchText.lowercased()) }
 		}
 	}
+
+	func delete(item: MediaAssetItem) {
+		Task {
+			await MediaAssetService.shared.delete(item)
+			fetch()
+		}
+	}
 }

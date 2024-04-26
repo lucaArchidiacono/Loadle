@@ -14,22 +14,6 @@ import UniformTypeIdentifiers
 public final class MediaAssetService {
 	public static let shared = MediaAssetService()
 
-	private static func loadBaseURL(service: MediaService) throws -> URL {
-		let downloadsURL = try FileManager.default
-			.url(for: .documentDirectory,
-				 in: .userDomainMask,
-				 appropriateFor: .documentsDirectory,
-				 create: true)
-			.appendingPathComponent("DOWNLOADS", conformingTo: .directory)
-			.appendingPathComponent(service.rawValue.capitalized, conformingTo: .directory)
-
-		if !FileManager.default.fileExists(atPath: downloadsURL.standardizedFileURL.path(percentEncoded: false)) {
-			try FileManager.default.createDirectory(at: downloadsURL, withIntermediateDirectories: true, attributes: nil)
-		}
-
-		return downloadsURL
-	}
-
 	public func store(downloadItem: DownloadItem, originalFileURL: URL) async {
 		do {
 			log(.info, "Storing new `DownloadItem` as `MediaAsset`: \(downloadItem)")
@@ -47,7 +31,7 @@ public final class MediaAssetService {
 				return
 			}
 
-			let existingMediaAsset = await PersistenceController.shared.mediaAsset.load(remoteURL: downloadItem.remoteURL)
+			let existingMediaAsset = await Storage.MediaAssetItem.search(remoteURL: downloadItem.remoteURL)
 
 			if let existingMediaAsset {
 				if FileManager.default.fileExists(atPath: fileURL.standardizedFileURL.path(percentEncoded: false)) {
@@ -61,7 +45,7 @@ public final class MediaAssetService {
 					let newFileURLs = existingMediaAsset.fileURLs + [relativeFileURL]
 					let newMediaAsset = existingMediaAsset.configure(fileURLs: newFileURLs)
 
-					await PersistenceController.shared.mediaAsset.store(mediaAssetItem: newMediaAsset)
+					try await Storage.MediaAssetItem.write(newMediaAsset)
 					log(.info, "Successfully stored \(newMediaAsset) into CoreData DB.")
 				}
 			} else {
@@ -78,7 +62,7 @@ public final class MediaAssetService {
 					createdAt: .now,
 					title: title)
 
-				await PersistenceController.shared.mediaAsset.store(mediaAssetItem: newMediaAsset)
+				try await Storage.MediaAssetItem.write(newMediaAsset)
 				log(.info, "Successfully stored \(newMediaAsset) into CoreData DB.")
 			}
 
@@ -91,20 +75,32 @@ public final class MediaAssetService {
 	}
 
 	public func loadCountIndex() async -> [MediaService: Int] {
-		await PersistenceController.shared.mediaAsset
-			.countMediaAssetsByService()
+		await Storage.MediaAssetItem.countMediaAssetsByService()
 	}
 
 	public func loadAllAssets(for service: MediaService) async -> [MediaAssetItem] {
-		await PersistenceController.shared.mediaAsset
-			.loadAll(using: service)
+		await Storage.MediaAssetItem.readAll(using: service)
 			.compactMap(Self.transform(_:))
 	}
 
 	public func searchFor(title: String) async -> [MediaAssetItem] {
-		await PersistenceController.shared.mediaAsset
-			.searchFor(title: title)
+		await Storage.MediaAssetItem.searchFor(title: title)
 			.compactMap(Self.transform(_:))
+	}
+
+	public func delete(_ item: MediaAssetItem) async {
+		guard let item = Self.transform(item) else {
+			log(.warning, "Was not able to transform MediaAssetItem.")
+			return
+		}
+		do {
+			for fileURL in item.fileURLs {
+				try FileManager.default.removeItem(at: fileURL)
+			}
+			try await Storage.MediaAssetItem.delete(item.id)
+		} catch {
+			log(.error, error)
+		}
 	}
 
 	private static func transform(_ data: MediaAssetItem) -> MediaAssetItem? {
@@ -113,5 +109,21 @@ public final class MediaAssetService {
 			.fileURLs
 			.map { URL(filePath: $0.path, directoryHint: .notDirectory, relativeTo: serviceURL) }
 		return data.configure(fileURLs: newFileURLs)
+	}
+
+	private static func loadBaseURL(service: MediaService) throws -> URL {
+		let downloadsURL = try FileManager.default
+			.url(for: .documentDirectory,
+				 in: .userDomainMask,
+				 appropriateFor: .documentsDirectory,
+				 create: true)
+			.appendingPathComponent("DOWNLOADS", conformingTo: .directory)
+			.appendingPathComponent(service.rawValue.capitalized, conformingTo: .directory)
+
+		if !FileManager.default.fileExists(atPath: downloadsURL.standardizedFileURL.path(percentEncoded: false)) {
+			try FileManager.default.createDirectory(at: downloadsURL, withIntermediateDirectories: true, attributes: nil)
+		}
+
+		return downloadsURL
 	}
 }
