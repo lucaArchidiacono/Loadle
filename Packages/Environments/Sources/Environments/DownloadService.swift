@@ -331,7 +331,7 @@ public class DownloadService: NSObject {
 		let id = UUID()
 		return AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
 			continuation.onTermination = { @Sendable _ in
-				self.downloadContinuations[id] = nil
+				self.downloadContinuations.removeValue(forKey: id)
 			}
 			self.downloadContinuations[id] = continuation
 		}
