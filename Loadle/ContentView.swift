@@ -10,6 +10,7 @@ import Generator
 import Logger
 import Models
 import SwiftUI
+import BottomSheet
 
 struct ContentView: View {
 	@Environment(\.colorScheme) var colorScheme
@@ -79,6 +80,7 @@ struct ContentView: View {
 		List {
 			ForEach(viewModel.filteredMediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
+					viewModel.selectedMediaAssetItems = [mediaAssetItem]
 //						playlistService.select(mediaAssetItem, playlist: viewModel.filteredMediaAssetItems)
 //
 //						#if os(visionOS)
@@ -87,14 +89,36 @@ struct ContentView: View {
 //						router.path.append(.mediaPlayer)
 //						#endif
 				}
-				.contextMenu {
-					ShareLink(items: mediaAssetItem.fileURLs.map { $0.standardizedFileURL })
-				}
 			}
 		}
 		.toolbarBackground(.hidden)
 		.scrollContentBackground(.hidden)
 		.listStyle(.inset)
+		.bottomSheet(
+			isPresented: $viewModel.isPresented,
+			detents: [.fixed(100), .medium, .ratio(0.75)],
+			shouldScrollExpandSheet: true,
+			largestUndimmedDetent: nil,
+			showGrabber: true,
+			cornerRadius: 20,
+			dismissable: true
+		) {
+			MediaAssetItemsArchiveList(selectedMediaAssetItems: viewModel.selectedMediaAssetItems) { archives in
+				self.viewModel.archives = archives
+				self.viewModel.isPresented = false
+			}
+		}
+		.onChange(of: viewModel.isPresented) {
+			guard !viewModel.archives.isEmpty else { return }
+			let activityController = UIActivityViewController(activityItems: viewModel.archives, applicationActivities: nil)
+			UIApplication.shared
+				.connectedScenes
+				.compactMap { $0 as? UIWindowScene }
+				.first?
+				.keyWindow?
+				.rootViewController?
+				.present(activityController, animated: true)
+		}
 	}
 
 	@ViewBuilder
