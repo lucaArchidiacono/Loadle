@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Logger
 
 public extension REST {
     final class Loader: NSObject {
@@ -16,25 +17,30 @@ public extension REST {
 		public func load(using request: REST.HTTPRequest) async throws -> REST.HTTPResponse {
 			let urlRequest = try REST.transform(request)
 			
+			var data: Data!
+			var urlResponse: URLResponse!
+
 			do {
-				let (data, urlResponse) = try await session.data(for: urlRequest)
-
-				guard let httpResponse = urlResponse as? HTTPURLResponse else {
-					throw REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)
-				}
-
-				let status = REST.HTTPStatus(rawValue: httpResponse.statusCode)
-
-				let response = REST.HTTPResponse(request: request, response: httpResponse, body: data)
-
-				if status.isSuccess {
-					return response
-				} else {
-					let code = HTTPStatusCode(fromRawValue: status.rawValue)
-					throw REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: nil)
-				}
+				let tuple = try await session.data(for: urlRequest)
+				data = tuple.0
+				urlResponse = tuple.1
 			} catch {
 				throw REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)
+			}
+
+			guard let httpResponse = urlResponse as? HTTPURLResponse else {
+				throw REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)
+			}
+
+			let status = REST.HTTPStatus(rawValue: httpResponse.statusCode)
+
+			let response = REST.HTTPResponse(request: request, response: httpResponse, body: data)
+
+			if status.isSuccess {
+				return response
+			} else {
+				let code = HTTPStatusCode(fromRawValue: status.rawValue)
+				throw REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: nil)
 			}
 		}
     }
