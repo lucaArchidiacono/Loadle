@@ -34,14 +34,6 @@ final class SettingsViewModel {
 				}
 			}
 		}
-		Task {
-			try? await Task.sleep(for: .seconds(3))
-			log(.info, "hey Du 3")
-			try? await Task.sleep(for: .seconds(2))
-			log(.info, "hey Du 2")
-			try? await Task.sleep(for: .seconds(1))
-			log(.info, "hey Du 1")
-		}
 		#endif
 	}
 	
