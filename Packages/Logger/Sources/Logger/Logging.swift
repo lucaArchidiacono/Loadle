@@ -50,6 +50,9 @@ public struct Logging {
     }
 
     private let outputStream: OutputStream
+
+	public static let (logStream, logContinuation): (AsyncStream<String>, AsyncStream<String>.Continuation) = AsyncStream<String>.makeStream()
+
     public static let shared: Logging = .init()
 
     private init() {
@@ -92,6 +95,8 @@ public struct Logging {
         let location = "\(fileName).\(trimFunctionName(function)):\(line)"
         let message = message.map { String(describing: $0) }.joined(separator: " ")
         let logString = "\(Date()) \(level.toSymbol()) \(currentQueueName) \(location) \(message)"
+
+		Self.logContinuation.yield(logString)
 
         outputStream.write(level: level, logString)
     }

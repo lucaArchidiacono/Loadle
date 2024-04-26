@@ -10,6 +10,7 @@ import Foundation
 import Generator
 import Models
 import SwiftUI
+import Logger
 
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
@@ -185,6 +186,15 @@ struct SettingsView: View {
 //            }
 //        }
 //		.listRowBackground(theme.secondaryBackgroundColor)
+
+		#if DEBUG
+		Section("Logs") {
+			List(viewModel.logStreams, id: \.self) { log in
+				Text(log)
+			}
+			.frame(height: 300)
+		}
+		#endif
 
 		Section(L10n.upcomingFeaturesTitle) {
 			Text(L10n.upcomingFeaturesInAppPlayerTitle)
