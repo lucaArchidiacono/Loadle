@@ -37,20 +37,7 @@ public extension REST {
 
 		public var debugDescription: String {
 			let debugString = """
-			\nHTTP Error: {
-			\tCode: {
-			\t\t\(code)
-			\t},
-			\tRequest: {
-			\t\t\(request)
-			\t},
-			\tResponse: {
-			\t\t\((response ?? "<unavailable>") as Any)
-			\t},
-			\tError: {
-			\t\t\((underlyingError ?? "<unavailable>") as Any)
-			\t}
-			}
+			HTTP Error: { ERROR -> \((underlyingError ?? "<unavailable>") as Any); CODE -> \(code); REQUEST -> \(request); RESPONSE -> \((response ?? "<unavailable>") as Any); }
 			"""
 			return debugString
 		}

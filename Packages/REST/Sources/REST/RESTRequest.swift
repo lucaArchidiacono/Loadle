@@ -8,7 +8,7 @@
 import Foundation
 
 public extension REST {
-    struct HTTPRequest: Identifiable {
+    struct HTTPRequest: Identifiable, CustomDebugStringConvertible {
         public let id: UUID = .init()
 
         private var urlComponents = URLComponents()
@@ -45,5 +45,12 @@ public extension REST {
             self.headers = headers
             self.body = body
         }
+
+		public var debugDescription: String {
+			let debugString = """
+			HTTP Request: { ID -> \(id); URL -> \(urlComponents); OPTIONS -> \(options); METHOD -> \(method); HEADERS -> \(headers);  BODY -> \(body); }
+			"""
+			return debugString
+		}
     }
 }

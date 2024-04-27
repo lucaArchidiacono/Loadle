@@ -28,20 +28,7 @@ public extension REST {
 		public var debugDescription: String {
 			let body: Any = String(data: body, encoding: .utf8) ?? (try? JSONSerialization.jsonObject(with: body)) ?? "<unavailable>"
 			let debugString = """
-			HTTP Response: {
-			\tRequest: {
-			\t\t\(request)
-			\t},
-			\tStatus: {
-			\t\t\(response.statusCode) \(message)
-			\t},
-			\tHeaders: {
-			\t\t\(headers)
-			\t},
-			\tBody: {
-			\t\t\(body)
-			\t}
-			}
+			HTTP Response: { STATUS -> \(response.statusCode) \(message); HEADERS -> \(headers); BODY -> \(body); }
 			"""
 			return debugString
 		}
