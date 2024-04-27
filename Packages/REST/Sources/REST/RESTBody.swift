@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Fundamentals
 
 public protocol HTTPBody {
     var isEmpty: Bool { get }
@@ -40,7 +41,7 @@ public extension REST {
         public func encode() throws -> InputStream { InputStream(data: data) }
     }
 
-    struct JSONBody: HTTPBody {
+    struct JSONBody: HTTPBody, CustomDebugStringConvertible {
         public let isEmpty: Bool = false
         public var additionalHeaders: [String: String] = [
             "Accept": "application/json",
@@ -57,9 +58,25 @@ public extension REST {
             let data = try _encode()
             return InputStream(data: data)
         }
+
+		public var debugDescription: String {
+			let body: String
+			if let inputStream = try? encode(),
+			   let data = try? Data(reading: inputStream),
+			   let stringData = String(data: data, encoding: .utf8) {
+				body = stringData
+			} else {
+				body = "<unavailable>"
+			}
+
+			let debugString = """
+			JSON Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
+			"""
+			return debugString
+		}
     }
 
-    struct FormBody: HTTPBody {
+    struct FormBody: HTTPBody, CustomDebugStringConvertible {
         public var isEmpty: Bool { values.isEmpty }
         public let additionalHeaders = [
             "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
@@ -91,5 +108,21 @@ public extension REST {
         private func urlEncode(_ string: String) -> String {
             return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         }
+
+		public var debugDescription: String {
+			let body: String
+			if let inputStream = try? encode(),
+			   let data = try? Data(reading: inputStream),
+			   let stringData = String(data: data, encoding: .utf8) {
+				body = stringData
+			} else {
+				body = "<unavailable>"
+			}
+
+			let debugString = """
+			Form Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
+			"""
+			return debugString
+		}
     }
 }

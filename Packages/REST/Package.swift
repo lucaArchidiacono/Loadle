@@ -15,6 +15,7 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../Logger"),
+		.package(path: "../Fundamentals"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,6 +24,7 @@ let package = Package(
             name: "REST",
             dependencies: [
                 .product(name: "Logger", package: "Logger"),
+				.product(name: "Fundamentals", package: "Fundamentals"),
             ]
         ),
         .testTarget(
