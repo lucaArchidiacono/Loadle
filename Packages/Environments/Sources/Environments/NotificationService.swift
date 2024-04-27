@@ -16,7 +16,7 @@ public class NotificationService {
         checkForPermissions()
     }
 
-    private func checkForPermissions() {
+    public func checkForPermissions() {
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.getNotificationSettings { settings in
             switch settings.authorizationStatus {

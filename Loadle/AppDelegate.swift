@@ -12,8 +12,11 @@ import Generator
 import Logger
 import UIKit
 
-class AppDelegate: NSObject, UIApplicationDelegate{
+class AppDelegate: NSObject, UIApplicationDelegate {
+
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+		NotificationService.shared.checkForPermissions()
+
         return true
     }
 
