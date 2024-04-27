@@ -16,43 +16,24 @@ final class ContentViewModel {
 	enum State {
 		case createdArchives
 		case selectedSingleMediaAssetItem
-		case searchingViaText
+		case presentedSearchingViaText
+		case dismissedSearchingViaText
+		case presentedArchivingSheet
+		case dismissedArchivingSheet
 		case `default`
 	}
 
 	public var searchText: String = ""
-	public var isSearchingPresented: Bool = false
 	public var filteredMediaAssetItems: [MediaAssetItem] = []
 	public var mediaAssetItemIndex: [MediaService: Int] = [:]
+	public var selectedMediaAssetItems: Set<MediaAssetItem> = []
 
 	public var archives: [URL] = []
-	public var selectedMediaAssetItems: Set<MediaAssetItem> {
-		get {
-			access(keyPath: \.selectedMediaAssetItems)
-			return _selectedMediaAssetItems
-		}
-		set {
-			withMutation(keyPath: \.selectedMediaAssetItems) {
-				_selectedMediaAssetItems = newValue
-				_isArchivingSheetPresented = !newValue.isEmpty
-			}
-		}
-	}
-	public var isArchivingSheetPresented: Bool {
-		get {
-			access(keyPath: \.isArchivingSheetPresented)
-			return _isArchivingSheetPresented
-		} set {
-			withMutation(keyPath: \.isArchivingSheetPresented) {
-				_isArchivingSheetPresented = newValue
-				_selectedMediaAssetItems = newValue ? _selectedMediaAssetItems : []
-			}
-		}
-	}
+	
+	public var isArchivingSheetPresented: Bool = false
+	public var isSearchingPresented: Bool = false
+	
 	public var state: State = .default
-
-	private var _selectedMediaAssetItems = Set<MediaAssetItem>()
-	private var _isArchivingSheetPresented: Bool = false
 
 	@ObservationIgnored
 	private var fetchIndexTask: Task<Void, Never>?

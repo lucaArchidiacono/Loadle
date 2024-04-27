@@ -44,6 +44,7 @@ struct MediaServiceView: View {
 			ForEach(viewModel.mediaAssetItems) { mediaAssetItem in
 				MediaAssetItemSectionView(mediaAssetItem: mediaAssetItem) {
 					viewModel.selectedMediaAssetItems = [mediaAssetItem]
+					viewModel.state = .selectedSingleMediaAssetItem
 //						playlistService.select(mediaAssetItem, playlist: viewModel.mediaAssetItems)
 //
 //						#if 	os(visionOS)
@@ -62,7 +63,21 @@ struct MediaServiceView: View {
 				}
 			}
 		}
-		.searchable(text: $viewModel.searchText)
+		.searchable(
+			text: $viewModel.searchText,
+			isPresented: .init(
+				get: { viewModel.isSearchingPresented },
+				set: { newValue in
+					viewModel.isSearchingPresented = newValue
+
+					if newValue {
+						viewModel.state = .presentedSearchingViaText
+					} else {
+						viewModel.state = .dismissedSearchingViaText
+					}
+				}
+			)
+		)
 		.onChange(of: viewModel.searchText, initial: false) {
 			viewModel.search()
 		}
@@ -70,7 +85,18 @@ struct MediaServiceView: View {
         .scrollContentBackground(.hidden)
 		.listStyle(.inset)
 		.bottomSheet(
-			isPresented: $viewModel.isPresented,
+			isPresented: .init(
+				get: { viewModel.isArchivingSheetPresented },
+				set: { newValue in
+					viewModel.isArchivingSheetPresented = newValue
+
+					if newValue {
+						viewModel.state = .presentedArchivingSheet
+					} else {
+						viewModel.state = .dismissedArchivingSheet
+					}
+				}
+			),
 			detents: [.fixed(100), .medium, .ratio(0.75)],
 			shouldScrollExpandSheet: true,
 			largestUndimmedDetent: nil,
@@ -80,19 +106,39 @@ struct MediaServiceView: View {
 		) {
 			MediaAssetItemsArchiveList(selectedMediaAssetItems: viewModel.selectedMediaAssetItems) { archives in
 				self.viewModel.archives = archives
-				self.viewModel.isPresented = false
+				self.viewModel.state = .createdArchives
 			}
 		}
-		.onChange(of: viewModel.isPresented) {
-			guard !viewModel.archives.isEmpty else { return }
-			let activityController = UIActivityViewController(activityItems: viewModel.archives, applicationActivities: nil)
-			UIApplication.shared
-				.connectedScenes
-				.compactMap { $0 as? UIWindowScene }
-				.first?
-				.keyWindow?
-				.rootViewController?
-				.present(activityController, animated: true)
+		.onChange(of: viewModel.state) { (oldValue, newValue) in
+			switch newValue {
+			case .default:
+				break
+			case .selectedSingleMediaAssetItem:
+				viewModel.isArchivingSheetPresented = true
+			case .presentedArchivingSheet:
+				break
+			case .dismissedArchivingSheet:
+				break
+			case .createdArchives:
+				self.viewModel.isArchivingSheetPresented = false
+
+				Task {
+					try? await Task.sleep(for: .milliseconds(1))
+
+					let activityController = UIActivityViewController(activityItems: viewModel.archives, applicationActivities: nil)
+					UIApplication.shared
+						.connectedScenes
+						.compactMap { $0 as? UIWindowScene }
+						.first?
+						.keyWindow?
+						.rootViewController?
+						.present(activityController, animated: true)
+				}
+			case .presentedSearchingViaText:
+				break
+			case .dismissedSearchingViaText:
+				break
+			}
 		}
 	}
 }

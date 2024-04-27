@@ -64,14 +64,16 @@ struct ContentView: View {
 					get: { viewModel.isSearchingPresented },
 					set: { newValue in
 						viewModel.isSearchingPresented = newValue
-						
+
 						if newValue {
-							viewModel.state = .searchingViaText
+							viewModel.state = .presentedSearchingViaText
+						} else {
+							viewModel.state = .dismissedSearchingViaText
 						}
 					}
 				)
 			)
-			.onChange(of: viewModel.searchText, initial: false) { (oldText, newText) in
+			.onChange(of: viewModel.searchText, initial: false) {
 				viewModel.search()
 			}
 		} detail: {
@@ -108,7 +110,18 @@ struct ContentView: View {
 		.scrollContentBackground(.hidden)
 		.listStyle(.inset)
 		.bottomSheet(
-			isPresented: $viewModel.isArchivingSheetPresented,
+			isPresented: .init(
+				get: { viewModel.isArchivingSheetPresented },
+				set: { newValue in
+					viewModel.isArchivingSheetPresented = newValue
+
+					if newValue {
+						viewModel.state = .presentedArchivingSheet
+					} else {
+						viewModel.state = .dismissedArchivingSheet
+					}
+				}
+			),
 			detents: [.fixed(100), .medium, .ratio(0.75)],
 			shouldScrollExpandSheet: true,
 			largestUndimmedDetent: nil,
@@ -123,9 +136,15 @@ struct ContentView: View {
 		}
 		.onChange(of: viewModel.state) { (oldState, newState) in
 			switch newState {
+			case .default:
+				break
+			case .selectedSingleMediaAssetItem:
+				viewModel.isArchivingSheetPresented = true
+			case .presentedArchivingSheet:
+				break
+			case .dismissedArchivingSheet:
+				break
 			case .createdArchives:
-				let temp = viewModel.searchText
-				viewModel.isSearchingPresented = false
 				viewModel.isArchivingSheetPresented = false
 
 				Task {
@@ -140,11 +159,9 @@ struct ContentView: View {
 						.rootViewController?
 						.present(activityController, animated: true)
 				}
-			case .searchingViaText:
-				viewModel.isSearchingPresented = true
-			case .selectedSingleMediaAssetItem:
-				viewModel.isArchivingSheetPresented = true
-			case .default:
+			case .presentedSearchingViaText:
+				break
+			case .dismissedSearchingViaText:
 				break
 			}
 		}

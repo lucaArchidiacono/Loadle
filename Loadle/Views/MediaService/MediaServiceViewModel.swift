@@ -14,41 +14,33 @@ import Logger
 @Observable
 @MainActor
 final class MediaServiceViewModel {
+	enum State {
+		case createdArchives
+		case selectedSingleMediaAssetItem
+		case presentedSearchingViaText
+		case dismissedSearchingViaText
+		case presentedArchivingSheet
+		case dismissedArchivingSheet
+		case `default`
+	}
+
 	public let mediaService: MediaService
 	public var searchText: String = ""
 	public var mediaAssetItems: [MediaAssetItem] {
 		if !searchText.isEmpty { return filteredMediaAssetItems }
 		else { return fetchedMediaAssetItems }
 	}
-	public var selectedMediaAssetItems: Set<MediaAssetItem> {
-		get {
-			access(keyPath: \.selectedMediaAssetItems)
-			return _selectedMediaAssetItems
-		}
-		set {
-			withMutation(keyPath: \.selectedMediaAssetItems) {
-				_selectedMediaAssetItems = newValue
-				_isPresented = !newValue.isEmpty
-			}
-		}
-	}
-	public var isPresented: Bool {
-		get {
-			access(keyPath: \.isPresented)
-			return _isPresented
-		} set {
-			withMutation(keyPath: \.isPresented) {
-				_isPresented = newValue
-				_selectedMediaAssetItems = newValue ? _selectedMediaAssetItems : []
-			}
-		}
-	}
-	public var archives: [URL] = []
-
-	private var _selectedMediaAssetItems = Set<MediaAssetItem>()
-	private var _isPresented: Bool = false
+	
 	private var fetchedMediaAssetItems = [MediaAssetItem]()
 	private var filteredMediaAssetItems = [MediaAssetItem]()
+	public var selectedMediaAssetItems: Set<MediaAssetItem> = []
+
+	public var archives: [URL] = []
+
+	public var isArchivingSheetPresented: Bool = false
+	public var isSearchingPresented: Bool = false
+
+	public var state: State = .default
 
 	init(mediaService: MediaService) {
 		self.mediaService = mediaService
