@@ -149,7 +149,7 @@ public struct MediaAssetItemsArchiveList: View {
 				Text(L10n.archiving)
 					.font(.title)
 					.bold()
-					.padding(.horizontal, 10)
+					.padding([.leading, .top])
 			}
 		}
 	}
