@@ -40,8 +40,6 @@ struct MediaAssetItemSectionView: View {
 						.frame(width: 20, height: 20)
 					}
 
-					Spacer()
-
 					Text(mediaAssetItem.title.trimmingCharacters(in: .whitespaces))
 						.lineLimit(2)
 						.truncationMode(.tail)
