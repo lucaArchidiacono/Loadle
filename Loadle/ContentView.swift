@@ -137,7 +137,6 @@ struct ContentView: View {
 				}
 			}
 		}
-		.toolbarBackground(.hidden)
 		.scrollContentBackground(.hidden)
 		.listStyle(.inset)
 		.bottomSheet(
