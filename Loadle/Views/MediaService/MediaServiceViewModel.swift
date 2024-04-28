@@ -26,11 +26,8 @@ final class MediaServiceViewModel {
 
 	public let mediaService: MediaService
 	public var searchText: String = ""
-	public var mediaAssetItems: [MediaAssetItem] {
-		if !searchText.isEmpty { return filteredMediaAssetItems }
-		else { return fetchedMediaAssetItems }
-	}
-	
+	public var mediaAssetItems: [MediaAssetItem] = []
+
 	private var fetchedMediaAssetItems = [MediaAssetItem]()
 	private var filteredMediaAssetItems = [MediaAssetItem]()
 	public var selectedMediaAssetItems: Set<MediaAssetItem> = []
@@ -55,14 +52,15 @@ final class MediaServiceViewModel {
 		fetchTask = Task { [weak self] in
 			guard let self else { return }
 			self.fetchedMediaAssetItems = await MediaAssetService.shared.loadAllAssets(for: mediaService)
+			self.mediaAssetItems = self.fetchedMediaAssetItems
 		}
 	}
 
 	func search() {
 		if searchText.isEmpty {
-			filteredMediaAssetItems = mediaAssetItems
+			mediaAssetItems = fetchedMediaAssetItems
 		} else {
-			filteredMediaAssetItems = mediaAssetItems.filter { $0.title.lowercased().contains(searchText.lowercased()) }
+			mediaAssetItems = mediaAssetItems.filter { $0.title.lowercased().contains(searchText.lowercased()) }
 		}
 	}
 
