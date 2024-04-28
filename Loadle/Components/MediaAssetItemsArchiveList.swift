@@ -102,6 +102,7 @@ public struct MediaAssetItemsArchiveList: View {
 			Section {
 				Button(
 					action: {
+						log(.info, "🏁 Start exporting...")
 						isExtracting = true
 
 						Task {
@@ -130,8 +131,10 @@ public struct MediaAssetItemsArchiveList: View {
 								if createZip {
 									let zipFilePath = temp.appendingPathComponent("archive.zip", conformingTo: .zip)
 									try Zip.zipFiles(paths: tempContents, zipFilePath: zipFilePath, password: nil, progress: nil)
+									log(.info, "✅ Finished exporting!")
 									onExtract([zipFilePath])
 								} else {
+									log(.info, "✅ Finished exporting!")
 									onExtract(tempContents)
 								}
 							} catch {

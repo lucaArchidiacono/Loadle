@@ -15,8 +15,11 @@ public final class MetadataService {
 	private init() {}
 
 	public func fetch(using url: URL) async throws -> LPLinkMetadata {
+		log(.info, "🏁 Start fetching LPLinkMetadata using: \(url)")
 		let provider = LPMetadataProvider()
-		return try await provider.startFetchingMetadata(for: url)
+		let result = try await provider.startFetchingMetadata(for: url)
+		log(.info, "✅ Finished fetching LPLinkMetadata with following result: \(result)")
+		return result
 	}
 }
 

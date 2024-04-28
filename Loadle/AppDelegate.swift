@@ -38,3 +38,9 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         }
     }
 }
+
+extension AppDelegate: PurchasesDelegate {
+	func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
+		log(.info, "Received new customer info: \(customerInfo)")
+	}
+}

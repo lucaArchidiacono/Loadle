@@ -12,6 +12,7 @@ import Models
 import LocalStorage
 import Combine
 import Constants
+import Generator
 
 private struct WrappedDownload {
 	let item: DownloadItem
@@ -139,6 +140,7 @@ private actor DownloadStore {
 	}
 
 	public func add(using remoteURL: URL, streamURL: URL, mediaService: MediaService, metadata: LPLinkMetadata) async {
+		log(.info, "🏁 Start adding new Download using: remoteURL -> \(remoteURL); streamURL -> \(streamURL); mediaService -> \(mediaService); metadata -> \(metadata)")
 		let downloadItem = DownloadItem(remoteURL: remoteURL, streamURL: streamURL, service: mediaService, metadata: metadata)
 		let downloadTask = DownloadTask(session: urlSession, url: streamURL)
 		let wrappedDownload = WrappedDownload(item: downloadItem, task: downloadTask)
@@ -149,13 +151,14 @@ private actor DownloadStore {
 			store[wrappedDownload.item.streamURL] = WrappedDownload(item: downloadItem, task: downloadTask)
 
 			downloadTask.resume()
+			log(.info, "✅ Finished adding new Download.")
 		} catch {
 			log(.error, error)
 		}
 	}
 
 	public func delete(using url: URL) async {
-		log(.info, "Is deleting Download.")
+		log(.info, "🏁 Is deleting Download using url: \(url)")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and delete Download with url: \(url)")
 			return
@@ -166,14 +169,14 @@ private actor DownloadStore {
 			wrappedDownload.task.cancel()
 			store.removeValue(forKey: url)
 
-			log(.info, "Deleted Download successfully.")
+			log(.info, "✅ Finished deleting Download.")
 		} catch {
 			log(.error, "Failed to delete Download successfully.")
 		}
 	}
 
 	public func cancel(using url: URL) async {
-		log(.info, "Is cancelling Download.")
+		log(.info, "🏁 Is cancelling Download using url: \(url)")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and cancel Download with url: \(url)")
 			return
@@ -182,11 +185,11 @@ private actor DownloadStore {
 		guard !wrappedDownload.task.isPaused else { return }
 
 		await wrappedDownload.task.pause()
-		log(.info, "Cancelled download successfully.")
+		log(.info, "✅ Finished canelling Download.")
 	}
 
 	public func resume(using url: URL) async {
-		log(.info, "Is resuming Download.")
+		log(.info, "🏁 Is resuming Download using url: \(url)")
 		guard let wrappedDownload = store[url] else {
 			log(.warning, "Was not able to find and resume Download with url: \(url)")
 			return
@@ -195,10 +198,11 @@ private actor DownloadStore {
 		guard wrappedDownload.task.isResumable else { return }
 
 		wrappedDownload.task.resume()
-		log(.info, "Resumed download successfully.")
+		log(.info, "✅ Finished resuming Download.")
 	}
 
 	public func update(using task: URLSessionDownloadTask, newState: URLSessionDownloadDelegateWrapper.State) async -> [DownloadItem] {
+		log(.info, "🏁 Is updating Download using task: \(task)")
 		guard let url = task.originalRequest?.url else { return [] }
 
 		log(.verbose, "New state \(newState) received for url: \(url)")
@@ -240,7 +244,7 @@ private actor DownloadStore {
 				log(.error, error)
 			}
 		case let .failed(error):
-			log(.error, "The download failed due to the following error: \(error)")
+			log(.error, "The Download failed due to the following error: \(error)")
 			let updatedDownloadItem = downloadItem.update(state: .failed)
 			
 			do {
@@ -260,6 +264,7 @@ private actor DownloadStore {
 				log(.error, error)
 			}
 		}
+		log(.info, "✅ Finished updating Download.")
 		return store.values.map { $0.item }
 	}
 }

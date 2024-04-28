@@ -52,7 +52,10 @@ final class DownloadViewModel {
     func startDownload(using url: String) {
 		guard !isLoading else { return }
 
+		log(.info, "🏁 Start downloading using url: \(url)")
+
         guard let url = URL(string: url), UIApplication.shared.canOpenURL(url) else {
+			log(.error, "Can not open the provided url!")
             errorDetails = ErrorDetails(
                 title: L10n.invalidUrlTitle,
                 description: L10n.invalidUrlWrongDescription,
@@ -62,6 +65,7 @@ final class DownloadViewModel {
         }
 
 		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
+			log(.error, "Is an invalid URL which is not supported by the App!")
 			errorDetails = ErrorDetails(
 				title: L10n.invalidUrlTitle,
 				description: L10n.invalidUrlWrongServiceDescription,
@@ -104,8 +108,10 @@ final class DownloadViewModel {
 					videoVimeoDownloadType: UserPreferences.shared.videoVimeoDownloadType)
 				let request = REST.HTTPRequest(host: "co.wuk.sh", path: "/api/json", method: .post, body: REST.JSONBody(cobaltRequest))
 
+				log(.info, "🏁 Start fetching Download URL using request: \(request)")
 				let response = try await REST.Loader.shared.load(using: request)
 				let cobaltResponse: POSTCobaltResponse = try response.decode()
+				log(.info, "✅ Finished fetching Download URL with response: \(response)")
 
 				// If contains picker, then download everything
 				if let streamURL = cobaltResponse.url {
