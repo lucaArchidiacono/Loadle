@@ -81,6 +81,7 @@ public final class MediaAssetService {
 	public func loadAllAssets(for service: MediaService) async -> [MediaAssetItem] {
 		await Storage.MediaAssetItem.readAll(using: service)
 			.compactMap(Self.transform(_:))
+			.sorted(by: { $0.title < $1.title })
 	}
 
 	public func searchFor(title: String) async -> [MediaAssetItem] {

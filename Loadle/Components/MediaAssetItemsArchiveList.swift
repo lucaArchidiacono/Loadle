@@ -31,7 +31,7 @@ public struct MediaAssetItemsArchiveList: View {
 	let onDismiss: () -> Void
 
 	init(selectedMediaAssetItems: Set<MediaAssetItem>, onExtract: @escaping ([URL]) -> Void, onDismiss: @escaping () -> Void) {
-		let selectedMediaAssetItems = Array(selectedMediaAssetItems)
+		let selectedMediaAssetItems = Array(selectedMediaAssetItems).sorted(by: { $0.title < $1.title })
 		self._selectedMediaAssetItems = State(wrappedValue: selectedMediaAssetItems)
 
 		let fileURLs = selectedMediaAssetItems
