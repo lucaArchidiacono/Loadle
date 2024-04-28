@@ -12,9 +12,18 @@ import Generator
 import Models
 
 public struct MediaAssetItemsArchiveList: View {
+	struct Model {
+		let dirName: String
+		var fileName: String
+		let fileExtension: String
+
+		var fullFileName: String {
+			return "\(fileName)\(!fileExtension.isEmpty ? ".\(fileExtension)" : "")"
+		}
+	}
 	@State private var selectedMediaAssetItems: [MediaAssetItem]
 	@State private var selectedFileURLs: Set<URL>
-	@State private var fileNameRegistry: [URL: (String, String)]
+	@State private var fileNameRegistry: [URL: Model]
 	@State private var createZip: Bool = false
 	@State private var isExtracting = false
 
@@ -34,22 +43,25 @@ public struct MediaAssetItemsArchiveList: View {
 
 		let fileNameRegistry = fileURLs
 			.map { ($0.0, $0.1.enumerated().map { ($0.offset, $0.element) }) }
-			.reduce(into: [URL: (String, String)](), { partialResult, tuple in
+			.reduce(into: [URL: Model](), { partialResult, tuple in
 				let (objectIndex, urls) = tuple
 
 				for (urlIndex, url) in urls {
 					let pathExtension = url.pathExtension
 					let dirName = selectedMediaAssetItems[objectIndex].title
+					let fileName: String
 
 					if url.containsImage {
-						partialResult[url] = (dirName, "IMG_\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
+						fileName = "IMG_\(objectIndex)_\(urlIndex)"
 					} else if url.containsMovie {
-						partialResult[url] = (dirName, "MOV_\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
+						fileName = "MOV_\(objectIndex)_\(urlIndex)"
 					} else if url.containsAudio {
-						partialResult[url] = (dirName, "MOV_\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
+						fileName = "AUDIO_\(objectIndex)_\(urlIndex)"
 					} else {
-						partialResult[url] = (dirName, "\(objectIndex)_\(urlIndex)_\(!pathExtension.isEmpty ? ".\(pathExtension)" : "")")
+						fileName = "\(objectIndex)_\(urlIndex)"
 					}
+
+					partialResult[url] = .init(dirName: dirName, fileName: fileName, fileExtension: pathExtension)
 				}
 			})
 		self._fileNameRegistry = State(wrappedValue: fileNameRegistry)
@@ -63,10 +75,11 @@ public struct MediaAssetItemsArchiveList: View {
 			ForEach(selectedMediaAssetItems) { item in
 				Section(item.title) {
 					ForEach(item.fileURLs, id: \.self) { fileURL in
-						let tuple = fileNameRegistry[fileURL]
-
 						SelectionCell(
-							title: tuple?.1 ?? fileURL.absoluteString,
+							title: .init(
+								get: { fileNameRegistry[fileURL]!.fileName },
+								set: { fileNameRegistry[fileURL]!.fileName = $0 }
+							),
 							fileURL: fileURL,
 							isSelected: selectedFileURLs.contains(fileURL)) {
 								if selectedFileURLs.contains(fileURL) {
@@ -101,15 +114,15 @@ public struct MediaAssetItemsArchiveList: View {
 								try FileManager.default.createDirectory(at: exports, withIntermediateDirectories: true)
 
 								for selectedFileURL in selectedFileURLs {
-									guard let (dirName, fileName) = fileNameRegistry[selectedFileURL] else { return }
-									
-									let exportsInnerDir = exports.appendingPathComponent(dirName, conformingTo: .directory)
+									guard let model = fileNameRegistry[selectedFileURL] else { return }
+
+									let exportsInnerDir = exports.appendingPathComponent(model.dirName, conformingTo: .directory)
 
 									if !FileManager.default.fileExists(atPath: exportsInnerDir.path) {
 										try FileManager.default.createDirectory(at: exportsInnerDir, withIntermediateDirectories: true)
 									}
 
-									try FileManager.default.copyItem(at: selectedFileURL, to: exportsInnerDir.appendingPathComponent(fileName, conformingTo: .fileURL))
+									try FileManager.default.copyItem(at: selectedFileURL, to: exportsInnerDir.appendingPathComponent(model.fullFileName, conformingTo: .fileURL))
 								}
 
 								let tempContents = try FileManager.default.contentsOfDirectory(at: exports, includingPropertiesForKeys: nil)
@@ -166,7 +179,8 @@ import AVFoundation
 import Logger
 
 private struct SelectionCell: View {
-	let title: String
+	@Binding var title: String
+
 	let fileURL: URL
 	let isSelected: Bool
 	let onTap: () -> Void
@@ -175,16 +189,27 @@ private struct SelectionCell: View {
 
 	var body: some View {
 		HStack {
-			if isSelected {
-				Image(systemName: "checkmark.circle.fill")
-					.foregroundColor(.accentColor)
-			} else {
-				Image(systemName: "circle")
+			Group {
+				if isSelected {
+					Image(systemName: "checkmark.circle.fill")
+						.foregroundColor(.accentColor)
+				} else {
+					Image(systemName: "circle")
+				}
+			}
+			.contentShape(.interaction, Circle())
+			.onTapGesture {
+				onTap()
 			}
 
-			Text(title)
+			TextField(title, text: $title)
+				.autocorrectionDisabled()
+				.padding()
+				.background(.thickMaterial)
+				.clipShape(RoundedRectangle(cornerRadius: 10))
+
 			Spacer()
-			
+
 			ZStack {
 				if let artwork {
 					Image(uiImage: artwork)
@@ -216,10 +241,6 @@ private struct SelectionCell: View {
 			.frame(width: 60, height: 60)
 			.clipShape(RoundedRectangle(cornerRadius: 8))
 			.clipped()
-		}
-		.contentShape(.interaction, Rectangle())
-		.onTapGesture {
-			onTap()
 		}
 		.task {
 			if fileURL.containsMovie {
