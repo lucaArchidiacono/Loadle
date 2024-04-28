@@ -37,6 +37,37 @@ struct ContentView: View {
 					currentSize = newValue
 				}
 		}
+		.onChange(of: viewModel.state) { (oldState, newState) in
+			switch newState {
+			case .default:
+				break
+			case .selectedSingleMediaAssetItem:
+				viewModel.isArchivingSheetPresented = true
+			case .presentedArchivingSheet:
+				break
+			case .dismissedArchivingSheet:
+				viewModel.isArchivingSheetPresented = false
+			case .createdArchives:
+				viewModel.isArchivingSheetPresented = false
+
+				Task {
+					try? await Task.sleep(for: .milliseconds(1))
+
+					let activityController = UIActivityViewController(activityItems: viewModel.archives, applicationActivities: nil)
+					UIApplication.shared
+						.connectedScenes
+						.compactMap { $0 as? UIWindowScene }
+						.first?
+						.keyWindow?
+						.rootViewController?
+						.present(activityController, animated: true)
+				}
+			case .presentedSearchingViaText:
+				break
+			case .dismissedSearchingViaText:
+				break
+			}
+		}
 		.onAppear {
 			if preferences.showOnboarding {
 				router.presented = .onboarding
@@ -134,37 +165,6 @@ struct ContentView: View {
 				self.viewModel.state = .createdArchives
 			} onDismiss: {
 				self.viewModel.state = .dismissedArchivingSheet
-			}
-		}
-		.onChange(of: viewModel.state) { (oldState, newState) in
-			switch newState {
-			case .default:
-				break
-			case .selectedSingleMediaAssetItem:
-				viewModel.isArchivingSheetPresented = true
-			case .presentedArchivingSheet:
-				break
-			case .dismissedArchivingSheet:
-				viewModel.isArchivingSheetPresented = false
-			case .createdArchives:
-				viewModel.isArchivingSheetPresented = false
-
-				Task {
-					try? await Task.sleep(for: .milliseconds(1))
-
-					let activityController = UIActivityViewController(activityItems: viewModel.archives, applicationActivities: nil)
-					UIApplication.shared
-						.connectedScenes
-						.compactMap { $0 as? UIWindowScene }
-						.first?
-						.keyWindow?
-						.rootViewController?
-						.present(activityController, animated: true)
-				}
-			case .presentedSearchingViaText:
-				break
-			case .dismissedSearchingViaText:
-				break
 			}
 		}
 	}
