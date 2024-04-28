@@ -6,6 +6,13 @@
 //
 
 public enum Constants {
+	public enum InApp {
+		public static let apiKey = "appl_NUGLwtWxjLDfZSQDLrlxYipQxeG"
+		public static let entitlementID = "Plus"
+	}
+	public enum Downloads {
+		public static let identifier: String = "io.lucaa.Environment.Service.Download"
+	}
     public enum Notifications {
         public static let download: String = "io.lucaa.Constants.Notifications.Download"
     }
@@ -47,4 +54,5 @@ public enum Constants {
 		case vkVideos = "vk.com"
 		case youtube = "youtube.com"
 	}
+
 }

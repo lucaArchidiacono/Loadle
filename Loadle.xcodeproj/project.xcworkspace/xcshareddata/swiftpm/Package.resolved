@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "purchases-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RevenueCat/purchases-ios.git",
+      "state" : {
+        "revision" : "9f46bb70940087ec9a95b1e9288710bb439549d8",
+        "version" : "4.41.1"
+      }
+    },
+    {
       "identity" : "sqlite.swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/stephencelis/SQLite.swift.git",
@@ -52,15 +61,6 @@
       "state" : {
         "revision" : "879b85a470cacd70c19e22eb7e11a3aed66f4068",
         "version" : "6.6.2"
-      }
-    },
-    {
-      "identity" : "welcome-sheet",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/MAJKFL/Welcome-Sheet",
-      "state" : {
-        "branch" : "main",
-        "revision" : "93332013d3253bcf0f748a008400d542fb9c9c3e"
       }
     },
     {

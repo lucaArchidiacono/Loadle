@@ -11,6 +11,7 @@ import Logger
 import Models
 import LocalStorage
 import Combine
+import Constants
 
 private struct WrappedDownload {
 	let item: DownloadItem
@@ -264,8 +265,6 @@ private actor DownloadStore {
 }
 
 public class DownloadService: NSObject {
-	private static var identifier: String = "io.lucaa.Environment.Service.Download"
-	
 	private let delegate: URLSessionDownloadDelegateWrapper = URLSessionDownloadDelegateWrapper()
 	private let store: DownloadStore
 	private let downloadSession: URLSession
@@ -291,7 +290,7 @@ public class DownloadService: NSObject {
     public static let shared = DownloadService()
 
 	public override init() {
-		let config = URLSessionConfiguration.background(withIdentifier: Self.identifier)
+		let config = URLSessionConfiguration.background(withIdentifier: Constants.Downloads.identifier)
 		config.sessionSendsLaunchEvents = true
 		config.allowsCellularAccess = true
 		self.downloadSession = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)

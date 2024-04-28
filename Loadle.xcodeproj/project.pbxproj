@@ -56,6 +56,9 @@
 		5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A3E2B7CC2A9000307C1 /* Models */; };
 		5CDA8C4E2BDE5CBE009E6EAA /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */; };
 		5CDA8C502BDE6027009E6EAA /* CloseToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */; };
+		5CDA8C532BDE7536009E6EAA /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDA8C522BDE7536009E6EAA /* RevenueCat */; };
+		5CDA8C552BDE7536009E6EAA /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDA8C542BDE7536009E6EAA /* RevenueCatUI */; };
+		5CDA8C572BDE75F5009E6EAA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CDA8C562BDE75F5009E6EAA /* StoreKit.framework */; };
 		5CF4D5C52BA8D4E80000F754 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF4D5C42BA8D4E80000F754 /* Zip */; };
 		5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCA2B790D660051E49D /* SettingsDestination.swift */; };
 		5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */; };
@@ -128,6 +131,7 @@
 		5CCA9A3D2B7CBA16000307C1 /* Generator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Generator; sourceTree = "<group>"; };
 		5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseToolbar.swift; sourceTree = "<group>"; };
+		5CDA8C562BDE75F5009E6EAA /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		5CF59DCA2B790D660051E49D /* SettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDestination.swift; sourceTree = "<group>"; };
 		5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbar.swift; sourceTree = "<group>"; };
 		5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceDestination.swift; sourceTree = "<group>"; };
@@ -145,11 +149,14 @@
 			files = (
 				5CA1BADB2BB453C100A7CA15 /* Nuke in Frameworks */,
 				5CF4D5C52BA8D4E80000F754 /* Zip in Frameworks */,
+				5CDA8C532BDE7536009E6EAA /* RevenueCat in Frameworks */,
+				5CDA8C572BDE75F5009E6EAA /* StoreKit.framework in Frameworks */,
 				5CCA9A3B2B7CB826000307C1 /* Environments in Frameworks */,
 				5CC83DAD2B6FDBD7005948C1 /* REST in Frameworks */,
 				5CCA9A322B7C9B05000307C1 /* Constants in Frameworks */,
 				5C06E16E2B8E8E5200F94F79 /* LocalStorage in Frameworks */,
 				5CC83DAA2B6FD995005948C1 /* Fundamentals in Frameworks */,
+				5CDA8C552BDE7536009E6EAA /* RevenueCatUI in Frameworks */,
 				5C2E74DD2BDBA15100322A40 /* BottomSheet in Frameworks */,
 				5CA1BAE12BB453C100A7CA15 /* NukeVideo in Frameworks */,
 				5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */,
@@ -276,6 +283,7 @@
 		5C5BB9672B5E64C300ABB76C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				5CDA8C562BDE75F5009E6EAA /* StoreKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -400,6 +408,8 @@
 				5CA1BADE2BB453C100A7CA15 /* NukeUI */,
 				5CA1BAE02BB453C100A7CA15 /* NukeVideo */,
 				5C2E74DC2BDBA15100322A40 /* BottomSheet */,
+				5CDA8C522BDE7536009E6EAA /* RevenueCat */,
+				5CDA8C542BDE7536009E6EAA /* RevenueCatUI */,
 			);
 			productName = Loadle;
 			productReference = 5C5BB9502B5E63D300ABB76C /* Loadle.app */;
@@ -432,10 +442,10 @@
 			mainGroup = 5C5BB9472B5E63D300ABB76C;
 			packageReferences = (
 				5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */,
-				5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */,
 				5CF4D5C32BA8D4E80000F754 /* XCRemoteSwiftPackageReference "Zip" */,
 				5CA1BAD92BB453C100A7CA15 /* XCRemoteSwiftPackageReference "Nuke" */,
 				5C2E74DB2BDBA15000322A40 /* XCRemoteSwiftPackageReference "BottomSheet" */,
+				5CDA8C512BDE7536009E6EAA /* XCRemoteSwiftPackageReference "purchases-ios" */,
 			);
 			productRefGroup = 5C5BB9512B5E63D300ABB76C /* Products */;
 			projectDirPath = "";
@@ -757,14 +767,6 @@
 				kind = branch;
 			};
 		};
-		5C6591872BA35F9000619CB9 /* XCRemoteSwiftPackageReference "Welcome-Sheet" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/MAJKFL/Welcome-Sheet";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		5C6CF9F02B9F69F5005C7F42 /* XCRemoteSwiftPackageReference "swift-async-queue" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/dfed/swift-async-queue";
@@ -779,6 +781,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 12.5.0;
+			};
+		};
+		5CDA8C512BDE7536009E6EAA /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.41.1;
 			};
 		};
 		5CF4D5C32BA8D4E80000F754 /* XCRemoteSwiftPackageReference "Zip" */ = {
@@ -844,6 +854,16 @@
 		5CCA9A3E2B7CC2A9000307C1 /* Models */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Models;
+		};
+		5CDA8C522BDE7536009E6EAA /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDA8C512BDE7536009E6EAA /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
+		5CDA8C542BDE7536009E6EAA /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5CDA8C512BDE7536009E6EAA /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCatUI;
 		};
 		5CF4D5C42BA8D4E80000F754 /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
