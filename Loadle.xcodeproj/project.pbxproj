@@ -120,7 +120,6 @@
 		5CB923512B716B730032B49C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadItemSectionView.swift; sourceTree = "<group>"; };
 		5CB923592B7170310032B49C /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
-		5CB923722B72D6CE0032B49C /* base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = base; path = Localisation/base.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5CB923762B72D6EA0032B49C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = Localisation/en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		5CC83DAB2B6FD9E3005948C1 /* REST */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = REST; sourceTree = "<group>"; };
 		5CC83DAE2B6FE883005948C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -436,7 +435,6 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				base,
 			);
 			mainGroup = 5C5BB9472B5E63D300ABB76C;
@@ -522,7 +520,6 @@
 		5CB923712B72D6CE0032B49C /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5CB923722B72D6CE0032B49C /* base */,
 				5CB923762B72D6EA0032B49C /* en */,
 			);
 			name = InfoPlist.strings;
