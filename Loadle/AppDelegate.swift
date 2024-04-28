@@ -19,7 +19,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 		NotificationService.shared.checkForPermissions()
 		
 		Purchases.logLevel = .debug
-		Purchases.configure(withAPIKey: Constants.InApp.apiKey)
+		Purchases.configure(
+			with: Configuration.builder(withAPIKey: Constants.InApp.apiKey)
+				.build()
+		)
 
         return true
     }
