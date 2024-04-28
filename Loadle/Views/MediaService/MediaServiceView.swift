@@ -107,6 +107,8 @@ struct MediaServiceView: View {
 			MediaAssetItemsArchiveList(selectedMediaAssetItems: viewModel.selectedMediaAssetItems) { archives in
 				self.viewModel.archives = archives
 				self.viewModel.state = .createdArchives
+			} onDismiss: {
+				self.viewModel.state = .dismissedArchivingSheet
 			}
 		}
 		.onChange(of: viewModel.state) { (oldValue, newValue) in
@@ -118,7 +120,7 @@ struct MediaServiceView: View {
 			case .presentedArchivingSheet:
 				break
 			case .dismissedArchivingSheet:
-				break
+				viewModel.isArchivingSheetPresented = false
 			case .createdArchives:
 				self.viewModel.isArchivingSheetPresented = false
 

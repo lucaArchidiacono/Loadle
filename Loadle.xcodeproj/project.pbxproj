@@ -54,6 +54,8 @@
 		5CCA9A322B7C9B05000307C1 /* Constants in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A312B7C9B05000307C1 /* Constants */; };
 		5CCA9A3B2B7CB826000307C1 /* Environments in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A3A2B7CB826000307C1 /* Environments */; };
 		5CCA9A3F2B7CC2A9000307C1 /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = 5CCA9A3E2B7CC2A9000307C1 /* Models */; };
+		5CDA8C4E2BDE5CBE009E6EAA /* CloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */; };
+		5CDA8C502BDE6027009E6EAA /* CloseToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */; };
 		5CF4D5C52BA8D4E80000F754 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF4D5C42BA8D4E80000F754 /* Zip */; };
 		5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCA2B790D660051E49D /* SettingsDestination.swift */; };
 		5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */; };
@@ -124,6 +126,8 @@
 		5CCA9A392B7CB7C4000307C1 /* Environments */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Environments; sourceTree = "<group>"; };
 		5CCA9A3C2B7CB8C1000307C1 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Models; sourceTree = "<group>"; };
 		5CCA9A3D2B7CBA16000307C1 /* Generator */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Generator; sourceTree = "<group>"; };
+		5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
+		5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseToolbar.swift; sourceTree = "<group>"; };
 		5CF59DCA2B790D660051E49D /* SettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDestination.swift; sourceTree = "<group>"; };
 		5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbar.swift; sourceTree = "<group>"; };
 		5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceDestination.swift; sourceTree = "<group>"; };
@@ -182,6 +186,7 @@
 				5C06E1432B86140600F94F79 /* AddToolbar.swift */,
 				5C06E1492B86530900F94F79 /* DoneToolbar.swift */,
 				5C06E14B2B86539400F94F79 /* CancelToolbar.swift */,
+				5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */,
 			);
 			path = Toolbars;
 			sourceTree = "<group>";
@@ -309,6 +314,7 @@
 				5C06E14D2B86563800F94F79 /* SelectionButton.swift */,
 				5C6CF9F32BA03F10005C7F42 /* MediaAssetItemSectionView.swift */,
 				5C2E74DE2BDBE87D00322A40 /* MediaAssetItemsArchiveList.swift */,
+				5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -459,6 +465,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */,
+				5CDA8C502BDE6027009E6EAA /* CloseToolbar.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */,
 				5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */,
 				5C4815522B78D09700381627 /* DownloadView.swift in Sources */,
@@ -468,6 +475,7 @@
 				5C48154D2B766DF900381627 /* MailComposerView.swift in Sources */,
 				5CF59DD62B7925550051E49D /* MediaServiceView.swift in Sources */,
 				5C4815542B78D09E00381627 /* DownloadViewModel.swift in Sources */,
+				5CDA8C4E2BDE5CBE009E6EAA /* CloseButton.swift in Sources */,
 				5C06E14C2B86539400F94F79 /* CancelToolbar.swift in Sources */,
 				5C35A1CF2BAA112A00F256E8 /* MediaPlayerDestination.swift in Sources */,
 				5C06E14A2B86530900F94F79 /* DoneToolbar.swift in Sources */,

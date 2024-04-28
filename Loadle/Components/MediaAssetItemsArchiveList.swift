@@ -19,8 +19,9 @@ public struct MediaAssetItemsArchiveList: View {
 	@State private var isExtracting = false
 
 	let onExtract: ([URL]) -> Void
+	let onDismiss: () -> Void
 
-	init(selectedMediaAssetItems: Set<MediaAssetItem>, onExtract: @escaping ([URL]) -> Void) {
+	init(selectedMediaAssetItems: Set<MediaAssetItem>, onExtract: @escaping ([URL]) -> Void, onDismiss: @escaping () -> Void) {
 		let selectedMediaAssetItems = Array(selectedMediaAssetItems)
 		self._selectedMediaAssetItems = State(wrappedValue: selectedMediaAssetItems)
 
@@ -54,6 +55,7 @@ public struct MediaAssetItemsArchiveList: View {
 		self._fileNameRegistry = State(wrappedValue: fileNameRegistry)
 
 		self.onExtract = onExtract
+		self.onDismiss = onDismiss
 	}
 
 	public var body: some View {
@@ -149,7 +151,12 @@ public struct MediaAssetItemsArchiveList: View {
 				Text(L10n.archiving)
 					.font(.title)
 					.bold()
-					.padding([.leading, .top])
+					.padding([.leading, .top, .bottom])
+			}
+
+			ToolbarItem(placement: .topBarTrailing) {
+				CloseButton(action: onDismiss)
+					.padding([.leading, .top, .bottom])
 			}
 		}
 	}
