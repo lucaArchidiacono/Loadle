@@ -190,6 +190,9 @@ struct ContentView: View {
 			SettingsToolbar(placement: .topBarLeading) {
 				router.presented = .settings
 			}
+			InfoToolbar(placement: .topBarLeading) {
+				router.presented = .info
+			}
 			AddToolbar(placement: .topBarTrailing) {
 				#if os(visionOS)
 				openWindow(id: "Download")
@@ -221,4 +224,5 @@ struct ContentView: View {
 #Preview {
 	ContentView(router: .constant(Router()), currentSize: .constant(.zero))
         .environmentObject(UserPreferences.shared)
+		.environment(AppState.shared)
 }

@@ -39,6 +39,9 @@
 		5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C6CF9F32BA03F10005C7F42 /* MediaAssetItemSectionView.swift */; };
 		5C74C0C62BADE3CC0040C471 /* AVPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C74C0C52BADE3CC0040C471 /* AVPlayerView.swift */; };
 		5C823BB42BDFE5950027B635 /* StoreKitTestCertificate.cer in Resources */ = {isa = PBXBuildFile; fileRef = 5C823BB32BDFE5950027B635 /* StoreKitTestCertificate.cer */; };
+		5C823BB62BDFFBAE0027B635 /* InfoToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C823BB52BDFFBAE0027B635 /* InfoToolbar.swift */; };
+		5C823BB82BDFFC2E0027B635 /* InfoDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C823BB72BDFFC2E0027B635 /* InfoDestination.swift */; };
+		5C823BBB2BDFFC630027B635 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C823BBA2BDFFC630027B635 /* InfoView.swift */; };
 		5CA1BADB2BB453C100A7CA15 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADA2BB453C100A7CA15 /* Nuke */; };
 		5CA1BADD2BB453C100A7CA15 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADC2BB453C100A7CA15 /* NukeExtensions */; };
 		5CA1BADF2BB453C100A7CA15 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5CA1BADE2BB453C100A7CA15 /* NukeUI */; };
@@ -119,6 +122,9 @@
 		5C74C0C52BADE3CC0040C471 /* AVPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVPlayerView.swift; sourceTree = "<group>"; };
 		5C7ADFB52B613A7C00B810C7 /* Fundamentals */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Fundamentals; sourceTree = "<group>"; };
 		5C823BB32BDFE5950027B635 /* StoreKitTestCertificate.cer */ = {isa = PBXFileReference; lastKnownFileType = file; path = StoreKitTestCertificate.cer; sourceTree = "<group>"; };
+		5C823BB52BDFFBAE0027B635 /* InfoToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoToolbar.swift; sourceTree = "<group>"; };
+		5C823BB72BDFFC2E0027B635 /* InfoDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoDestination.swift; sourceTree = "<group>"; };
+		5C823BBA2BDFFC630027B635 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		5CA1BAEC2BB465F600A7CA15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5CB923512B716B730032B49C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5CB923562B716DE00032B49C /* DownloadItemSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadItemSectionView.swift; sourceTree = "<group>"; };
@@ -199,6 +205,7 @@
 				5C06E1492B86530900F94F79 /* DoneToolbar.swift */,
 				5C06E14B2B86539400F94F79 /* CancelToolbar.swift */,
 				5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */,
+				5C823BB52BDFFBAE0027B635 /* InfoToolbar.swift */,
 			);
 			path = Toolbars;
 			sourceTree = "<group>";
@@ -305,9 +312,18 @@
 			path = Routing;
 			sourceTree = "<group>";
 		};
+		5C823BB92BDFFC5A0027B635 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				5C823BBA2BDFFC630027B635 /* InfoView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
 		5CB923532B716CBC0032B49C /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5C823BB92BDFFC5A0027B635 /* Info */,
 				5C018FD52BA4950900836328 /* Onboarding */,
 				5C0643F62B937E4B00C3D3D0 /* MediaPlayer */,
 				5CF59DD42B7925470051E49D /* MediaService */,
@@ -352,6 +368,7 @@
 				5CF59DD82B7956990051E49D /* Destination.swift */,
 				5C018FD32BA494F300836328 /* OnboardingDestination.swift */,
 				5C35A1CE2BAA112A00F256E8 /* MediaPlayerDestination.swift */,
+				5C823BB72BDFFC2E0027B635 /* InfoDestination.swift */,
 			);
 			path = Destinations;
 			sourceTree = "<group>";
@@ -501,6 +518,7 @@
 				5C6CF9F42BA03F10005C7F42 /* MediaAssetItemSectionView.swift in Sources */,
 				5CC83DAF2B6FE883005948C1 /* AppDelegate.swift in Sources */,
 				5CF59DD32B7925040051E49D /* MediaServiceDestination.swift in Sources */,
+				5C823BB62BDFFBAE0027B635 /* InfoToolbar.swift in Sources */,
 				5C018FD72BA4951200836328 /* OnboardingView.swift in Sources */,
 				5C48154F2B7686A800381627 /* ErrorView.swift in Sources */,
 				5C4815452B7665C700381627 /* iOSCheckBoxToggleStyle.swift in Sources */,
@@ -508,6 +526,7 @@
 				5C06E1702B8F77C400F94F79 /* MediaServiceViewModel.swift in Sources */,
 				5C6591822BA2EA2900619CB9 /* ContentViewModel.swift in Sources */,
 				5C5C7D2C2B73EA9100C34933 /* Router.swift in Sources */,
+				5C823BBB2BDFFC630027B635 /* InfoView.swift in Sources */,
 				5C74C0C62BADE3CC0040C471 /* AVPlayerView.swift in Sources */,
 				5C06E14E2B86563800F94F79 /* SelectionButton.swift in Sources */,
 				5C46621E2B7C0D9300779BBE /* AssetItemSectionView.swift in Sources */,
@@ -518,6 +537,7 @@
 				5C06E1472B86384700F94F79 /* SettingsViewModel.swift in Sources */,
 				5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */,
 				5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */,
+				5C823BB82BDFFC2E0027B635 /* InfoDestination.swift in Sources */,
 				5C2E74DA2BDB9C0600322A40 /* ButtonStyles.swift in Sources */,
 				5CF0B77C2BDF6A68007EC6F5 /* AppState.swift in Sources */,
 				5CF0B7802BDF74E2007EC6F5 /* SubscriptionSectionView.swift in Sources */,

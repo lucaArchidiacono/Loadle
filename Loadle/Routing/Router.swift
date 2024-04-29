@@ -21,11 +21,14 @@ enum SheetDestination: Hashable, Identifiable {
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
 	case onboarding
 	case paywall
+	case info
 
     var id: String {
         switch self {
 		case .onboarding:
 			return "onboarding"
+		case .info:
+			return "info"
         case .download:
             return "download"
         case .settings:

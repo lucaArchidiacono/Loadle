@@ -35,6 +35,8 @@ extension View {
             MailComposerView(emailData: emailData, result: result)
 		case .paywall:
 			PaywallView(displayCloseButton: true)
+		case .info:
+			InfoDestination()
         }
     }
 
