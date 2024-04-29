@@ -78,13 +78,6 @@ struct ContentView: View {
 			}
 		}
 		.environment(router)
-		.task {
-			let hasEntitlement = await appState.checkEntitlement()
-			
-			if !hasEntitlement {
-				router.presented = .paywall
-			}
-		}
     }
 
     @ViewBuilder
