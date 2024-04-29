@@ -58,7 +58,7 @@
 		5CDA8C532BDE7536009E6EAA /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDA8C522BDE7536009E6EAA /* RevenueCat */; };
 		5CDA8C552BDE7536009E6EAA /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 5CDA8C542BDE7536009E6EAA /* RevenueCatUI */; };
 		5CDA8C572BDE75F5009E6EAA /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CDA8C562BDE75F5009E6EAA /* StoreKit.framework */; };
-		5CDA8C592BDEB395009E6EAA /* Context.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CDA8C582BDEB395009E6EAA /* Context.swift */; };
+		5CF0B77C2BDF6A68007EC6F5 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF0B77B2BDF6A68007EC6F5 /* AppState.swift */; };
 		5CF4D5C52BA8D4E80000F754 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = 5CF4D5C42BA8D4E80000F754 /* Zip */; };
 		5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DCA2B790D660051E49D /* SettingsDestination.swift */; };
 		5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */; };
@@ -130,7 +130,7 @@
 		5CDA8C4D2BDE5CBE009E6EAA /* CloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseButton.swift; sourceTree = "<group>"; };
 		5CDA8C4F2BDE6027009E6EAA /* CloseToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseToolbar.swift; sourceTree = "<group>"; };
 		5CDA8C562BDE75F5009E6EAA /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		5CDA8C582BDEB395009E6EAA /* Context.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Context.swift; sourceTree = "<group>"; };
+		5CF0B77B2BDF6A68007EC6F5 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		5CF59DCA2B790D660051E49D /* SettingsDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsDestination.swift; sourceTree = "<group>"; };
 		5CF59DD02B79124C0051E49D /* SettingsToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsToolbar.swift; sourceTree = "<group>"; };
 		5CF59DD22B7925040051E49D /* MediaServiceDestination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaServiceDestination.swift; sourceTree = "<group>"; };
@@ -246,12 +246,12 @@
 				5C5BB9532B5E63D300ABB76C /* LoadleApp.swift */,
 				5C5BB9552B5E63D300ABB76C /* ContentView.swift */,
 				5C6591812BA2EA2900619CB9 /* ContentViewModel.swift */,
+				5CF0B77B2BDF6A68007EC6F5 /* AppState.swift */,
 				5C5BB9592B5E63D400ABB76C /* Assets.xcassets */,
 				5C5BB95B2B5E63D400ABB76C /* Loadle.entitlements */,
 				5C5BB95F2B5E63D400ABB76C /* Info.plist */,
 				5CB923712B72D6CE0032B49C /* InfoPlist.strings */,
 				5C5BB95C2B5E63D400ABB76C /* Preview Content */,
-				5CDA8C582BDEB395009E6EAA /* Context.swift */,
 			);
 			path = Loadle;
 			sourceTree = "<group>";
@@ -475,7 +475,6 @@
 				5CB9235A2B7170310032B49C /* ProgressBar.swift in Sources */,
 				5CDA8C502BDE6027009E6EAA /* CloseToolbar.swift in Sources */,
 				5CB923572B716DE00032B49C /* DownloadItemSectionView.swift in Sources */,
-				5CDA8C592BDEB395009E6EAA /* Context.swift in Sources */,
 				5C06E1442B86140600F94F79 /* AddToolbar.swift in Sources */,
 				5C4815522B78D09700381627 /* DownloadView.swift in Sources */,
 				5C4815592B78D8A200381627 /* DownloadDestination.swift in Sources */,
@@ -509,6 +508,7 @@
 				5CF59DD12B79124C0051E49D /* SettingsToolbar.swift in Sources */,
 				5CF59DCB2B790D660051E49D /* SettingsDestination.swift in Sources */,
 				5C2E74DA2BDB9C0600322A40 /* ButtonStyles.swift in Sources */,
+				5CF0B77C2BDF6A68007EC6F5 /* AppState.swift in Sources */,
 				5C5C7D2E2B73EB0B00C34933 /* AppRouting.swift in Sources */,
 				5C5BB9542B5E63D300ABB76C /* LoadleApp.swift in Sources */,
 			);
