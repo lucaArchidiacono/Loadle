@@ -38,6 +38,7 @@ struct SettingsView: View {
 
     @EnvironmentObject private var preferences: UserPreferences
     @Environment(Router.self) private var router: Router
+	@Environment(AppState.self) private var appState
 
     @State private var viewModel: SettingsViewModel = .init()
     @State private var selected: Segment = .video
