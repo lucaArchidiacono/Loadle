@@ -8,6 +8,8 @@
 
 "app_title" = "Loadle";
 
+"app_product_plus" = "Plus";
+"app_product" = "Product";
 "app_subscription" = "Loadle Plus";
 "app_subscription_banner_description" = "Unlock all features and get access to multiple social media services";
 "app_subscription_banner_button_title" = "Get Loadle Plus";
