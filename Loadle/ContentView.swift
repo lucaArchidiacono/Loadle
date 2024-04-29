@@ -11,6 +11,9 @@ import Logger
 import Models
 import SwiftUI
 import BottomSheet
+import RevenueCat
+import RevenueCatUI
+import Constants
 
 struct ContentView: View {
 	@Environment(\.colorScheme) var colorScheme
@@ -74,6 +77,15 @@ struct ContentView: View {
 				router.presented = .onboarding
 			}
 		}
+		.presentPaywallIfNeeded(
+			requiredEntitlementIdentifier: Constants.InApp.entitlementID,
+			purchaseCompleted: { customerInfo in
+				log(.info, "Purchase compelted: \(customerInfo.entitlements)")
+			},
+			restoreCompleted: { customerInfo in
+				log(.info, "Purchase restored: \(customerInfo.entitlements)")
+			}
+		)
 		.environment(router)
     }
 
