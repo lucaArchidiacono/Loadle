@@ -45,6 +45,7 @@
 
 "audio" = "Audio";
 "video" = "Video";
+"image" = "Image";
 "other" = "Other";
 "ok" = "Ok";
 
@@ -54,6 +55,8 @@
 
 "best" = "Best";
 "max" = "Max";
+
+"info" = "Info";
 
 "original" = "Original";
 "auto" = "Auto";

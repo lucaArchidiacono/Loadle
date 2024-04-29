@@ -12,7 +12,15 @@ import Models
 import Generator
 
 struct InfoView: View {
-	private static var header = ["Service", "Video/Audio", "Audio", "Video", "Metadata"]
+	@Environment(Router.self	) private var router: Router
+
+	private static var header = [
+		L10n.mediaServicesTitle,
+		L10n.video + "/" + L10n.audio,
+		L10n.audio,
+		L10n.video, 
+		L10n.image
+	]
 
 	private static var services = [
 		["Bilibili.com & Bilibili.tv", "✅", "✅", "✅", "➖"],
@@ -47,6 +55,7 @@ struct InfoView: View {
 	var body: some View {
 		ScrollView(.vertical) {
 			Grid(alignment: .leadingFirstTextBaseline) {
+				Divider()
 				GridRow {
 					ForEach(Self.header, id: \.self) { header in
 						Text(header)
@@ -66,10 +75,20 @@ struct InfoView: View {
 					Divider()
 				}
 			}
+			.padding()
 		}
+		.toolbar {
+			DoneToolbar(placement: .topBarTrailing) {
+				router.dismiss()
+			}
+		}
+		.navigationTitle(L10n.info)
 	}
 }
 
 #Preview {
-	InfoView()
+	NavigationView {
+		InfoView()
+			.environment(Router())
+	}
 }
