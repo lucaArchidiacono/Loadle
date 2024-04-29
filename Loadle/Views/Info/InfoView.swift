@@ -18,29 +18,60 @@ struct InfoView: View {
 		L10n.mediaServicesTitle,
 		L10n.video + "/" + L10n.audio,
 		L10n.audio,
-		L10n.video, 
-		L10n.image
+		L10n.video,
+		L10n.image,
+		L10n.appProductPlus
 	]
 
 	private static var services = [
-		["Bilibili.com & Bilibili.tv", "✅", "✅", "✅", "➖"],
-		["Instagram Posts & Stories", "✅", "✅", "✅", "➖"],
-		["Instagram Reels", "✅", "✅", "✅", "➖"],
-		["OK Video", "✅", "❌", "❌", "✅"],
-		["Pinterest", "✅", "✅", "✅", "➖"],
-		["Reddit", "✅", "✅", "✅", "❌"],
-		["Rutube", "✅", "✅", "✅", "✅"],
-		["Soundcloud", "➖", "✅", "➖", "✅"],
-		["Streamable", "✅", "✅", "✅", "➖"],
-		["Tiktok", "✅", "✅", "✅", "❌"],
-		["Tumblr", "✅", "✅", "✅", "➖"],
-		["Twitch Clips", "✅", "✅", "✅", "✅"],
-		["Twitter/X", "✅", "✅", "✅", "➖"],
-		["Vimeo", "✅", "✅", "✅", "✅"],
-		["Vine Archive", "✅", "✅", "✅", "➖"],
-		["VK Videos & Clips", "✅", "❌", "❌", "✅"],
-		["Youtube Videos, Shorts & Music", "✅", "✅", "✅", "✅"]
+		MediaService.bilibili: ["Bilibili.com & Bilibili.tv", "✅", "✅", "✅", "➖"],
+		MediaService.instagram: ["Instagram Reels & Posts & Stories", "✅", "✅", "✅", "➖"],
+		MediaService.okVideo: ["OK Video", "✅", "❌", "❌", "✅"],
+		MediaService.pinterest: ["Pinterest", "✅", "✅", "✅", "➖"],
+		MediaService.reddit: ["Reddit", "✅", "✅", "✅", "❌"],
+		MediaService.rutube: ["Rutube", "✅", "✅", "✅", "✅"],
+		MediaService.soundcloud: ["Soundcloud", "➖", "✅", "➖", "✅"],
+		MediaService.streamable: ["Streamable", "✅", "✅", "✅", "➖"],
+		MediaService.tiktok: ["Tiktok", "✅", "✅", "✅", "❌"],
+		MediaService.tumblr: ["Tumblr", "✅", "✅", "✅", "➖"],
+		MediaService.twitch: ["Twitch Clips", "✅", "✅", "✅", "✅"],
+		MediaService.twitter: ["Twitter/X", "✅", "✅", "✅", "➖"],
+		MediaService.vimeo: ["Vimeo", "✅", "✅", "✅", "✅"],
+		MediaService.vine: ["Vine Archive", "✅", "✅", "✅", "➖"],
+		MediaService.vkVideos: ["VK Videos & Clips", "✅", "❌", "❌", "✅"],
+		MediaService.youtube: ["Youtube Videos, Shorts & Music", "✅", "✅", "✅", "✅"]
 	]
+
+	private static var plusServices: [MediaService: [String]] {
+		return services
+			.reduce(into: [MediaService: [String]]()) { partialResult, tuple in
+				let (key, array) = tuple
+				guard MediaService.plusServices.contains(key) else { return }
+				partialResult[key] = array
+				partialResult[key]?.append("✅")
+			}
+	}
+
+	private static var freeServices: [MediaService: [String]] {
+		return services
+			.reduce(into: [MediaService: [String]]()) { partialResult, tuple in
+				let (key, array) = tuple
+				guard MediaService.freeServices.contains(key) else { return }
+				partialResult[key] = array
+				partialResult[key]?.append("➖")
+			}
+	}
+
+	private static var allServices: [[String]] {
+		let _plusServices = plusServices
+			.values
+			.map { $0 }
+		let _freeServices = freeServices
+			.values
+			.map { $0 }
+		let allServices = _plusServices + _freeServices
+		return allServices.sorted(by: { $0[0] < $1[0] })
+	}
 
 	private var gridItems: [GridItem] {
 		[
@@ -63,7 +94,7 @@ struct InfoView: View {
 					}
 				}
 				Divider()
-				ForEach(Self.services, id: \.self) { serviceInfos in
+				ForEach(Self.allServices, id: \.self) { serviceInfos in
 					GridRow {
 						ForEach(0..<serviceInfos.count, id: \.self) { index in
 							let serviceInfo = serviceInfos[index]
