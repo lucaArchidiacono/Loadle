@@ -8,6 +8,8 @@
 public enum Constants {
 	public enum Details {
 		public static let email = "support@loadle.app"
+		public static let appFeedbackURL = "https://apps.apple.com/app/id\(appID)?action=write-review"
+		public static let appID = "6499438320"
 	}
 	public enum InApp {
 		public static let apiKey = "appl_NUGLwtWxjLDfZSQDLrlxYipQxeG"

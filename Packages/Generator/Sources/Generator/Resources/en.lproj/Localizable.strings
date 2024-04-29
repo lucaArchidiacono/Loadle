@@ -158,3 +158,10 @@
 
 "settings_audio_tiktok_title_full_audio" = "Full audio";
 "settings_audio_tiktok_description_full_audio" = "Downloads original sound used in the video without any additional changes by the post's author.";
+
+
+/// Settings Other
+"settings_others_privacy_section_title" = "Privacy";
+"settings_others_customer_support_section_title" = "Customer Support";
+"settings_others_customer_support_section_leave_review_title" = "Leave a Review";
+"settings_others_customer_support_section_footer" = "If you don't have a default email app configured, you can email me directly at %@";

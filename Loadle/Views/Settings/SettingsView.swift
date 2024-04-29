@@ -11,10 +11,12 @@ import Generator
 import Models
 import SwiftUI
 import Logger
+import Constants
 
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
+	@Environment(\.openURL) private var openURL
 
     private enum Segment: String, CaseIterable {
         case video
@@ -217,8 +219,24 @@ struct SettingsView: View {
 			Text(L10n.upcomingFeaturesShareExtensionDownloadMessage)
 				.font(.footnote)
 		}
+		
+		Section(L10n.onboardingPrivacyPolicyTitle) {
+			Text(L10n.onboardingPrivacyPolicyDescription)
+		}
 
 		Section {
+			Button(
+				action: {
+					guard let writeReviewURL = URL(string: Constants.Details.appFeedbackURL) else {
+						fatalError("Expected valid URL")
+					}
+
+					openURL(writeReviewURL)
+				},
+				label: {
+					Text(L10n.settingsOthersCustomerSupportSectionLeaveReviewTitle)
+				}
+			)
             if MailComposerView.canSendEmail() {
 				Button(
 					action: {
@@ -241,6 +259,10 @@ struct SettingsView: View {
 				)
 				.disabled(isLoadingLogs)
             }
+		} header: {
+			Text(L10n.settingsOthersCustomerSupportSectionTitle)
+		} footer: {
+			Text(L10n.settingsOthersCustomerSupportSectionFooter(Constants.Details.email))
 		}
     }
 
@@ -259,4 +281,5 @@ struct SettingsView: View {
         .environmentObject(UserPreferences.shared)
 //        .environmentObject(Theme.shared)
         .environment(Router())
+		.environment(AppState.shared)
 }
