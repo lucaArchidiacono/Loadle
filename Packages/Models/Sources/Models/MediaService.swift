@@ -11,7 +11,7 @@ import Generator
 import SwiftUI
 
 public enum MediaService: String, Hashable, Identifiable, Codable {
-	static let allServices: [MediaService] = [
+	public static let allServices: [MediaService] = [
 		.tiktok,
 		.youtube,
 		.instagram,
@@ -30,7 +30,7 @@ public enum MediaService: String, Hashable, Identifiable, Codable {
 		.vkVideos,
 	]
 
-	static let freeServices: [MediaService] = [
+	public static let freeServices: [MediaService] = [
 		.soundcloud,
 		.okVideo,
 		.streamable,
