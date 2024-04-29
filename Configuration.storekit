@@ -122,6 +122,10 @@
       ]
     }
   ],
+  "subscriptionOffersKeyPair" : {
+    "id" : "8C568DA5",
+    "privateKey" : "MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQguW7CAAbd7Od0fX2BQCiiVFAd5e7n+yeZXN5kWx0mwnqgCgYIKoZIzj0DAQehRANCAAQfE6FBbqDmQfEJkBaE817z+3K5t9JTT/QtUp2J/nkqolEl7UGn2nDErzaqz2iAnCYj/xgWGjqkNSZVdR4tA/ZA"
+  },
   "version" : {
     "major" : 3,
     "minor" : 0
