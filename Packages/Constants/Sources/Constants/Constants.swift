@@ -6,6 +6,9 @@
 //
 
 public enum Constants {
+	public enum Details {
+		public static let email = "support@loadle.app"
+	}
 	public enum InApp {
 		public static let apiKey = "appl_NUGLwtWxjLDfZSQDLrlxYipQxeG"
 		public static let entitlementID = "Plus"

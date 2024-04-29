@@ -9,6 +9,7 @@ import Foundation
 import MessageUI
 import Models
 import SwiftUI
+import Constants
 
 struct MailComposerView: UIViewControllerRepresentable {
     @Environment(\.dismiss) private var dismiss
@@ -48,7 +49,7 @@ struct MailComposerView: UIViewControllerRepresentable {
         emailComposer.mailComposeDelegate = context.coordinator
 
         emailComposer.setSubject(emailData.subject)
-        emailComposer.setToRecipients(["luca@swift-mail.com"])
+		emailComposer.setToRecipients([Constants.Details.email])
         switch emailData.body {
         case let .html(body):
             emailComposer.setMessageBody(body, isHTML: true)
