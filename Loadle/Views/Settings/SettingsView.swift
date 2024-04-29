@@ -58,6 +58,12 @@ struct SettingsView: View {
 				.id("segment")
             }
 
+			if !appState.hasEntitlement {
+				SubscriptionSectionView {
+					router.presented = .paywall
+				}
+			}
+
             switch selected {
             case .video:
                 videoSegment

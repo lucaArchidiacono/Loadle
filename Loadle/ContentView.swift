@@ -77,16 +77,14 @@ struct ContentView: View {
 				router.presented = .onboarding
 			}
 		}
-		.presentPaywallIfNeeded(
-			requiredEntitlementIdentifier: Constants.InApp.entitlementID,
-			purchaseCompleted: { customerInfo in
-				log(.info, "Purchase compelted: \(customerInfo.entitlements)")
-			},
-			restoreCompleted: { customerInfo in
-				log(.info, "Purchase restored: \(customerInfo.entitlements)")
-			}
-		)
 		.environment(router)
+		.task {
+			let hasEntitlement = await appState.checkEntitlement()
+			
+			if !hasEntitlement {
+				router.presented = .paywall
+			}
+		}
     }
 
     @ViewBuilder
@@ -184,6 +182,12 @@ struct ContentView: View {
 	@ViewBuilder
 	var defaultList: some View {
 		List(selection: $selectedDestination) {
+			if !appState.hasEntitlement {
+				SubscriptionSectionView {
+					router.presented = .paywall
+				}
+			}
+
 			servicesSection
 		}
 		.listStyle(.insetGrouped)

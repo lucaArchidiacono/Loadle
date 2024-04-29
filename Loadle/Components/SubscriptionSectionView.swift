@@ -14,9 +14,10 @@ struct SubscriptionSectionView: View {
 	let onTap: () -> Void
 
 	var body: some View {
-		VStack(spacing: 16) {
+		VStack {
 			Text(L10n.appTitle)
-				.font(.headline)
+				.font(.title2)
+				.bold()
 			Text(L10n.appSubscriptionBannerDescription)
 				.multilineTextAlignment(.center)
 			Button(action: {
@@ -27,7 +28,6 @@ struct SubscriptionSectionView: View {
 			}
 			.buttonStyle(.borderedProminent)
 		}
-		.padding()
 	}
 }
 
