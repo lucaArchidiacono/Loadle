@@ -64,17 +64,30 @@ final class DownloadViewModel {
             return
         }
 
-		guard let mediaService = MediaService.allCases.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
-			log(.error, "Is an invalid URL which is not supported by the App!")
-			errorDetails = ErrorDetails(
-				title: L10n.invalidUrlTitle,
-				description: L10n.invalidUrlWrongServiceDescription,
-				actions: [.primary(title: L10n.ok)])
-			return
-		}
-
 		let downloadTask = Task { [weak self] in
 			guard let self else { return }
+
+			guard let mediaService = MediaService.allServices.first(where: { url.matchesRegex(pattern: $0.regex) }) else {
+				log(.error, "Is an invalid URL which is not supported by the App!")
+				errorDetails = ErrorDetails(
+					title: L10n.invalidUrlTitle,
+					description: L10n.invalidUrlWrongServiceDescription,
+					actions: [.primary(title: L10n.ok)])
+				return
+			}
+
+			let hasEntitlement = await AppState.shared.checkEntitlement()
+
+			if !hasEntitlement {
+				guard MediaService.freeServices.contains(mediaService) else {
+					log(.error, "This URL is locked behind a subscription!")
+					errorDetails = ErrorDetails(
+						title: L10n.lockedServiceTitle,
+						description: L10n.lockedServiceDescription,
+						actions: [.primary(title: L10n.ok)])
+					return
+				}
+			}
 
 			do {
 				self.isLoading = true
