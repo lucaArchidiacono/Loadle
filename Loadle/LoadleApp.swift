@@ -20,6 +20,7 @@ struct LoadleApp: App {
 	@StateObject private var userPreferences: UserPreferences = .shared
 
 	@State private var playlistService: PlaylistService = .shared
+	@State private var appState: AppState = .shared
 
 	@State private var router: Router = .init()
 	@State private var currentSize: CGSize = .zero
@@ -27,6 +28,7 @@ struct LoadleApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(router: $router, currentSize: $currentSize)
+				.environment(appState)
 				.environment(playlistService)
 				.environmentObject(userPreferences)
 				.onChange(of: scenePhase) { _, newValue in
@@ -37,6 +39,7 @@ struct LoadleApp: App {
 		#if os(visionOS)
 		WindowGroup(id: "Download"){
 			DownloadDestination()
+				.environment(appState)
 				.environment(router)
 				.environment(playlistService)
 				.environmentObject(userPreferences)
@@ -45,6 +48,7 @@ struct LoadleApp: App {
 
 		WindowGroup(id: "MediaPlayer") {
 			MediaPlayerDestination()
+				.environment(appState)
 				.environment(router)
 				.environment(playlistService)
 				.environmentObject(userPreferences)

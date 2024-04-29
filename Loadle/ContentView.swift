@@ -18,6 +18,7 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 	@Environment(PlaylistService.self) private var playlistService
+	@Environment(AppState.self) private var appState
 
     @EnvironmentObject private var preferences: UserPreferences
 
@@ -199,7 +200,7 @@ struct ContentView: View {
     @ViewBuilder
     var servicesSection: some View {
         Section(L10n.mediaServicesTitle) {
-            ForEach(MediaService.allCases) { service in
+			ForEach(appState.hasEntitlement ? MediaService.allServices : MediaService.freeServices) { service in
                 NavigationLink(value: Destination.media(service: service)) {
 					service.label(count: viewModel.mediaAssetItemIndex[service])
                 }
