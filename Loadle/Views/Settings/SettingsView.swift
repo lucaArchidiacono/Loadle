@@ -40,7 +40,6 @@ struct SettingsView: View {
 
     @EnvironmentObject private var preferences: UserPreferences
     @Environment(Router.self) private var router: Router
-	@Environment(AppState.self) private var appState
 
     @State private var viewModel: SettingsViewModel = .init()
     @State private var selected: Segment = .video
@@ -60,12 +59,6 @@ struct SettingsView: View {
                 .listRowInsets(EdgeInsets())
 				.id("segment")
             }
-
-			if !appState.hasEntitlement {
-				SubscriptionSectionView {
-					router.presented = .paywall
-				}
-			}
 
             switch selected {
             case .video:
@@ -225,18 +218,6 @@ struct SettingsView: View {
 		}
 
 		Section {
-			Button(
-				action: {
-					guard let writeReviewURL = URL(string: Constants.Details.appFeedbackURL) else {
-						fatalError("Expected valid URL")
-					}
-
-					openURL(writeReviewURL)
-				},
-				label: {
-					Text(L10n.settingsOthersCustomerSupportSectionLeaveReviewTitle)
-				}
-			)
             if MailComposerView.canSendEmail() {
 				Button(
 					action: {
@@ -281,5 +262,4 @@ struct SettingsView: View {
         .environmentObject(UserPreferences.shared)
 //        .environmentObject(Theme.shared)
         .environment(Router())
-		.environment(AppState.shared)
 }

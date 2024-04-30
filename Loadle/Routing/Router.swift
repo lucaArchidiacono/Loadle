@@ -20,7 +20,6 @@ enum SheetDestination: Hashable, Identifiable {
     case download
     case mail(emailData: EmailData, onComplete: ((Result<MFMailComposeResult, Error>) -> Void)? = nil)
 	case onboarding
-	case paywall
 	case info
 
     var id: String {
@@ -35,8 +34,6 @@ enum SheetDestination: Hashable, Identifiable {
             return "settings"
         case .mail:
             return "mail"
-		case .paywall:
-			return "paywall"
         }
     }
 

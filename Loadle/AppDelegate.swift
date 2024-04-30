@@ -11,18 +11,11 @@ import Foundation
 import Generator
 import Logger
 import UIKit
-import RevenueCat
 
 class AppDelegate: NSObject, UIApplicationDelegate {
 
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
 		NotificationService.shared.checkForPermissions()
-		
-		Purchases.logLevel = .debug
-		Purchases.configure(
-			with: Configuration.builder(withAPIKey: Constants.InApp.apiKey)
-				.build()
-		)
 
         return true
     }
@@ -37,10 +30,4 @@ class AppDelegate: NSObject, UIApplicationDelegate {
             )
         }
     }
-}
-
-extension AppDelegate: PurchasesDelegate {
-	func purchases(_ purchases: Purchases, receivedUpdated customerInfo: CustomerInfo) {
-		log(.info, "Received new customer info: \(customerInfo)")
-	}
 }

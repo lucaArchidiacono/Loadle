@@ -20,7 +20,6 @@ struct InfoView: View {
 		L10n.audio,
 		L10n.video,
 		L10n.image,
-		L10n.appProductPlus
 	]
 
 	private static var services = [
@@ -42,35 +41,11 @@ struct InfoView: View {
 		MediaService.youtube: ["Youtube Videos, Shorts & Music", "✅", "✅", "✅", "✅"]
 	]
 
-	private static var plusServices: [MediaService: [String]] {
-		return services
-			.reduce(into: [MediaService: [String]]()) { partialResult, tuple in
-				let (key, array) = tuple
-				guard MediaService.plusServices.contains(key) else { return }
-				partialResult[key] = array
-				partialResult[key]?.append("✅")
-			}
-	}
-
-	private static var freeServices: [MediaService: [String]] {
-		return services
-			.reduce(into: [MediaService: [String]]()) { partialResult, tuple in
-				let (key, array) = tuple
-				guard MediaService.freeServices.contains(key) else { return }
-				partialResult[key] = array
-				partialResult[key]?.append("➖")
-			}
-	}
-
 	private static var allServices: [[String]] {
-		let _plusServices = plusServices
+		services
 			.values
 			.map { $0 }
-		let _freeServices = freeServices
-			.values
-			.map { $0 }
-		let allServices = _plusServices + _freeServices
-		return allServices.sorted(by: { $0[0] < $1[0] })
+			.sorted(by: { $0[0] < $1[0] })
 	}
 
 	private var gridItems: [GridItem] {

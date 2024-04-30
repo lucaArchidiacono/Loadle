@@ -11,8 +11,6 @@ import Logger
 import Models
 import SwiftUI
 import BottomSheet
-import RevenueCat
-import RevenueCatUI
 import Constants
 
 struct ContentView: View {
@@ -21,7 +19,6 @@ struct ContentView: View {
     @Environment(\.openWindow) private var openWindow
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 	@Environment(PlaylistService.self) private var playlistService
-	@Environment(AppState.self) private var appState
 
     @EnvironmentObject private var preferences: UserPreferences
 
@@ -175,12 +172,6 @@ struct ContentView: View {
 	@ViewBuilder
 	var defaultList: some View {
 		List(selection: $selectedDestination) {
-			if !appState.hasEntitlement {
-				SubscriptionSectionView {
-					router.presented = .paywall
-				}
-			}
-
 			servicesSection
 		}
 		.listStyle(.insetGrouped)
@@ -212,7 +203,7 @@ struct ContentView: View {
     @ViewBuilder
     var servicesSection: some View {
         Section(L10n.mediaServicesTitle) {
-			ForEach(appState.hasEntitlement ? MediaService.allServices : MediaService.freeServices) { service in
+			ForEach(MediaService.allServices) { service in
                 NavigationLink(value: Destination.media(service: service)) {
 					service.label(count: viewModel.mediaAssetItemIndex[service])
                 }
@@ -224,5 +215,4 @@ struct ContentView: View {
 #Preview {
 	ContentView(router: .constant(Router()), currentSize: .constant(.zero))
         .environmentObject(UserPreferences.shared)
-		.environment(AppState.shared)
 }

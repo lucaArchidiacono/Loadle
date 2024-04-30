@@ -7,8 +7,6 @@
 
 import Foundation
 import SwiftUI
-import RevenueCat
-import RevenueCatUI
 
 @MainActor
 extension View {
@@ -33,8 +31,6 @@ extension View {
             SettingsDestination()
         case let .mail(emailData, result):
             MailComposerView(emailData: emailData, result: result)
-		case .paywall:
-			PaywallView(displayCloseButton: true)
 		case .info:
 			InfoDestination()
         }

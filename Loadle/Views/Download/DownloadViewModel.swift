@@ -76,19 +76,6 @@ final class DownloadViewModel {
 				return
 			}
 
-			let hasEntitlement = await AppState.shared.checkEntitlement()
-
-			if !hasEntitlement {
-				guard MediaService.freeServices.contains(mediaService) else {
-					log(.error, "This URL is locked behind a subscription!")
-					errorDetails = ErrorDetails(
-						title: L10n.lockedServiceTitle,
-						description: L10n.lockedServiceDescription,
-						actions: [.primary(title: L10n.ok)])
-					return
-				}
-			}
-
 			do {
 				self.isLoading = true
 
