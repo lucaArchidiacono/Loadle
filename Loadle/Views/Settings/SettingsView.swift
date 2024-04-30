@@ -5,35 +5,35 @@
 //  Created by Luca Archidiacono on 05.02.2024.
 //
 
+import Constants
 import Environments
 import Foundation
 import Generator
+import Logger
 import Models
 import SwiftUI
-import Logger
-import Constants
 
 struct SettingsView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
-	@Environment(\.openURL) private var openURL
+    @Environment(\.openURL) private var openURL
 
     private enum Segment: String, CaseIterable {
         case video
         case audio
         case other
-		#if DEBUG
-		case logs
-		#endif
+        #if DEBUG
+            case logs
+        #endif
 
         var rawValue: String {
             switch self {
             case .video: return L10n.video
             case .audio: return L10n.audio
             case .other: return L10n.other
-			#if DEBUG
-			case .logs: return "Logs"
-			#endif
+            #if DEBUG
+                case .logs: return "Logs"
+            #endif
             }
         }
     }
@@ -43,7 +43,7 @@ struct SettingsView: View {
 
     @State private var viewModel: SettingsViewModel = .init()
     @State private var selected: Segment = .video
-	@State private var isLoadingLogs = false
+    @State private var isLoadingLogs = false
 
     var body: some View {
         List {
@@ -51,13 +51,13 @@ struct SettingsView: View {
                 Picker("", selection: $selected) {
                     ForEach(Segment.allCases, id: \.self) { segment in
                         Text(segment.rawValue)
-							.tag(segment)
+                            .tag(segment)
                     }
                 }
                 .pickerStyle(.segmented)
                 .listRowBackground(Color.clear)
                 .listRowInsets(EdgeInsets())
-				.id("segment")
+                .id("segment")
             }
 
             switch selected {
@@ -67,10 +67,10 @@ struct SettingsView: View {
                 audioSegment
             case .other:
                 otherSegment
-			#if DEBUG
-			case .logs:
-				logsSegment
-			#endif
+            #if DEBUG
+                case .logs:
+                    logsSegment
+            #endif
             }
         }
         .toolbar {
@@ -122,7 +122,7 @@ struct SettingsView: View {
             Text(L10n.settingsVideoYoutubeDescriptionCodec)
         }
 
-		Section {
+        Section {
             Picker(L10n.settingsVideoVimeoTitleDownloadType, selection: preferences.$videoVimeoDownloadType) {
                 ForEach(ViemoDownloadVideoType.allCases, id: \.self) { type in
                     switch type {
@@ -184,77 +184,77 @@ struct SettingsView: View {
         } footer: {
             Text(L10n.settingsAudioTiktokDescriptionFullAudio)
         }
-//		.listRowBackground(theme.secondaryBackgroundColor)
+        //		.listRowBackground(theme.secondaryBackgroundColor)
     }
 
     @ViewBuilder
     var otherSegment: some View {
 //        Section(L10n.theme) {
 //            ForEach(availableColorsSets, id: \.id) { colorSetCouple in
-//				SelectionButton(title: colorSetCouple.setName.rawValue, 
-//								isSelected: theme.selectedSet == colorSetCouple.setName) {
-//					theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
-//				}
+        //				SelectionButton(title: colorSetCouple.setName.rawValue,
+        //								isSelected: theme.selectedSet == colorSetCouple.setName) {
+        //					theme.setColor(withName: colorSetCouple.setName, colorScheme: colorScheme)
+        //				}
 //            }
 //        }
-//		.listRowBackground(theme.secondaryBackgroundColor)
+        //		.listRowBackground(theme.secondaryBackgroundColor)
 
-		Section(L10n.upcomingFeaturesTitle) {
-			Text(L10n.upcomingFeaturesInAppPlayerTitle)
-				.font(.headline)
-				.listRowSeparator(.hidden)
-			Text(L10n.upcomingFeaturesInAppPlayerMessage)
-				.font(.footnote)
-				.listRowSeparator(.visible)
-			Text(L10n.upcomingFeaturesShareExtensionDownloadTitle)
-				.font(.headline)
-				.listRowSeparator(.hidden)
-			Text(L10n.upcomingFeaturesShareExtensionDownloadMessage)
-				.font(.footnote)
-		}
-		
-		Section(L10n.onboardingPrivacyPolicyTitle) {
-			Text(L10n.onboardingPrivacyPolicyDescription)
-		}
+        Section(L10n.upcomingFeaturesTitle) {
+            Text(L10n.upcomingFeaturesInAppPlayerTitle)
+                .font(.headline)
+                .listRowSeparator(.hidden)
+            Text(L10n.upcomingFeaturesInAppPlayerMessage)
+                .font(.footnote)
+                .listRowSeparator(.visible)
+            Text(L10n.upcomingFeaturesShareExtensionDownloadTitle)
+                .font(.headline)
+                .listRowSeparator(.hidden)
+            Text(L10n.upcomingFeaturesShareExtensionDownloadMessage)
+                .font(.footnote)
+        }
 
-		Section {
+        Section(L10n.onboardingPrivacyPolicyTitle) {
+            Text(L10n.onboardingPrivacyPolicyDescription)
+        }
+
+        Section {
             if MailComposerView.canSendEmail() {
-				Button(
-					action: {
-						isLoadingLogs = true
-						Task {
-							let emailData = await viewModel.loadLogFiles()
-							isLoadingLogs = false
-							router.presented = .mail(emailData: emailData)
-						}
-					},
-					label: {
-						ZStack {
-							Text(L10n.sendLogFileTitle).opacity(isLoadingLogs ? 0 : 1)
+                Button(
+                    action: {
+                        isLoadingLogs = true
+                        Task {
+                            let emailData = await viewModel.loadLogFiles()
+                            isLoadingLogs = false
+                            router.presented = .mail(emailData: emailData)
+                        }
+                    },
+                    label: {
+                        ZStack {
+                            Text(L10n.sendLogFileTitle).opacity(isLoadingLogs ? 0 : 1)
 
-							if isLoadingLogs {
-								ProgressView()
-							}
-						}
-					}
-				)
-				.disabled(isLoadingLogs)
+                            if isLoadingLogs {
+                                ProgressView()
+                            }
+                        }
+                    }
+                )
+                .disabled(isLoadingLogs)
             }
-		} header: {
-			Text(L10n.settingsOthersCustomerSupportSectionTitle)
-		} footer: {
-			Text(L10n.settingsOthersCustomerSupportSectionFooter(Constants.Details.email))
-		}
+        } header: {
+            Text(L10n.settingsOthersCustomerSupportSectionTitle)
+        } footer: {
+            Text(L10n.settingsOthersCustomerSupportSectionFooter(Constants.Details.email))
+        }
     }
 
-	#if DEBUG
-	@ViewBuilder
-	var logsSegment: some View {
-		ForEach(viewModel.logStreams, id: \.self) { log in
-			Text(log)
-		}
-	}
-	#endif
+    #if DEBUG
+        @ViewBuilder
+        var logsSegment: some View {
+            ForEach(viewModel.logStreams, id: \.self) { log in
+                Text(log)
+            }
+        }
+    #endif
 }
 
 #Preview {

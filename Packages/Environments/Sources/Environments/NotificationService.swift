@@ -24,9 +24,9 @@ public class NotificationService {
                 notificationCenter.requestAuthorization(options: [.alert, .sound]) { didAllow, _ in
                     if didAllow {
                         log(.info, "User did allow the retrieval of notifications.")
-					} else {
+                    } else {
                         log(.warning, "User did NOT allow the retrieval of notifications.")
-					}
+                    }
                 }
             default: return
             }

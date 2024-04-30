@@ -16,7 +16,7 @@ let package = Package(
     dependencies: [
         .package(path: "../Fundamentals"),
         .package(path: "../Generator"),
-		.package(path: "../Constants"),
+        .package(path: "../Constants"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -26,7 +26,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Generator", package: "Generator"),
                 .product(name: "Fundamentals", package: "Fundamentals"),
-				.product(name: "Constants", package: "Constants"),
+                .product(name: "Constants", package: "Constants"),
             ],
             resources: [
                 .process("Resources/JengaInstructionsSkit.mp3"),

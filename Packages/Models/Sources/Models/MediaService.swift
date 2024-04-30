@@ -11,24 +11,24 @@ import Generator
 import SwiftUI
 
 public enum MediaService: String, Hashable, Identifiable, Codable {
-	public static var allServices: [MediaService] = [
-		.tiktok,
-		.youtube,
-		.instagram,
-		.twitter,
-		.reddit,
-		.twitch,
-		.pinterest,
-		.bilibili,
-		.rutube,
-		.tumblr,
-		.soundcloud,
-		.okVideo,
-		.streamable,
-		.vimeo,
-		.vine,
-		.vkVideos,
-	]
+    public static var allServices: [MediaService] = [
+        .tiktok,
+        .youtube,
+        .instagram,
+        .twitter,
+        .reddit,
+        .twitch,
+        .pinterest,
+        .bilibili,
+        .rutube,
+        .tumblr,
+        .soundcloud,
+        .okVideo,
+        .streamable,
+        .vimeo,
+        .vine,
+        .vkVideos,
+    ]
 
     case tiktok
     case youtube
@@ -95,43 +95,42 @@ public enum MediaService: String, Hashable, Identifiable, Codable {
         }
     }
 
-	public var domain: Constants.Domain.RawValue {
-		switch self {
-		case .tiktok: Constants.Domain.tiktok.rawValue
-		case .youtube: Constants.Domain.youtube.rawValue
-		case .instagram: Constants.Domain.instagram.rawValue
-		case .twitter: Constants.Domain.twitter.rawValue
-		case .reddit: Constants.Domain.reddit.rawValue
-		case .twitch: Constants.Domain.twitchClips.rawValue
-		case .pinterest: Constants.Domain.pinterest.rawValue
-		case .bilibili: Constants.Domain.bilibili.rawValue
-		case .soundcloud: Constants.Domain.soundcloud.rawValue
-		case .okVideo: Constants.Domain.okVideo.rawValue
-		case .rutube: Constants.Domain.rutube.rawValue
-		case .streamable: Constants.Domain.streamable.rawValue
-		case .tumblr: Constants.Domain.tumblr.rawValue
-		case .vimeo: Constants.Domain.vimeo.rawValue
-		case .vine: Constants.Domain.vineArchive.rawValue
-		case .vkVideos: Constants.Domain.vkVideos.rawValue
-		}
-	}
+    public var domain: Constants.Domain.RawValue {
+        switch self {
+        case .tiktok: Constants.Domain.tiktok.rawValue
+        case .youtube: Constants.Domain.youtube.rawValue
+        case .instagram: Constants.Domain.instagram.rawValue
+        case .twitter: Constants.Domain.twitter.rawValue
+        case .reddit: Constants.Domain.reddit.rawValue
+        case .twitch: Constants.Domain.twitchClips.rawValue
+        case .pinterest: Constants.Domain.pinterest.rawValue
+        case .bilibili: Constants.Domain.bilibili.rawValue
+        case .soundcloud: Constants.Domain.soundcloud.rawValue
+        case .okVideo: Constants.Domain.okVideo.rawValue
+        case .rutube: Constants.Domain.rutube.rawValue
+        case .streamable: Constants.Domain.streamable.rawValue
+        case .tumblr: Constants.Domain.tumblr.rawValue
+        case .vimeo: Constants.Domain.vimeo.rawValue
+        case .vine: Constants.Domain.vineArchive.rawValue
+        case .vkVideos: Constants.Domain.vkVideos.rawValue
+        }
+    }
 
-	@ViewBuilder
-	public func label(count: Int?) -> some View {
-		Label {
-			HStack {
-				text
-				Spacer()
-				if let count {
-					Text("\(count)")
-						.fontWeight(.light)
-				}
-			}
-		} icon: {
-			icon
-		}
-
-	}
+    @ViewBuilder
+    public func label(count: Int?) -> some View {
+        Label {
+            HStack {
+                text
+                Spacer()
+                if let count {
+                    Text("\(count)")
+                        .fontWeight(.light)
+                }
+            }
+        } icon: {
+            icon
+        }
+    }
 
     private var icon: some View {
         Self.color(for: self)

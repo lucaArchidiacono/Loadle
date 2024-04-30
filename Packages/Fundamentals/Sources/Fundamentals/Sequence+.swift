@@ -7,29 +7,29 @@
 
 import Foundation
 
-extension Sequence {
-	public func asyncMap<T>(
-		_ transform: (Element) async throws -> T
-	) async rethrows -> [T] {
-		var values = [T]()
+public extension Sequence {
+    func asyncMap<T>(
+        _ transform: (Element) async throws -> T
+    ) async rethrows -> [T] {
+        var values = [T]()
 
-		for element in self {
-			try await values.append(transform(element))
-		}
+        for element in self {
+            try await values.append(transform(element))
+        }
 
-		return values
-	}
+        return values
+    }
 
-	public func asyncCompactMap<T>(
-		_ transform: (Element) async throws -> T?
-	) async rethrows -> [T] {
-		var values = [T]()
+    func asyncCompactMap<T>(
+        _ transform: (Element) async throws -> T?
+    ) async rethrows -> [T] {
+        var values = [T]()
 
-		for element in self {
-			guard let transformed = try await transform(element) else { continue }
-			values.append(transformed)
-		}
+        for element in self {
+            guard let transformed = try await transform(element) else { continue }
+            values.append(transformed)
+        }
 
-		return values
-	}
+        return values
+    }
 }

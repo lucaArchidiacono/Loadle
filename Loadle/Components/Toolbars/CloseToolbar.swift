@@ -10,19 +10,19 @@ import SwiftUI
 import UIKit
 
 struct CloseToolbar: ToolbarContent {
-	let placement: ToolbarItemPlacement
-	let onTap: () -> Void
+    let placement: ToolbarItemPlacement
+    let onTap: () -> Void
 
-	init(placement: ToolbarItemPlacement = .automatic, onTap: @escaping () -> Void) {
-		self.placement = placement
-		self.onTap = onTap
-	}
+    init(placement: ToolbarItemPlacement = .automatic, onTap: @escaping () -> Void) {
+        self.placement = placement
+        self.onTap = onTap
+    }
 
-	var body: some ToolbarContent {
-		ToolbarItem(placement: placement) {
-			CloseButton {
-				onTap()
-			}
-		}
-	}
+    var body: some ToolbarContent {
+        ToolbarItem(placement: placement) {
+            CloseButton {
+                onTap()
+            }
+        }
+    }
 }

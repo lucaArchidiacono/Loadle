@@ -39,9 +39,9 @@ public struct ErrorDetails: Identifiable, Hashable {
     public let description: String
     public let actions: [Action]
 
-	public static let `default` = ErrorDetails(title: L10n.somethingWentWrongTitle,
-											   description: L10n.somethingWentWrongDescription,
-											   actions: [.primary(title: L10n.ok)])
+    public static let `default` = ErrorDetails(title: L10n.somethingWentWrongTitle,
+                                               description: L10n.somethingWentWrongDescription,
+                                               actions: [.primary(title: L10n.ok)])
 
     public init(title: String, description: String, actions: [Action]) {
         self.title = title

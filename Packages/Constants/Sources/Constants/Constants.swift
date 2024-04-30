@@ -6,18 +6,21 @@
 //
 
 public enum Constants {
-	public enum Details {
-		public static let email = "support@loadle.app"
-		public static let appFeedbackURL = "https://apps.apple.com/app/id\(appID)?action=write-review"
-		public static let appID = "6499438320"
-	}
-	public enum InApp {
-		public static let apiKey = "appl_NUGLwtWxjLDfZSQDLrlxYipQxeG"
-		public static let entitlementID = "Plus"
-	}
-	public enum Downloads {
-		public static let identifier: String = "io.lucaa.Environment.Service.Download"
-	}
+    public enum Details {
+        public static let email = "support@loadle.app"
+        public static let appFeedbackURL = "https://apps.apple.com/app/id\(appID)?action=write-review"
+        public static let appID = "6499438320"
+    }
+
+    public enum InApp {
+        public static let apiKey = "appl_NUGLwtWxjLDfZSQDLrlxYipQxeG"
+        public static let entitlementID = "Plus"
+    }
+
+    public enum Downloads {
+        public static let identifier: String = "io.lucaa.Environment.Service.Download"
+    }
+
     public enum Notifications {
         public static let download: String = "io.lucaa.Constants.Notifications.Download"
     }
@@ -41,23 +44,22 @@ public enum Constants {
         case youtube = #"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/|youtu\.be\/)"#
     }
 
-	public enum Domain: String, CaseIterable {
-		case bilibili = "bilibili.com"
-		case instagram = "instagram.com"
-		case okVideo = "ok.ru"
-		case pinterest = "pinterest.com"
-		case reddit = "reddit.com"
-		case rutube = "rutube.ru"
-		case soundcloud = "soundcloud.com"
-		case streamable = "streamable.com"
-		case tiktok = "tiktok.com"
-		case tumblr = "tumblr.com"
-		case twitchClips = "clips.twitch.tv"
-		case twitter = "twitter.com"
-		case vimeo = "vimeo.com"
-		case vineArchive = "vine.co"
-		case vkVideos = "vk.com"
-		case youtube = "youtube.com"
-	}
-
+    public enum Domain: String, CaseIterable {
+        case bilibili = "bilibili.com"
+        case instagram = "instagram.com"
+        case okVideo = "ok.ru"
+        case pinterest = "pinterest.com"
+        case reddit = "reddit.com"
+        case rutube = "rutube.ru"
+        case soundcloud = "soundcloud.com"
+        case streamable = "streamable.com"
+        case tiktok = "tiktok.com"
+        case tumblr = "tumblr.com"
+        case twitchClips = "clips.twitch.tv"
+        case twitter = "twitter.com"
+        case vimeo = "vimeo.com"
+        case vineArchive = "vine.co"
+        case vkVideos = "vk.com"
+        case youtube = "youtube.com"
+    }
 }

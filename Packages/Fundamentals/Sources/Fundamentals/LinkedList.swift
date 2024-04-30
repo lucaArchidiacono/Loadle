@@ -8,7 +8,6 @@
 import Foundation
 
 public final class LinkedList<T> {
-
     /// Linked List's Node Class Declaration
     public class LinkedListNode {
         public var value: T
@@ -22,7 +21,6 @@ public final class LinkedList<T> {
 
     /// Typealiasing the node class to increase readability of code
     public typealias Node = LinkedListNode
-
 
     /// The head of the Linked List
     private(set) var head: Node?
@@ -61,7 +59,6 @@ public final class LinkedList<T> {
     /// Default initializer
     public init() {}
 
-
     /// Subscript function to return the node at a specific index
     ///
     /// - Parameter index: Integer value of the requested value's index
@@ -82,7 +79,7 @@ public final class LinkedList<T> {
             return head!
         } else {
             var node = head!.next
-            for _ in 1..<index {
+            for _ in 1 ..< index {
                 node = node?.next
                 if node == nil {
                     break
@@ -225,6 +222,7 @@ public final class LinkedList<T> {
 //: End of the base class declarations & beginning of extensions' declarations:
 
 // MARK: - Extension to enable the standard conversion of a list to String
+
 extension LinkedList: CustomStringConvertible {
     public var description: String {
         var s = "["
@@ -239,47 +237,48 @@ extension LinkedList: CustomStringConvertible {
 }
 
 // MARK: - Extension to update the LinkedList given the provided list
-extension LinkedList {
-	public func update(fromArray array: [T]) {
-		var arrayIndex = array.startIndex
-		var current = head
-		var previous: Node? = nil // Track the previous node
 
-		// Update existing nodes and append new nodes if necessary
-		while let node = current, arrayIndex < array.endIndex {
-			node.value = array[arrayIndex]
-			arrayIndex = array.index(after: arrayIndex)
-			previous = node
-			current = node.next
-		}
+public extension LinkedList {
+    func update(fromArray array: [T]) {
+        var arrayIndex = array.startIndex
+        var current = head
+        var previous: Node? // Track the previous node
 
-		// Remove extra nodes if the array is shorter than the linked list
-		while let node = current {
-			let next = node.next
-			node.next = nil // Remove the reference to the next node
-			current = next
-		}
+        // Update existing nodes and append new nodes if necessary
+        while let node = current, arrayIndex < array.endIndex {
+            node.value = array[arrayIndex]
+            arrayIndex = array.index(after: arrayIndex)
+            previous = node
+            current = node.next
+        }
 
-		// Append new nodes if the array is longer than the linked list
-		while arrayIndex < array.endIndex {
-			let newNode = Node(value: array[arrayIndex])
-			if let lastNode = previous {
-				lastNode.next = newNode
-				newNode.previous = lastNode // Set the previous reference for the new node
-			} else {
-				// If the array is empty, set head to the new node
-				head = newNode
-				previous = newNode // Set previous to the new node
-			}
-			arrayIndex = array.index(after: arrayIndex)
-		}
-	}
+        // Remove extra nodes if the array is shorter than the linked list
+        while let node = current {
+            let next = node.next
+            node.next = nil // Remove the reference to the next node
+            current = next
+        }
 
+        // Append new nodes if the array is longer than the linked list
+        while arrayIndex < array.endIndex {
+            let newNode = Node(value: array[arrayIndex])
+            if let lastNode = previous {
+                lastNode.next = newNode
+                newNode.previous = lastNode // Set the previous reference for the new node
+            } else {
+                // If the array is empty, set head to the new node
+                head = newNode
+                previous = newNode // Set previous to the new node
+            }
+            arrayIndex = array.index(after: arrayIndex)
+        }
+    }
 }
 
 // MARK: - Extension to add a 'reverse' function to the list
-extension LinkedList {
-    public func reverse() {
+
+public extension LinkedList {
+    func reverse() {
         var node = head
         while let currentNode = node {
             node = currentNode.next
@@ -290,8 +289,9 @@ extension LinkedList {
 }
 
 // MARK: - An extension with an implementation of 'map' & 'filter' functions
-extension LinkedList {
-    public func map<U>(transform: (T) -> U) -> LinkedList<U> {
+
+public extension LinkedList {
+    func map<U>(transform: (T) -> U) -> LinkedList<U> {
         let result = LinkedList<U>()
         var node = head
         while let nd = node {
@@ -301,7 +301,7 @@ extension LinkedList {
         return result
     }
 
-    public func filter(predicate: (T) -> Bool) -> LinkedList<T> {
+    func filter(predicate: (T) -> Bool) -> LinkedList<T> {
         let result = LinkedList<T>()
         var node = head
         while let nd = node {
@@ -315,8 +315,9 @@ extension LinkedList {
 }
 
 // MARK: - Extension to enable initialization from an Array
+
 extension LinkedList {
-    convenience init(array: Array<T>) {
+    convenience init(array: [T]) {
         self.init()
 
         array.forEach { append($0) }
@@ -324,6 +325,7 @@ extension LinkedList {
 }
 
 // MARK: - Extension to enable initialization from an Array Literal
+
 extension LinkedList: ExpressibleByArrayLiteral {
     public convenience init(arrayLiteral elements: T...) {
         self.init()
@@ -333,8 +335,8 @@ extension LinkedList: ExpressibleByArrayLiteral {
 }
 
 // MARK: - Collection
-extension LinkedList: Collection {
 
+extension LinkedList: Collection {
     public typealias Index = LinkedListIndex<T>
 
     /// The position of the first element in a nonempty collection.
@@ -342,9 +344,7 @@ extension LinkedList: Collection {
     /// If the collection is empty, `startIndex` is equal to `endIndex`.
     /// - Complexity: O(1)
     public var startIndex: Index {
-        get {
-            return LinkedListIndex<T>(node: head, tag: 0)
-        }
+        return LinkedListIndex<T>(node: head, tag: 0)
     }
 
     /// The collection's "past the end" position---that is, the position one
@@ -352,19 +352,15 @@ extension LinkedList: Collection {
     /// - Complexity: O(n), where n is the number of elements in the list. This can be improved by keeping a reference
     ///   to the last node in the collection.
     public var endIndex: Index {
-        get {
-            if let h = self.head {
-                return LinkedListIndex<T>(node: h, tag: count)
-            } else {
-                return LinkedListIndex<T>(node: nil, tag: startIndex.tag)
-            }
+        if let h = head {
+            return LinkedListIndex<T>(node: h, tag: count)
+        } else {
+            return LinkedListIndex<T>(node: nil, tag: startIndex.tag)
         }
     }
 
     public subscript(position: Index) -> T {
-        get {
-            return position.node!.value
-        }
+        return position.node!.value
     }
 
     public func index(after idx: Index) -> Index {
@@ -373,16 +369,17 @@ extension LinkedList: Collection {
 }
 
 // MARK: - Collection Index
+
 /// Custom index type that contains a reference to the node at index 'tag'
 public struct LinkedListIndex<T>: Comparable {
     public let node: LinkedList<T>.LinkedListNode?
     public let tag: Int
 
     public static func == (lhs: LinkedListIndex<T>, rhs: LinkedListIndex<T>) -> Bool {
-        return (lhs.tag == rhs.tag)
+        return lhs.tag == rhs.tag
     }
 
     public static func < (lhs: LinkedListIndex<T>, rhs: LinkedListIndex<T>) -> Bool {
-        return (lhs.tag < rhs.tag)
+        return lhs.tag < rhs.tag
     }
 }

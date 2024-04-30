@@ -13,16 +13,15 @@ import Logger
 import UIKit
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-
     func application(_: UIApplication, didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-		NotificationService.shared.checkForPermissions()
+        NotificationService.shared.checkForPermissions()
 
         return true
     }
 
     func application(_: UIApplication, handleEventsForBackgroundURLSession _: String, completionHandler: @escaping () -> Void) {
         DownloadService.shared.addBackgroundCompletionHandler(completion: completionHandler)
-		DownloadService.shared.addBackgroundCompletionHandler {
+        DownloadService.shared.addBackgroundCompletionHandler {
             NotificationService.shared.dispatchNotification(
                 identifier: Constants.Notifications.download,
                 title: L10n.notificationDownloadTitle,

@@ -8,8 +8,7 @@
 import Foundation
 
 public extension REST {
-	struct HTTPError: Error, CustomDebugStringConvertible {
-
+    struct HTTPError: Error, CustomDebugStringConvertible {
         /// The high-level classification of this error
         public let code: Code
 
@@ -35,12 +34,12 @@ public extension REST {
             case badHTTPStatusCode(code: HTTPStatusCode)
         }
 
-		public var debugDescription: String {
-			let debugString = """
-			HTTP Error: { ERROR -> \((underlyingError ?? "<unavailable>") as Any); CODE -> \(code); REQUEST -> \(request); RESPONSE -> \((response ?? "<unavailable>") as Any); }
-			"""
-			return debugString
-		}
+        public var debugDescription: String {
+            let debugString = """
+            HTTP Error: { ERROR -> \((underlyingError ?? "<unavailable>") as Any); CODE -> \(code); REQUEST -> \(request); RESPONSE -> \((response ?? "<unavailable>") as Any); }
+            """
+            return debugString
+        }
     }
 
     /// This is a list of Hypertext Transfer Protocol (HTTP) response status codes.

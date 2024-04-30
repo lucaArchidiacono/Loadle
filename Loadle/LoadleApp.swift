@@ -6,62 +6,62 @@
 //
 
 import Environments
-import REST
 import Logger
 import Models
+import REST
 import SwiftUI
 
 @main
 struct LoadleApp: App {
-	@UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
 
-	@Environment(\.scenePhase) private var scenePhase
+    @Environment(\.scenePhase) private var scenePhase
 
-	@StateObject private var userPreferences: UserPreferences = .shared
+    @StateObject private var userPreferences: UserPreferences = .shared
 
-	@State private var playlistService: PlaylistService = .shared
+    @State private var playlistService: PlaylistService = .shared
 
-	@State private var router: Router = .init()
-	@State private var currentSize: CGSize = .zero
+    @State private var router: Router = .init()
+    @State private var currentSize: CGSize = .zero
 
     var body: some Scene {
         WindowGroup {
             ContentView(router: $router, currentSize: $currentSize)
-				.environment(playlistService)
-				.environmentObject(userPreferences)
-				.onChange(of: scenePhase) { _, newValue in
-					handleScenePhase(scenePhase: newValue)
-				}
+                .environment(playlistService)
+                .environmentObject(userPreferences)
+                .onChange(of: scenePhase) { _, newValue in
+                    handleScenePhase(scenePhase: newValue)
+                }
         }
 
-		#if os(visionOS)
-		WindowGroup(id: "Download"){
-			DownloadDestination()
-				.environment(router)
-				.environment(playlistService)
-				.environmentObject(userPreferences)
-		}
-		.defaultSize(CGSize(width: 30, height: currentSize.height))
+        #if os(visionOS)
+            WindowGroup(id: "Download") {
+                DownloadDestination()
+                    .environment(router)
+                    .environment(playlistService)
+                    .environmentObject(userPreferences)
+            }
+            .defaultSize(CGSize(width: 30, height: currentSize.height))
 
-		WindowGroup(id: "MediaPlayer") {
-			MediaPlayerDestination()
-				.environment(router)
-				.environment(playlistService)
-				.environmentObject(userPreferences)
-		}
-		#endif
+            WindowGroup(id: "MediaPlayer") {
+                MediaPlayerDestination()
+                    .environment(router)
+                    .environment(playlistService)
+                    .environmentObject(userPreferences)
+            }
+        #endif
     }
 
-	func handleScenePhase(scenePhase: ScenePhase) {
-		switch scenePhase {
-		case .background:
-			log(.info, "App is in background.")
-		case .inactive:
-			log(.info, "App is inactive.")
-		case .active:
-			log(.info, "App is active.")
-		@unknown default:
-			fatalError()
-		}
-	}
+    func handleScenePhase(scenePhase: ScenePhase) {
+        switch scenePhase {
+        case .background:
+            log(.info, "App is in background.")
+        case .inactive:
+            log(.info, "App is inactive.")
+        case .active:
+            log(.info, "App is active.")
+        @unknown default:
+            fatalError()
+        }
+    }
 }

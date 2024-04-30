@@ -13,7 +13,7 @@ import SwiftUI
 public final class UserPreferences: ObservableObject {
     public static let shared = UserPreferences()
 
-	@AppStorage("show_onboarding") public var showOnboarding = true
+    @AppStorage("show_onboarding") public var showOnboarding = true
 
     /// Feedback Settings
     @AppStorage("haptic_button_press") public var hapticButtonPressEnabled = true

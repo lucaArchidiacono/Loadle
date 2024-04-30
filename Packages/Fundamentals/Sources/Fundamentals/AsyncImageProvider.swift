@@ -26,15 +26,15 @@ public struct AsyncImageProvider<Content>: View where Content: View {
 
     public var body: some View {
         Group {
-			if isLoading {
-				content(Image(uiImage: UIImage()))
-			} else {
-				if let image = image {
-					content(image)
-				} else {
-					content(placeholder)
-				}
-			}
+            if isLoading {
+                content(Image(uiImage: UIImage()))
+            } else {
+                if let image = image {
+                    content(image)
+                } else {
+                    content(placeholder)
+                }
+            }
         }
         .onAppear {
             loadImage()
@@ -45,14 +45,14 @@ public struct AsyncImageProvider<Content>: View where Content: View {
         guard let itemProvider, !isLoading else { return }
         isLoading = true
 
-		_ = itemProvider.loadTransferable(type: Data.self, completionHandler: { result in
+        _ = itemProvider.loadTransferable(type: Data.self, completionHandler: { result in
             switch result {
             case let .success(data):
-				if let uiImage = UIImage(data: data) {
-					self.image = Image(uiImage: uiImage)
-				}
-            case .failure: 
-				break
+                if let uiImage = UIImage(data: data) {
+                    self.image = Image(uiImage: uiImage)
+                }
+            case .failure:
+                break
             }
             isLoading = false
         })

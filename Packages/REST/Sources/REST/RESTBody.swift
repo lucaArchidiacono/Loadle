@@ -59,21 +59,22 @@ public extension REST {
             return InputStream(data: data)
         }
 
-		public var debugDescription: String {
-			let body: String
-			if let inputStream = try? encode(),
-			   let data = try? Data(reading: inputStream),
-			   let stringData = String(data: data, encoding: .utf8) {
-				body = stringData
-			} else {
-				body = "<unavailable>"
-			}
+        public var debugDescription: String {
+            let body: String
+            if let inputStream = try? encode(),
+               let data = try? Data(reading: inputStream),
+               let stringData = String(data: data, encoding: .utf8)
+            {
+                body = stringData
+            } else {
+                body = "<unavailable>"
+            }
 
-			let debugString = """
-			JSON Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
-			"""
-			return debugString
-		}
+            let debugString = """
+            JSON Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
+            """
+            return debugString
+        }
     }
 
     struct FormBody: HTTPBody, CustomDebugStringConvertible {
@@ -109,20 +110,21 @@ public extension REST {
             return string.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         }
 
-		public var debugDescription: String {
-			let body: String
-			if let inputStream = try? encode(),
-			   let data = try? Data(reading: inputStream),
-			   let stringData = String(data: data, encoding: .utf8) {
-				body = stringData
-			} else {
-				body = "<unavailable>"
-			}
+        public var debugDescription: String {
+            let body: String
+            if let inputStream = try? encode(),
+               let data = try? Data(reading: inputStream),
+               let stringData = String(data: data, encoding: .utf8)
+            {
+                body = stringData
+            } else {
+                body = "<unavailable>"
+            }
 
-			let debugString = """
-			Form Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
-			"""
-			return debugString
-		}
+            let debugString = """
+            Form Body: { ADDITIONAL-HEADERS -> \(additionalHeaders); BODY -> \(body); }
+            """
+            return debugString
+        }
     }
 }

@@ -14,34 +14,34 @@ public extension REST {
 
         public static let shared = Loader()
 
-		public func load(using request: REST.HTTPRequest) async throws -> REST.HTTPResponse {
-			let urlRequest = try REST.transform(request)
-			
-			var data: Data!
-			var urlResponse: URLResponse!
+        public func load(using request: REST.HTTPRequest) async throws -> REST.HTTPResponse {
+            let urlRequest = try REST.transform(request)
 
-			do {
-				let tuple = try await session.data(for: urlRequest)
-				data = tuple.0
-				urlResponse = tuple.1
-			} catch {
-				throw REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)
-			}
+            var data: Data!
+            var urlResponse: URLResponse!
 
-			guard let httpResponse = urlResponse as? HTTPURLResponse else {
-				throw REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)
-			}
+            do {
+                let tuple = try await session.data(for: urlRequest)
+                data = tuple.0
+                urlResponse = tuple.1
+            } catch {
+                throw REST.HTTPError(code: .unknown, request: request, response: nil, underlyingError: error)
+            }
 
-			let status = REST.HTTPStatus(rawValue: httpResponse.statusCode)
+            guard let httpResponse = urlResponse as? HTTPURLResponse else {
+                throw REST.HTTPError(code: .invalidResponse, request: request, response: nil, underlyingError: nil)
+            }
 
-			let response = REST.HTTPResponse(request: request, response: httpResponse, body: data)
+            let status = REST.HTTPStatus(rawValue: httpResponse.statusCode)
 
-			if status.isSuccess {
-				return response
-			} else {
-				let code = HTTPStatusCode(fromRawValue: status.rawValue)
-				throw REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: nil)
-			}
-		}
+            let response = REST.HTTPResponse(request: request, response: httpResponse, body: data)
+
+            if status.isSuccess {
+                return response
+            } else {
+                let code = HTTPStatusCode(fromRawValue: status.rawValue)
+                throw REST.HTTPError(code: .badHTTPStatusCode(code: code), request: request, response: response, underlyingError: nil)
+            }
+        }
     }
 }

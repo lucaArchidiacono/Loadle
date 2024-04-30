@@ -22,9 +22,9 @@ struct ProgressBar: View {
             ZStack(alignment: .leading) {
                 Rectangle()
                     .frame(width: geometry.size.width, height: geometry.size.height)
-					.opacity(0.3)
-					.foregroundStyle(.secondary)
-					.cornerRadius(5.0)
+                    .opacity(0.3)
+                    .foregroundStyle(.secondary)
+                    .cornerRadius(5.0)
 
                 var width: CGFloat {
                     var value: CGFloat
@@ -38,8 +38,8 @@ struct ProgressBar: View {
                 }
                 Rectangle()
                     .frame(width: width, height: geometry.size.height)
-					.foregroundColor(.accentColor)
-					.cornerRadius(5.0)
+                    .foregroundColor(.accentColor)
+                    .cornerRadius(5.0)
             }
         }
     }

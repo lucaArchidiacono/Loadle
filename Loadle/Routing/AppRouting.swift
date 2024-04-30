@@ -12,27 +12,27 @@ import SwiftUI
 extension View {
     @ViewBuilder
     private func build(_ destination: PathDestination) -> some View {
-		switch destination {
-		case .mediaPlayer:
-			MediaPlayerView()
-		case .empty:
-			EmptyView()
-		}
+        switch destination {
+        case .mediaPlayer:
+            MediaPlayerView()
+        case .empty:
+            EmptyView()
+        }
     }
 
     @ViewBuilder
     private func build(_ destination: SheetDestination) -> some View {
         switch destination {
-		case .onboarding:
-			OnboardingDestination()
+        case .onboarding:
+            OnboardingDestination()
         case .download:
             DownloadDestination()
         case .settings:
             SettingsDestination()
         case let .mail(emailData, result):
             MailComposerView(emailData: emailData, result: result)
-		case .info:
-			InfoDestination()
+        case .info:
+            InfoDestination()
         }
     }
 
@@ -42,13 +42,13 @@ extension View {
         }
     }
 
-	func withSheetDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
+    func withSheetDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
         sheet(item: destination, onDismiss: onDismiss) { destination in
             build(destination)
         }
     }
 
-	func withCoverDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
+    func withCoverDestinations(destination: Binding<SheetDestination?>, onDismiss: (() -> Void)? = nil) -> some View {
         fullScreenCover(item: destination, onDismiss: onDismiss) { destination in
             build(destination)
         }

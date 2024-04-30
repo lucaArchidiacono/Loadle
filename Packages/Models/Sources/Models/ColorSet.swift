@@ -10,14 +10,14 @@ import Generator
 import SwiftUI
 
 public let availableColorsSets: [ColorSetCouple] =
-	[
-		.init(light: SystemLight(), dark: SystemDark()),
-		.init(light: DesertLight(), dark: DesertDark()),
-		.init(light: NemesisLight(), dark: NemesisDark()),
-		.init(light: MediumLight(), dark: MediumDark()),
-		.init(light: ConstellationLight(), dark: ConstellationDark()),
-		.init(light: ThreadsLight(), dark: ThreadsDark())
-	]
+    [
+        .init(light: SystemLight(), dark: SystemDark()),
+        .init(light: DesertLight(), dark: DesertDark()),
+        .init(light: NemesisLight(), dark: NemesisDark()),
+        .init(light: MediumLight(), dark: MediumDark()),
+        .init(light: ConstellationLight(), dark: ConstellationDark()),
+        .init(light: ThreadsLight(), dark: ThreadsDark()),
+    ]
 
 public protocol ColorSet {
     var name: ColorSetName { get }
@@ -28,8 +28,8 @@ public protocol ColorSet {
     var labelColor: Color { get set }
 }
 
-extension ColorSet {
-	public var nameWithScheme: String { "\(name) - \(scheme.name)" }
+public extension ColorSet {
+    var nameWithScheme: String { "\(name) - \(scheme.name)" }
 }
 
 public extension ColorScheme {
@@ -51,7 +51,7 @@ public enum ColorSetName: String {
     case medium = "Medium"
     case constellation = "Constellation"
     case threads = "Threads"
-	case system = "System"
+    case system = "System"
 }
 
 public struct ColorSetCouple: Identifiable {
@@ -63,25 +63,25 @@ public struct ColorSetCouple: Identifiable {
 }
 
 public struct SystemLight: ColorSet {
-	public var name: ColorSetName = .system
-	public var scheme: SwiftUI.ColorScheme = .light
-	public var tintColor: Color = .blue
-	public var primaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
-	public var secondaryBackgroundColor: Color = .init(hex: 0xF0F0F5)
-	public var labelColor: Color = .black
+    public var name: ColorSetName = .system
+    public var scheme: SwiftUI.ColorScheme = .light
+    public var tintColor: Color = .blue
+    public var primaryBackgroundColor: Color = .init(hex: 0xFFFFFF)
+    public var secondaryBackgroundColor: Color = .init(hex: 0xF0F0F5)
+    public var labelColor: Color = .black
 
-	public init() {}
+    public init() {}
 }
 
 public struct SystemDark: ColorSet {
-	public var name: ColorSetName = .system
-	public var scheme: SwiftUI.ColorScheme = .dark
-	public var tintColor: Color = .blue
-	public var primaryBackgroundColor: Color = .init(hex: 0x000000)
-	public var secondaryBackgroundColor: Color = .init(hex: 0x1A1A1C)
-	public var labelColor: Color = .white
+    public var name: ColorSetName = .system
+    public var scheme: SwiftUI.ColorScheme = .dark
+    public var tintColor: Color = .blue
+    public var primaryBackgroundColor: Color = .init(hex: 0x000000)
+    public var secondaryBackgroundColor: Color = .init(hex: 0x1A1A1C)
+    public var labelColor: Color = .white
 
-	public init() {}
+    public init() {}
 }
 
 public struct DesertDark: ColorSet {

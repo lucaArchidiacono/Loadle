@@ -8,7 +8,7 @@
 import Foundation
 
 public extension REST {
-	struct HTTPResponse: CustomDebugStringConvertible {
+    struct HTTPResponse: CustomDebugStringConvertible {
         public let request: HTTPRequest
         private let response: HTTPURLResponse
         private let body: Data
@@ -21,16 +21,16 @@ public extension REST {
 
         public var message: String { HTTPURLResponse.localizedString(forStatusCode: response.statusCode) }
         public var headers: [AnyHashable: Any] { response.allHeaderFields }
-		public var data: Data { body }
+        public var data: Data { body }
 
-		public func decode<T: Decodable>() throws -> T { try JSONDecoder().decode(T.self, from: body) }
+        public func decode<T: Decodable>() throws -> T { try JSONDecoder().decode(T.self, from: body) }
 
-		public var debugDescription: String {
-			let body: Any = String(data: body, encoding: .utf8) ?? (try? JSONSerialization.jsonObject(with: body)) ?? "<unavailable>"
-			let debugString = """
-			HTTP Response: { STATUS -> \(response.statusCode) \(message); HEADERS -> \(headers); BODY -> \(body); }
-			"""
-			return debugString
-		}
+        public var debugDescription: String {
+            let body: Any = String(data: body, encoding: .utf8) ?? (try? JSONSerialization.jsonObject(with: body)) ?? "<unavailable>"
+            let debugString = """
+            HTTP Response: { STATUS -> \(response.statusCode) \(message); HEADERS -> \(headers); BODY -> \(body); }
+            """
+            return debugString
+        }
     }
 }

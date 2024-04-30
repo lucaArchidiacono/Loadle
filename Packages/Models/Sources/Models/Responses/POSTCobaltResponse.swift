@@ -31,12 +31,12 @@ public struct POSTCobaltResponse: Decodable {
         url = try container.decodeIfPresent(URL.self, forKey: .url)
         pickerType = try container.decodeIfPresent(String.self, forKey: .pickerType)
         picker = try container.decodeIfPresent([POSTCobaltResponse.POSTCobaltPickerItemResponse].self, forKey: .picker) ?? []
-		
-		do {
-			audio = try container.decodeIfPresent(URL.self, forKey: .audio)
-		} catch {
-			audio = nil
-		}
+
+        do {
+            audio = try container.decodeIfPresent(URL.self, forKey: .audio)
+        } catch {
+            audio = nil
+        }
     }
 
     public enum POSTCobaltStatusResponse: String, Decodable {

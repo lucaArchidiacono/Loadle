@@ -46,11 +46,11 @@ public extension REST {
             self.body = body
         }
 
-		public var debugDescription: String {
-			let debugString = """
-			HTTP Request: { ID -> \(id); URL -> \(urlComponents); OPTIONS -> \(options); METHOD -> \(method); HEADERS -> \(headers);  BODY -> \(body); }
-			"""
-			return debugString
-		}
+        public var debugDescription: String {
+            let debugString = """
+            HTTP Request: { ID -> \(id); URL -> \(urlComponents); OPTIONS -> \(options); METHOD -> \(method); HEADERS -> \(headers);  BODY -> \(body); }
+            """
+            return debugString
+        }
     }
 }

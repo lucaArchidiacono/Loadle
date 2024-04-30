@@ -18,8 +18,8 @@ let package = Package(
         .package(path: "../REST"),
         .package(path: "../Constants"),
         .package(path: "../Models"),
-		.package(path: "../LocalStorage"),
-		.package(url: "https://github.com/dfed/swift-async-queue", from: "0.5.0"),
+        .package(path: "../LocalStorage"),
+        .package(url: "https://github.com/dfed/swift-async-queue", from: "0.5.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -32,8 +32,8 @@ let package = Package(
                 .product(name: "Constants", package: "Constants"),
                 .product(name: "Models", package: "Models"),
                 .product(name: "LocalStorage", package: "LocalStorage"),
-				.product(name: "AsyncQueue", package: "swift-async-queue"),
-//				.product(name: "SQLite", package: "SQLite")
+                .product(name: "AsyncQueue", package: "swift-async-queue"),
+                //				.product(name: "SQLite", package: "SQLite")
             ]
         ),
         .testTarget(

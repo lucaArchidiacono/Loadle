@@ -11,7 +11,7 @@ import SwiftUI
 
 struct SettingsDestination: View {
     @EnvironmentObject private var preferences: UserPreferences
-	@Environment(Router.self) private var parentRouter: Router
+    @Environment(Router.self) private var parentRouter: Router
     @State private var router = Router()
 
     var body: some View {
@@ -21,9 +21,9 @@ struct SettingsDestination: View {
                 .withCoverDestinations(destination: $router.covered)
                 .withSheetDestinations(destination: $router.presented)
         }
-		.onAppear {
-			router.parent = parentRouter
-		}
+        .onAppear {
+            router.parent = parentRouter
+        }
         .environment(router)
         .environmentObject(preferences)
     }

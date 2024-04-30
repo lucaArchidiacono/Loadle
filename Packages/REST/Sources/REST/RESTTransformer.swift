@@ -32,12 +32,12 @@ extension REST {
             // attempt to retrieve the body data
             do {
                 urlRequest.httpBodyStream = try request.body.encode()
-				return urlRequest
+                return urlRequest
             } catch {
                 // something went wrong creating the body; stop and report back
                 throw REST.HTTPError(code: .invalidRequest, request: request, response: nil, underlyingError: nil)
             }
         }
-		return urlRequest
+        return urlRequest
     }
 }

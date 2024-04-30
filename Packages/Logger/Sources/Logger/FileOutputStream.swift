@@ -112,7 +112,7 @@ final class FileOutputStream: OutputStream {
         queue.async {
             do {
                 let fileLogOutputStreamString = try self._fetch()
-				completion(fileLogOutputStreamString)
+                completion(fileLogOutputStreamString)
             } catch {
                 os_log(.error, "\(error)")
                 completion([])
@@ -124,9 +124,9 @@ final class FileOutputStream: OutputStream {
         let fileHandle = try FileHandle(forReadingFrom: logFile)
         let data = fileHandle.readDataToEndOfFile()
         try fileHandle.close()
-		return (String(data: data, encoding: .utf8) ?? "")
-			.components(separatedBy: "\n")
-			.dropLast()
+        return (String(data: data, encoding: .utf8) ?? "")
+            .components(separatedBy: "\n")
+            .dropLast()
     }
 
     func getLogFiles(completion: @escaping (([URL]) -> Void)) {
